@@ -23,6 +23,16 @@ Skill("etendo:java", "create EventHandler for SMFT_Enrollment")
 
 The skills handle: context detection, Tomcat checks, webhook calls, API key management, XML export, and error diagnosis automatically. Do not replicate that logic manually.
 
+## MANDATORY: Bug documentation in webhook skills
+
+**CRITICAL RULE:** Whenever you encounter a bug or unexpected behavior while using Etendo webhooks (`CreateAndRegisterTable`, `CreateColumn`, `RegisterWindow`, `RegisterTab`, `RegisterFields`, etc.), you MUST immediately document it in `.claude/commands/etendo/_webhooks.md` under the "⚠️ Bugs conocidos y workarounds" section with:
+1. A sequential bug number (`### Bug N: ...`)
+2. **Síntoma** — what you observed
+3. **Causa** — root cause if known
+4. **Workaround** — exact SQL/commands to fix it
+
+Do not wait until the end of the session. Document each bug as soon as the workaround is confirmed working.
+
 ## What this repo is
 
 This is the **Etendo Dev Assistant** — a set of Claude Code slash commands that help developers work with Etendo ERP projects. The commands live in `.claude/commands/etendo/` and are used from inside an `etendo_base` project directory.

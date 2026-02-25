@@ -215,13 +215,84 @@ Reemplazar `{PREFIX}` (ej: `SMFT`) y `{MODULE_ID}` con el UUID del módulo.
 
 ---
 
-### Bug 7: `ModelProvider` loga `Couldn't add help to entity. Failed database query`
+### Bug 7: Columnas estándar no registradas en AD_COLUMN → `NOT_EXIST_IN_AD` fatal en export
 
-**Síntoma:** Warning en smartbuild/export: `ERROR org.openbravo.base.model.ModelProvider - Couldn't add help to entity`.
+**Síntoma:** `export.database` falla con `Errors for Validation type: NOT_EXIST_IN_AD` para columnas estándar (ad_client_id, ad_org_id, isactive, created, createdby, updated, updatedby).
 
-**Causa:** Las columnas estándar de la tabla (ad_client_id, ad_org_id, isactive, created, createdby, updated, updatedby) no están registradas en AD_COLUMN. `CreateAndRegisterTable` las crea físicamente pero no las registra en el AD.
+**Causa:** `CreateAndRegisterTable` crea la tabla física con esas columnas pero NO las registra en AD_COLUMN. El export las detecta en la DB y no las encuentra en el AD → validación fatal.
 
-**Workaround:** Este error es no-bloqueante para el export y el funcionamiento básico. Las columnas estándar son resueltas por el framework vía herencia. Se puede ignorar mientras la tabla tenga la PK registrada (Bug 6). Para eliminarlo completamente, registrar las columnas estándar en AD_COLUMN usando las referencias canónicas de la tabla `AD_COLUMN` de otra tabla del mismo módulo como template.
+**Workaround obligatorio:** Registrar las columnas estándar en AD_COLUMN con los atributos EXACTOS descritos en Bug 8. El error es **bloqueante** — no se puede exportar sin este fix.
+
+---
+
+### Bug 8: Columnas estándar en AD_COLUMN con `ad_reference_id` incorrecto → Hibernate falla
+
+**Síntoma:** `export.database` lanza `org.openbravo.base.util.CheckException: Property createdBy does not exist for entity {tablename}` → `Could not get constructor for SingleTableEntityPersister`.
+
+**Causa:** Las columnas `Createdby` y `Updatedby` deben usar `ad_reference_id='30'` (Search), NO `'18'` (Table). Con `'18'` (Table), Hibernate no puede resolver la FK a AD_User y el entity model queda incompleto: la propiedad `createdBy` nunca se agrega al property map del entity.
+
+**Fix confirmado:** `Createdby` y `Updatedby` deben tener `ad_reference_id='30'`. El resto de las columnas estándar no cambia.
+
+**Workaround obligatorio:** Registrar TODAS las columnas estándar para cada tabla del módulo con exactamente estos atributos (matching el patrón de módulos como `smfwhe`):
+
+```bash
+docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} << 'SQLEOF'
+DO $$
+DECLARE
+  v_table RECORD;
+  v_table_id VARCHAR(32);
+  v_module_id VARCHAR(32) := '{MODULE_ID}';
+BEGIN
+  FOR v_table IN
+    SELECT ad_table_id, tablename FROM ad_table WHERE tablename ILIKE '{PREFIX}_%'
+  LOOP
+    v_table_id := v_table.ad_table_id;
+    INSERT INTO ad_column (ad_column_id, ad_client_id, ad_org_id, isactive, created, createdby, updated, updatedby,
+      columnname, ad_table_id, ad_reference_id, fieldlength, iskey, isparent, ismandatory, isupdateable,
+      isidentifier, isencrypted, ad_element_id, ad_module_id, name, position)
+    VALUES
+      (get_uuid(),'0','0','Y',now(),'0',now(),'0', 'AD_Client_ID', v_table_id, '19', 32, 'N','N','Y','N','N','N', '102', v_module_id, 'Client', 10),
+      (get_uuid(),'0','0','Y',now(),'0',now(),'0', 'AD_Org_ID',    v_table_id, '19', 32, 'N','N','Y','N','N','N', '113', v_module_id, 'Organization', 20),
+      (get_uuid(),'0','0','Y',now(),'0',now(),'0', 'Isactive',     v_table_id, '20',  1, 'N','N','Y','Y','N','N', '348', v_module_id, 'Active', 30),
+      (get_uuid(),'0','0','Y',now(),'0',now(),'0', 'Created',      v_table_id, '16',  7, 'N','N','Y','N','N','N', '245', v_module_id, 'Creation Date', 50),
+      (get_uuid(),'0','0','Y',now(),'0',now(),'0', 'Createdby',    v_table_id, '30', 32, 'N','N','Y','N','N','N', '246', v_module_id, 'Created By', 60),
+      (get_uuid(),'0','0','Y',now(),'0',now(),'0', 'Updated',      v_table_id, '16',  7, 'N','N','Y','N','N','N', '607', v_module_id, 'Updated', 70),
+      (get_uuid(),'0','0','Y',now(),'0',now(),'0', 'Updatedby',    v_table_id, '30', 32, 'N','N','Y','N','N','N', '608', v_module_id, 'Updated By', 80)
+    ON CONFLICT DO NOTHING;
+  END LOOP;
+END$$;
+SQLEOF
+```
+
+**Atributos clave:**
+| Columna | reference_id | element_id | Nota |
+|---|---|---|---|
+| AD_Client_ID | 19 (TableDir) | 102 | |
+| AD_Org_ID | 19 (TableDir) | 113 | |
+| Isactive | 20 (YesNo) | 348 | |
+| Created | 16 (DateTime) | 245 | |
+| **Createdby** | **30 (Search)** | **246** | ⚠️ NO usar 18 |
+| Updated | 16 (DateTime) | 607 | |
+| **Updatedby** | **30 (Search)** | **608** | ⚠️ NO usar 18 |
+
+---
+
+### Bug 9: FK constraint names tienen límite de 30 caracteres en export.database
+
+**Síntoma:** `Errors for Validation type: INCORRECT_NAME_LENGTH` / `NAME_TOO_LONG` — `Name of ForeignKey X for table Y is too long. Only 30 characters allowed.`
+
+**Causa:** Los nombres de FK constraints generados automáticamente (ej: `SMFT_ANSWER_SMFT_QUESTION_ID_FK` = 31 chars) exceden el límite de 30 chars que valida el export.
+
+**Workaround:** Renombrar el constraint antes de exportar:
+```sql
+ALTER TABLE {tabla} RENAME CONSTRAINT {nombre_largo_fk} TO {nombre_corto_max30};
+```
+Verificar longitudes antes de exportar:
+```sql
+SELECT conname, length(conname), conrelid::regclass
+FROM pg_constraint WHERE contype='f' AND conrelid::regclass::text ILIKE '{PREFIX}_%'
+ORDER BY length(conname) DESC;
+```
 
 ---
 
