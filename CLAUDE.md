@@ -33,6 +33,10 @@ All research that informs the commands is in `docs/`:
 | `docs/gradle-tasks-reference.md` | All Gradle tasks, flags, dependency chains |
 | `docs/infrastructure-modes.md` | Source vs JAR mode, Docker flags, DB connection patterns |
 | `docs/application-dictionary.md` | AD XML structure, UUID format, window/tab/field SQL patterns |
+| `docs/advanced-ad.md` | Field logic, references, sequences, stored procedures, data access levels |
+| `docs/java-development.md` | DAL, Action Buttons, Event Handlers, Background Processes, Callouts |
+| `docs/jobs-and-actions.md` | Jobs/Actions abstraction, CloneRecordHook API |
+| `docs/module-publishing.md` | Publishing modules to Nexus as JAR, registerModule, publishVersion |
 | `docs/etendo-headless.md` | EtendoRX headless API reference |
 | `docs/etendo-api-guide.md` | Classic DataSource API and FormInit reference |
 
