@@ -44,7 +44,7 @@ coverage/
 
 # Tooling
 .gemini/
-.claude/
+.claude/*.json
 
 bk/
 etendo_base/
