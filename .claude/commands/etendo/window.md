@@ -1,131 +1,122 @@
-# /etendo:window — Create or modify an Etendo Window in the Application Dictionary
+# /etendo:window — Crear o modificar una Window en el Application Dictionary
 
-**Arguments:** `$ARGUMENTS` (optional: `create`, `alter WindowName`, or a description)
+**Arguments:** `$ARGUMENTS` (opcional: `create`, `alter WindowName`, o descripción)
 
 ---
 
-First, read `.claude/commands/etendo/_context.md` and resolve the active module context.
-Also read `docs/application-dictionary.md` for the XML structure reference.
+Primero, leer `.claude/commands/etendo/_context.md` y `.claude/commands/etendo/_webhooks.md`.
 
-A **Window** in Etendo is the main UI entry point. It contains one or more **Tabs**, each mapping to a DB table. Tabs at level 0 are headers; level 1 are detail lines.
+Una **Window** en Etendo es el entry point de UI. Contiene Tabs (nivel 0 = header, 1 = detalle, etc.), cada Tab mapea a una tabla.
 
-The flow is always: **SQL INSERTs → execute → export.database → XML files updated**
+## Step 1: Contexto
 
-## Step 1: Establish context
+Resolver:
+- Módulo activo (javapackage, DB prefix, AD_MODULE_ID)
+- API key disponible (ver `_webhooks.md`)
+- Tomcat corriendo (requerido para webhooks)
 
-Resolve active module, DB prefix, AD_MODULE_ID.
+## Step 2: Determinar operación
 
-If not set, query the DB for available modules:
-```sql
-SELECT javapackage, name FROM ad_module WHERE isindevelopment = 'Y' ORDER BY name;
-```
+- `create` o vacío → crear ventana nueva
+- `alter {WindowName}` → modificar ventana existente (usar `GetWindowTabOrTableInfo`)
+- Lenguaje natural → inferir intención
 
-## Step 2: Determine operation
+## Step 3: Recopilar información
 
-Based on `$ARGUMENTS`:
-- `create` or blank → create a new window
-- `alter {WindowName}` → modify an existing window
-- Natural language → infer intent
+Preguntar sólo lo que no puede inferirse:
 
-For **alter**: look up the existing window in the DB:
-```sql
-SELECT w.ad_window_id, w.name, t.ad_tab_id, t.name tab_name, t.tablevel,
-       tbl.tablename
-FROM ad_window w
-JOIN ad_tab t ON t.ad_window_id = w.ad_window_id
-JOIN ad_table tbl ON tbl.ad_table_id = t.ad_table_id
-WHERE w.ad_module_id = '{AD_MODULE_ID}'
-ORDER BY w.name, t.seqno;
-```
+**Ventana:**
+- Nombre (requerido)
+- Descripción (opcional)
 
-## Step 3: Gather information (conversational, with smart defaults)
+**Tabs:** para cada tab:
+- ¿Qué tabla? (listar tablas del módulo o entrada manual)
+- Nivel: 0=header (default para el primero), 1=detail, 2=subdetail...
+- ¿Es sólo lectura? (default N)
+- ¿WhereClause? (ej: `em_smft_iscourse='Y'` para filtrar)
 
-For **create**, ask only what can't be inferred:
+**Menú:** ¿Agregar entrada de menú? (default sí)
 
-**Window:**
-- Name: (required, e.g. "My Customers")
-- Type: default `M` (Maintain) — only ask if they likely need something else
-- Description: optional
+Confirmar todo junto antes de ejecutar.
 
-**Tabs** — ask for each tab:
-- Which DB table? (list tables owned by the module, or allow manual entry)
-  ```sql
-  SELECT tablename, name FROM ad_table WHERE ad_module_id = '{AD_MODULE_ID}' ORDER BY tablename;
-  ```
-- Tab name: default = table name in Title Case
-- Level: 0 = header (default for first tab), 1 = lines (if they say "it has lines/details")
-- Single row view?: default N
-
-**Fields** — offer two options:
-1. "Add all columns from the table automatically" → generate AD_FIELD for every AD_COLUMN
-2. "Let me specify which columns" → ask for column list
-
-**Menu entry**: ask "Add a menu entry for this window? Where in the menu?" (default: yes, under the module's menu group)
-
-Confirm all at once before generating SQL: show a summary table.
-
-## Step 4: Generate SQL
-
-Generate a complete SQL block using DO $$ ... END $$ with generated UUIDs:
-
-```sql
-DO $$
-DECLARE
-  v_module_id  TEXT := '{AD_MODULE_ID}';
-  v_window_id  TEXT := REPLACE(gen_random_uuid()::text, '-', '');
-  v_tab_id     TEXT := REPLACE(gen_random_uuid()::text, '-', '');
-  v_menu_id    TEXT := REPLACE(gen_random_uuid()::text, '-', '');
-  -- one v_field_id per field
-BEGIN
-
-  -- Window
-  INSERT INTO AD_WINDOW (...) VALUES (...);
-
-  -- Tab(s)
-  INSERT INTO AD_TAB (...) VALUES (...);
-
-  -- Fields (for each selected column)
-  INSERT INTO AD_FIELD (...) VALUES (...);
-
-  -- Menu entry
-  INSERT INTO AD_MENU (...) VALUES (...);
-
-END $$;
-```
-
-Show the complete SQL. Ask: "Execute this? (Y/N)"
-
-## Step 5: Execute
+## Step 4: Crear la ventana
 
 ```bash
-# Docker
-echo "{SQL}" | docker exec -i etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid}
+ETENDO_URL="http://localhost:8080/etendo"
+API_KEY="{apikey}"
+DB_PREFIX="{dbprefix}"
 
-# Local
-echo "{SQL}" | psql -U {bbdd.user} -d {bbdd.sid} -h localhost -p {bbdd.port}
+# 1. Crear ventana + menú
+RESP=$(curl -s -G "${ETENDO_URL}/webhooks/RegisterWindow" \
+  --data-urlencode "name=RegisterWindow" \
+  --data-urlencode "apikey=${API_KEY}" \
+  --data-urlencode "DBPrefix=${DB_PREFIX}" \
+  --data-urlencode "Name={NombreVentana}" \
+  --data-urlencode "Description={descripcion}")
+echo $RESP
+WINDOW_ID=$(echo $RESP | python3 -c "import sys,json,re; r=json.load(sys.stdin); m=re.search(r'ID:\s*([A-F0-9a-f]{32})',r.get('message','')); print(m.group(1) if m else '')")
+echo "Window ID: $WINDOW_ID"
 ```
 
-Verify: query the newly created window ID back from DB.
+## Step 5: Crear tabs
 
-## Step 6: Export to XML
+Por cada tab en orden (nivel 0 primero, luego 1, 2...):
 
 ```bash
-./gradlew export.database -Dmodule={javapackage} > /tmp/etendo-export.log 2>&1
+# Crear tab
+RESP=$(curl -s -G "${ETENDO_URL}/webhooks/RegisterTab" \
+  --data-urlencode "name=RegisterTab" \
+  --data-urlencode "apikey=${API_KEY}" \
+  --data-urlencode "WindowID=${WINDOW_ID}" \
+  --data-urlencode "TableName={NombreTablaDB}" \
+  --data-urlencode "DBPrefix=${DB_PREFIX}" \
+  --data-urlencode "TabLevel={0|1|2...}" \
+  --data-urlencode "SequenceNumber={10|20|30...}" \
+  --data-urlencode "Description={descripcion}")
+echo $RESP
+TAB_ID=$(echo $RESP | python3 -c "import sys,json,re; r=json.load(sys.stdin); m=re.search(r'ID:\s*([A-F0-9a-f]{32})',r.get('message','')); print(m.group(1) if m else '')")
+echo "Tab ID: $TAB_ID"
+
+# Auto-registrar todos los fields del tab
+RESP=$(curl -s -G "${ETENDO_URL}/webhooks/RegisterFields" \
+  --data-urlencode "name=RegisterFields" \
+  --data-urlencode "apikey=${API_KEY}" \
+  --data-urlencode "WindowTabID=${TAB_ID}" \
+  --data-urlencode "DBPrefix=${DB_PREFIX}")
+echo $RESP
+```
+
+Repetir para cada tab en el árbol.
+
+## Step 6: WhereClause (si aplica)
+
+Si un tab necesita filtro (ej: sólo mostrar productos que son cursos), actualizar directamente en DB:
+
+```bash
+docker exec -i etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -c \
+  "UPDATE ad_tab SET whereclause = '{clausula}' WHERE ad_tab_id = '{tab_id}';"
+```
+
+## Step 7: Exportar a XML
+
+Con Tomcat DOWN:
+```bash
+./gradlew resources.down
+JAVA_HOME=/Users/sebastianbarrozo/Library/Java/JavaVirtualMachines/corretto-17.0.18/Contents/Home \
+  ./gradlew export.database -Dmodule={javapackage} > /tmp/etendo-export.log 2>&1
 tail -5 /tmp/etendo-export.log
+./gradlew resources.up
 ```
 
-Show which files were updated:
-- `AD_WINDOW.xml`
-- `AD_TAB.xml`
-- `AD_FIELD.xml`
-- `AD_MENU.xml`
-
-## Step 7: Deploy
+## Step 8: Resultado
 
 ```
-✓ Window "{name}" created and exported to XML
+✓ Ventana "{nombre}" creada
 
-  To see it in Etendo:
-    /etendo:smartbuild   → recompile and redeploy
-    Then: Etendo UI → refresh → {name} should appear in the menu
+  Window ID: {id}
+  Tabs creados: {N}
+
+  Para verla en Etendo:
+    /etendo:smartbuild → recompilar y desplegar
+    Luego: UI → refresh → {nombre} en el menú
 ```

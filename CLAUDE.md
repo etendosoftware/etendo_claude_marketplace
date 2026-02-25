@@ -2,6 +2,27 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## MANDATORY: Use `/etendo:*` Skills for All Etendo Work
+
+**CRITICAL — You MUST follow this rule without exception:**
+
+When working inside an Etendo project (`etendo_base/` or any directory with `gradle.properties` + `build.gradle`), ALL development operations MUST be performed through the `/etendo:*` slash command skills via the `Skill` tool. You are FORBIDDEN from:
+
+- Running `./gradlew` tasks directly via Bash (use `/etendo:smartbuild`, `/etendo:update`, `/etendo:install`)
+- Writing SQL to create/modify AD tables or columns directly (use `/etendo:alter-db`)
+- Creating windows, tabs or fields via SQL (use `/etendo:window`)
+- Creating modules by hand (use `/etendo:module`)
+- Writing Java boilerplate without the scaffold (use `/etendo:java`)
+
+**Always invoke skills via the `Skill` tool**, e.g.:
+```
+Skill("etendo:alter-db", "add column SMFT_Is_Course to M_Product")
+Skill("etendo:window", "create window Curso for table SMFT_Course")
+Skill("etendo:java", "create EventHandler for SMFT_Enrollment")
+```
+
+The skills handle: context detection, Tomcat checks, webhook calls, API key management, XML export, and error diagnosis automatically. Do not replicate that logic manually.
+
 ## What this repo is
 
 This is the **Etendo Dev Assistant** — a set of Claude Code slash commands that help developers work with Etendo ERP projects. The commands live in `.claude/commands/etendo/` and are used from inside an `etendo_base` project directory.
@@ -17,12 +38,24 @@ The `poc/` directory contains a proof-of-concept validating EtendoRX headless AP
 | `/etendo:install` | Install Etendo on an already-cloned project |
 | `/etendo:smartbuild` | Compile and deploy |
 | `/etendo:update` | Synchronize DB with the model (update.database) |
-| `/etendo:alter-db` | Create/modify tables and columns |
-| `/etendo:window` | Create/modify Application Dictionary windows and tabs |
+| `/etendo:alter-db` | Create/modify tables and columns (via webhooks) |
+| `/etendo:window` | Create/modify Application Dictionary windows and tabs (via webhooks) |
 | `/etendo:module` | Create or configure an Etendo module |
+| `/etendo:java` | Create EventHandlers, Background Processes, Action Processes |
 | `/etendo:headless` | Configure EtendoRX REST endpoints |
 
-Commands are defined as `.md` files in `.claude/commands/etendo/`. `_context.md` is the shared knowledge base (not user-facing).
+Commands are defined as `.md` files in `.claude/commands/etendo/`.
+Shared knowledge base files (not user-facing): `_context.md`, `_webhooks.md`.
+
+### Arquitectura de los commands
+
+Los commands AD (`alter-db`, `window`) usan los **webhooks HTTP** del módulo
+`com.etendoerp.copilot.devassistant` en lugar de SQL manual. Esto elimina:
+- Lookup manual de IDs en el AD
+- SQL con IDs hardcodeados
+- Errores de triggers (EM_ prefix, parentreference_id, etc.)
+
+Prerequisito para usar webhooks: Tomcat corriendo + API key en `.etendo/context.json`.
 
 ## Research docs
 

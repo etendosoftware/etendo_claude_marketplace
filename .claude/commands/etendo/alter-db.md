@@ -1,129 +1,113 @@
-# /etendo:alter-db — Create or modify database tables and columns
+# /etendo:alter-db — Crear o modificar tablas y columnas
 
-**Arguments:** `$ARGUMENTS` (optional description of the change, e.g. "add column email to MYMOD_customer")
+**Arguments:** `$ARGUMENTS` (descripción opcional, ej: "crear tabla SMFT_cliente con nombre y email")
 
 ---
 
-First, read `.claude/commands/etendo/_context.md` and resolve the active module context.
+Primero, leer `.claude/commands/etendo/_context.md` y `.claude/commands/etendo/_webhooks.md`.
 
-This command manages DB schema changes (CREATE TABLE, ADD COLUMN, ALTER COLUMN) in a way that stays consistent with Etendo's Application Dictionary. The flow is always:
+## Step 1: Contexto
 
-**SQL → execute against DB → export.database → XML updated in repo**
+Resolver:
+- Módulo activo (javapackage, DB prefix, AD_MODULE_ID)
+- DB connection (Docker o local)
+- API key disponible (ver `_webhooks.md` — sección "Prerequisito: API key")
+- Tomcat corriendo (los webhooks requieren Tomcat UP → `./gradlew resources.up` si está apagado)
 
-## Step 1: Establish context
+## Step 2: Entender el cambio
 
-Resolve:
-- Active module (java package, DB prefix, AD_MODULE_ID)
-- DB connection (Docker or local, user, db name)
+Si `$ARGUMENTS` lo describe claramente, usarlo. Si no, preguntar:
 
-If active module is not set: ask "Which module does this table belong to?"
+1. Crear tabla nueva
+2. Agregar columna a tabla existente
+3. Modificar columna (tipo, tamaño, nullable)
+4. Agregar índice
+5. Eliminar columna (confirmar — destructivo)
 
-## Step 2: Understand the change
+Para **tabla nueva**: pedir nombre (sugerir `{PREFIX}_tablename`), lista de columnas.
+Para **columna nueva**: tabla, nombre, tipo, nullable, default.
 
-If `$ARGUMENTS` describes the change clearly (e.g. "add column email VARCHAR(100) to MYMOD_customer"), use it directly. Otherwise, ask conversationally:
+## Step 3: Mostrar el plan y confirmar
 
-**What type of change?**
-1. Create a new table
-2. Add column to existing table
-3. Modify column (type, size, nullable)
-4. Add index
-5. Drop column (confirm carefully — destructive)
+Mostrar un resumen de qué se va a crear. Pedir confirmación antes de ejecutar.
 
-Then ask only what's needed:
-- **New table**: name (suggest `{DBPREFIX}_tablename` format), columns list
-- **Add column**: table name, column name, type, nullable, default
-- **Modify column**: table name, column name, what changes
+## Step 4: Crear tabla (si aplica)
 
-**For new tables, always include the mandatory Etendo base columns:**
-```sql
-{DBPREFIX}_tablename_id  VARCHAR(32)  PRIMARY KEY
-ad_client_id             VARCHAR(32)  NOT NULL
-ad_org_id                VARCHAR(32)  NOT NULL
-isactive                 CHAR(1)      NOT NULL DEFAULT 'Y'
-created                  TIMESTAMP    NOT NULL DEFAULT now()
-createdby                VARCHAR(32)  NOT NULL DEFAULT '0'
-updated                  TIMESTAMP    NOT NULL DEFAULT now()
-updatedby                VARCHAR(32)  NOT NULL DEFAULT '0'
-```
-
-## Step 3: Generate and show SQL
-
-Generate the SQL and show it for confirmation before executing:
-
-```sql
--- Example: new table
-CREATE TABLE mymod_customer (
-  mymod_customer_id  VARCHAR(32)  NOT NULL,
-  ad_client_id       VARCHAR(32)  NOT NULL,
-  ad_org_id          VARCHAR(32)  NOT NULL,
-  isactive           CHAR(1)      NOT NULL DEFAULT 'Y',
-  created            TIMESTAMP    NOT NULL DEFAULT now(),
-  createdby          VARCHAR(32)  NOT NULL DEFAULT '0',
-  updated            TIMESTAMP    NOT NULL DEFAULT now(),
-  updatedby          VARCHAR(32)  NOT NULL DEFAULT '0',
-  name               VARCHAR(100) NOT NULL,
-  email              VARCHAR(200),
-  CONSTRAINT mymod_customer_key PRIMARY KEY (mymod_customer_id)
-);
-
--- Example: add column
-ALTER TABLE mymod_customer ADD COLUMN phone VARCHAR(30);
-```
-
-Show: "I will execute this SQL. Continue? (Y/N)"
-
-## Step 4: Execute SQL
+Usar el webhook `CreateAndRegisterTable`. Este crea la tabla física EN PostgreSQL Y la registra en AD_TABLE en un solo call:
 
 ```bash
-# Docker DB
-echo "{SQL}" | docker exec -i etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid}
+ETENDO_URL="http://localhost:8080/etendo"  # o el puerto de context.json
+API_KEY="{apikey}"
+MODULE_ID="{ad_module_id}"
 
-# Local DB
-echo "{SQL}" | psql -U {bbdd.user} -d {bbdd.sid} -h localhost -p {bbdd.port}
+RESP=$(curl -s -G "${ETENDO_URL}/webhooks/CreateAndRegisterTable" \
+  --data-urlencode "name=CreateAndRegisterTable" \
+  --data-urlencode "apikey=${API_KEY}" \
+  --data-urlencode "Name={NombreLogico}" \
+  --data-urlencode "ModuleID=${MODULE_ID}" \
+  --data-urlencode "DataAccessLevel=3" \
+  --data-urlencode "Description={descripcion}")
+
+echo $RESP
+TABLE_ID=$(echo $RESP | python3 -c "import sys,json,re; r=json.load(sys.stdin); m=re.search(r'ID:\s*([A-F0-9a-f\-]{32,36})',r.get('message','')); print(m.group(1).replace('-','') if m else '')")
+echo "Table ID: $TABLE_ID"
 ```
 
-Verify execution: check for error output, confirm with a SELECT or `\d tablename`.
+**No usar `get_uuid()` ni SQL manual** — el webhook lo maneja internamente.
 
-## Step 5: Register in Application Dictionary
+## Step 5: Agregar columnas
 
-For **new tables**: also insert into `AD_TABLE` and `AD_COLUMN` so the AD knows about it:
-```sql
-DO $$
-DECLARE
-  v_table_id TEXT := REPLACE(gen_random_uuid()::text, '-', '');
-  v_module_id TEXT := '{AD_MODULE_ID}';
-BEGIN
-  INSERT INTO AD_TABLE (AD_TABLE_ID, AD_CLIENT_ID, AD_ORG_ID, ISACTIVE, CREATED, CREATEDBY, UPDATED, UPDATEDBY,
-                        NAME, TABLENAME, AD_MODULE_ID, ACCESSLEVEL, REPLICATIONTYPE, ISFULLYQUALIFIEDQUERY, ISVIEW)
-  VALUES (v_table_id, '0', '0', 'Y', now(), '0', now(), '0',
-          '{TableClassName}', '{tablename}', v_module_id, '3', 'L', 'N', 'N');
-  -- AD_COLUMN entries for each column...
-END $$;
-```
-
-For **new columns**: insert into `AD_COLUMN` linking to the existing `AD_TABLE_ID`.
-
-Ask if they want to add AD_FIELD entries (to show the column in a Tab) or if they'll do that via `/etendo:window`.
-
-## Step 6: Export to XML
+Por cada columna, usar `CreateColumn`:
 
 ```bash
-./gradlew export.database -Dmodule={javapackage} > /tmp/etendo-export.log 2>&1
+RESP=$(curl -s -G "${ETENDO_URL}/webhooks/CreateColumn" \
+  --data-urlencode "name=CreateColumn" \
+  --data-urlencode "apikey=${API_KEY}" \
+  --data-urlencode "tableID=${TABLE_ID}" \
+  --data-urlencode "name={NombreColumna}" \
+  --data-urlencode "columnNameDB={nombre_db}" \
+  --data-urlencode "moduleID=${MODULE_ID}" \
+  --data-urlencode "referenceID={REF_ID}" \
+  --data-urlencode "canBeNull={true|false}" \
+  --data-urlencode "defaultValue={valor}")
+echo $RESP
+```
+
+**Reference IDs más usados:**
+| ID | Tipo | Cuándo usarlo |
+|---|---|---|
+| `10` | String (VARCHAR 60) | Textos cortos, nombres |
+| `14` | Text | Descripción larga, observaciones |
+| `11` | Integer | Números enteros, códigos numéricos |
+| `22` | Amount/Decimal | Precios, puntajes, duraciones |
+| `15` | Date | Fechas |
+| `20` | Yes/No | Checkboxes, flags boolean |
+| `17` | List | Campos con lista cerrada de valores |
+| `19` | TableDir | FK a otra tabla del mismo módulo |
+| `30` | Search | FK a tabla de otro módulo |
+
+**Para columnas FK a tablas de OTRO módulo**, el webhook agrega automáticamente el prefijo `EM_` — no hace falta especificarlo manualmente.
+
+## Step 6: Exportar a XML
+
+Con Tomcat DOWN (importante):
+```bash
+./gradlew resources.down
+JAVA_HOME=/Users/sebastianbarrozo/Library/Java/JavaVirtualMachines/corretto-17.0.18/Contents/Home \
+  ./gradlew export.database -Dmodule={javapackage} > /tmp/etendo-export.log 2>&1
 tail -5 /tmp/etendo-export.log
+./gradlew resources.up
 ```
 
-This regenerates the XML files in `modules/{javapackage}/src-db/database/sourcedata/`. Show which files were updated.
-
-## Step 7: Next steps
+## Step 7: Resultado
 
 ```
-✓ Schema change applied and exported to XML
+✓ Tabla {tablename} creada y registrada en AD
 
-  Modified files:
-    modules/{module}/src-db/database/sourcedata/AD_TABLE.xml
-    modules/{module}/src-db/database/sourcedata/AD_COLUMN.xml
+  Columnas agregadas: {N}
+  Table ID: {ad_table_id}
 
-  Next:
-    /etendo:smartbuild   → to regenerate Java entities and deploy
-    /etendo:window       → to expose this table in the UI
+  Próximos pasos:
+    /etendo:window   → exponer la tabla en la UI
+    /etendo:smartbuild → recompilar y desplegar
 ```

@@ -2,6 +2,8 @@
 
 This file is NOT a user-facing command. It is read by all `/etendo:*` commands as their first step to establish the operational context.
 
+> **MANDATORY RULE (enforced via CLAUDE.md):** All Etendo development work MUST be done through `/etendo:*` skills. Never run Gradle tasks, write AD SQL, or create modules/windows/Java code manually. Always use the Skill tool to invoke the appropriate `/etendo:*` command.
+
 ---
 
 ## 1. Detect the Project
@@ -120,6 +122,14 @@ SELECT name FROM ad_module_dbprefix WHERE ad_module_id = (
 
 ## 6. Key Gradle Tasks Reference
 
+**CRÍTICO**: Siempre usar el JAVA_HOME correcto. Sin él, Gradle falla con "Unsupported class file major version":
+
+```bash
+# Siempre prefixar así:
+JAVA_HOME=/Users/sebastianbarrozo/Library/Java/JavaVirtualMachines/corretto-17.0.18/Contents/Home \
+  ./gradlew {task}
+```
+
 | Task | Use for |
 |---|---|
 | `./gradlew setup.web` | Full initial install (DB + WAR) |
@@ -131,6 +141,13 @@ SELECT name FROM ad_module_dbprefix WHERE ad_module_id = (
 | `./gradlew resources.down` | Stop Docker services |
 | `./gradlew expandCore` | Expand core source (source mode) |
 
+**Orden correcto para deploy completo:**
+```
+resources.down → export.database → resources.up → (wait 15s) → generate.entities → smartbuild
+```
+
+**export.database requiere Tomcat DOWN.** generate.entities y smartbuild requieren Tomcat UP (DB up).
+
 ---
 
 ## 7. Always Confirm Before Running Destructive Operations
@@ -141,7 +158,59 @@ Exceptions: reading files, showing status, dry-run analysis.
 
 ---
 
-## 8. Reading Logs on Error
+## 8. UUID Generation in SQL
+
+**Always use `get_uuid()`** (Etendo's built-in function) to generate IDs in SQL. Never use `gen_random_uuid()` or hardcoded UUIDs.
+
+```sql
+-- CORRECT
+v_table_id TEXT := get_uuid();
+INSERT INTO ad_table (ad_table_id, ...) VALUES (get_uuid(), ...);
+
+-- WRONG — do not use these
+v_table_id TEXT := REPLACE(gen_random_uuid()::text, '-', '');
+```
+
+`get_uuid()` returns a 32-char hex string without dashes, which is the format Etendo expects for all AD IDs.
+
+---
+
+## 9. Ejecutar SQL en Docker
+
+**NUNCA usar heredoc** (`docker exec ... << 'EOF'`) — cuelga indefinidamente.
+
+**Patrón correcto: escribir a /tmp + docker cp + psql -f**:
+```bash
+# 1. Escribir el SQL a un archivo local
+cat > /tmp/mi_script.sql << 'EOF'
+SELECT 1;
+EOF
+
+# 2. Copiar al container y ejecutar
+docker cp /tmp/mi_script.sql etendo-db-1:/tmp/mi_script.sql
+docker exec etendo-db-1 psql -U tad -d etendo -f /tmp/mi_script.sql
+```
+
+---
+
+## 10. Webhooks para operaciones AD
+
+**Preferir siempre los webhooks sobre SQL manual** para operaciones de Application Dictionary.
+Los webhooks del módulo `com.etendoerp.copilot.devassistant` automatizan:
+- Crear/registrar tablas → `CreateAndRegisterTable`
+- Agregar columnas → `CreateColumn`
+- Crear ventanas + menú → `RegisterWindow`
+- Crear tabs → `RegisterTab`
+- Registrar fields → `RegisterFields`
+- Registrar background processes → `RegisterBGProcessWebHook`
+
+Ver `.claude/commands/etendo/_webhooks.md` para el patrón de invocación completo.
+
+**Prerequisito**: Tomcat UP + API key configurada en `.etendo/context.json`.
+
+---
+
+## 11. Reading Logs on Error
 
 If a Gradle task fails, read the relevant logs:
 
