@@ -38,11 +38,27 @@ If the directory already exists, check if it's a valid Etendo project (has `grad
 
 Read the existing `gradle.properties` and identify what needs to be filled:
 
-**GitHub credentials** (required for downloading Etendo artifacts):
-- Check if `githubUser` and `githubToken` are set
-- If not, ask: "Do you have a GitHub token with `read:packages` permission? (Y/N)"
-  - If yes: ask for token
-  - If no: "You can generate one at https://github.com/settings/tokens — needs `read:packages` scope. The setup.sh script can also handle authentication via GitHub Device Flow."
+**GitHub credentials** (required — Etendo artifacts are hosted in GitHub Packages):
+
+Check `gradle.properties` for `githubUser` and `githubToken`. If either is empty:
+
+1. Tell the developer: "You need a GitHub Personal Access Token with `read:packages` scope to download Etendo artifacts."
+
+2. Guide them to generate one:
+   - Go to: **GitHub → Settings → Developer Settings → Personal access tokens → Tokens (classic)**
+   - Click **Generate new token (classic)**
+   - Select scope: ✓ `read:packages`
+   - Copy the generated token (starts with `ghp_` or `gho_`)
+
+3. Ask: "What is your GitHub username?" and "Paste your GitHub token:"
+
+4. Write both into `gradle.properties`:
+   ```properties
+   githubUser=their-github-username
+   githubToken=ghp_their_token_here
+   ```
+
+5. **Do NOT proceed** until these are set — all Gradle tasks will fail without valid credentials.
 
 **Database configuration:**
 Ask (with defaults shown):
@@ -68,34 +84,45 @@ Ask: "Which Etendo Core mode?"
 
 Show current `build.gradle` and explain the difference if needed.
 
-## Step 6: Run setup
+## Step 6: Run bootstrap sequence
 
-For Docker mode, run `resources.up` first:
+> **Convention:** All `./gradlew` calls redirect output to `/tmp/etendo-{task}.log`. Read that file only if the task fails.
+
+Execute in this exact order:
+
 ```bash
-./gradlew resources.up
-```
-Wait and verify containers are running: `docker ps --filter name=etendo`
+# 6a. ALWAYS first — initializes config/Openbravo.properties from gradle.properties
+./gradlew setup > /tmp/etendo-setup.log 2>&1
 
-Then run setup:
+# 6b. Source mode only: expand core source
+./gradlew expandCore > /tmp/etendo-expandcore.log 2>&1
+
+# 6c. Docker mode: start containers (setup must run first to generate correct .env with paths)
+./gradlew resources.up > /tmp/etendo-resources-up.log 2>&1
+docker ps --filter name=etendo --format "{{.Names}} {{.Status}}"
+
+# 6d. Create DB schema and deploy WAR
+./gradlew install > /tmp/etendo-install.log 2>&1
+
+# 6e. Compile and deploy
+./gradlew smartbuild > /tmp/etendo-smartbuild.log 2>&1
+```
+
+On failure, diagnose:
 ```bash
-# JAR mode:
-./gradlew setup.web
-
-# Source mode:
-./gradlew expandCore
-./gradlew setup.web
+grep -E "ERROR|Exception|FAILED" /tmp/etendo-{task}.log | tail -30
 ```
 
-Stream Gradle output. If it fails:
-- Read Tomcat/DB logs automatically
-- Suggest specific fix based on the error
-- Offer to retry
+Common errors:
+- `invalid mount path` → `setup` not run before `resources.up`
+- `Connection refused` → DB container not yet up → wait and retry
+- `Authentication failed` → wrong `bbdd.*` credentials
+- `Could not resolve` → invalid `githubToken`
 
 ## Step 7: Confirm success
 
-After setup completes, verify:
 ```bash
-curl -s http://localhost:8080/{context.name}/health 2>/dev/null || echo "Tomcat not yet up"
+curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/{context.name}/security/Login
 ```
 
 Show summary:
@@ -107,7 +134,6 @@ Show summary:
   Mode:     [Source | JAR] / [Docker | Local]
 
 Next steps:
-  cd {target_dir}
   /etendo:context set module=com.mycompany.mymodule
   /etendo:smartbuild
 ```

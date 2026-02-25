@@ -27,15 +27,20 @@ If DB is not reachable:
 
 ## Step 2: Run update.database
 
+> Redirect output to `/tmp`. Read only on failure.
+
 ```bash
 # Standard
-./gradlew update.database
+./gradlew update.database > /tmp/etendo-update-database.log 2>&1
 
 # With parallelism (faster for large schemas)
-./gradlew update.database -Dmax.threads={N}   # N = $ARGUMENTS threads value, or auto = half cores
+./gradlew update.database -Dmax.threads={N} > /tmp/etendo-update-database.log 2>&1
 ```
 
-Stream output and show progress.
+Check result:
+```bash
+tail -5 /tmp/etendo-update-database.log
+```
 
 ## Step 3: Handle errors
 

@@ -30,21 +30,23 @@ Wait for containers to be healthy before proceeding.
 
 ## Step 2: Run the build
 
+> Redirect all gradle output to `/tmp`. Read only on failure.
+
 ```bash
 # Standard (local changes):
-./gradlew smartbuild
+./gradlew smartbuild > /tmp/etendo-smartbuild.log 2>&1
 
 # Remote/VCS-pulled changes ($ARGUMENTS contains 'remote'):
-./gradlew smartbuild -Plocal=no
+./gradlew smartbuild -Plocal=no > /tmp/etendo-smartbuild.log 2>&1
 
 # Full recompile ($ARGUMENTS contains 'full'):
-./gradlew compile.complete
+./gradlew compile.complete > /tmp/etendo-smartbuild.log 2>&1
 ```
 
-Stream output. Show a progress indicator for each Gradle phase:
-- `update.database` — applying model changes
-- `compile` — compiling Java sources
-- `deploy` — deploying WAR to Tomcat
+Check result:
+```bash
+tail -5 /tmp/etendo-smartbuild.log
+```
 
 ## Step 3: Handle errors
 

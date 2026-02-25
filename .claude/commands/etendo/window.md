@@ -110,7 +110,8 @@ Verify: query the newly created window ID back from DB.
 ## Step 6: Export to XML
 
 ```bash
-./gradlew export.database -Dmodule={javapackage}
+./gradlew export.database -Dmodule={javapackage} > /tmp/etendo-export.log 2>&1
+tail -5 /tmp/etendo-export.log
 ```
 
 Show which files were updated:

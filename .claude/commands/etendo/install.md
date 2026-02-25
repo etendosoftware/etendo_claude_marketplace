@@ -41,32 +41,43 @@ If Docker containers are not running:
 ```
 Wait 10 seconds and re-check.
 
-## Step 3: Run install
+## Step 3: Run install sequence
 
-For Source mode, expand core first if not already done:
+> **Convention:** All `./gradlew` calls redirect output to `/tmp/etendo-{task}.log`. Read only on error.
+
 ```bash
-# Check if etendo_core/src exists
-ls etendo_core/src 2>/dev/null || ./gradlew expandCore
+# Always first — initializes config/Openbravo.properties from gradle.properties
+./gradlew setup > /tmp/etendo-setup.log 2>&1
+
+# Source mode only: expand core source
+./gradlew expandCore > /tmp/etendo-expandcore.log 2>&1
+
+# Docker mode: start containers (setup must have run first to generate correct .env)
+./gradlew resources.up > /tmp/etendo-resources-up.log 2>&1
+
+# Install DB schema and deploy WAR
+./gradlew install > /tmp/etendo-install.log 2>&1
+
+# Compile and deploy
+./gradlew smartbuild > /tmp/etendo-smartbuild.log 2>&1
 ```
 
-Run setup:
+On failure:
 ```bash
-./gradlew setup.web
+grep -E "ERROR|Exception|FAILED" /tmp/etendo-{task}.log | tail -30
 ```
 
-Stream output. On error:
-- Parse Gradle output for common failures:
-  - `Connection refused` → DB not running → suggest `./gradlew resources.up`
-  - `Authentication failed` → wrong DB credentials → show current bbdd.* values
-  - `Could not resolve` → GitHub credentials issue → check githubToken
-  - Tomcat errors → read `docker exec etendo-tomcat-1 sh -c 'tail -n 100 /usr/local/tomcat/logs/openbravo.log'`
-- Show specific diagnostic and suggested fix
+Common errors:
+- `Connection refused` → DB not running → start containers or local PostgreSQL
+- `Authentication failed` → wrong `bbdd.*` → check `gradle.properties`
+- `Could not resolve` → check `githubToken`
+- `invalid mount path` → `setup` not run before `resources.up`
+- Tomcat errors → `docker exec etendo-tomcat-1 sh -c 'tail -n 100 /usr/local/tomcat/logs/openbravo.log'`
 
 ## Step 4: Verify
 
-After successful completion:
 ```bash
-curl -s -o /dev/null -w "%{http_code}" http://localhost:{tomcat.port}/{context.name}/
+curl -s -o /dev/null -w "%{http_code}" http://localhost:{tomcat.port}/{context.name}/security/Login
 ```
 
 Show result:

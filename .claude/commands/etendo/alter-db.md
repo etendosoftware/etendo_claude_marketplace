@@ -108,7 +108,8 @@ Ask if they want to add AD_FIELD entries (to show the column in a Tab) or if the
 ## Step 6: Export to XML
 
 ```bash
-./gradlew export.database -Dmodule={javapackage}
+./gradlew export.database -Dmodule={javapackage} > /tmp/etendo-export.log 2>&1
+tail -5 /tmp/etendo-export.log
 ```
 
 This regenerates the XML files in `modules/{javapackage}/src-db/database/sourcedata/`. Show which files were updated.
