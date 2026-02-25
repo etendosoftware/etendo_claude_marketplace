@@ -1,0 +1,2874 @@
+{
+  "operation": "complate_sales_invoice",
+  "phase": "execution",
+  "etendo_version": "26Q1",
+  "recorded_at": "2026-02-19T17:03:50.010Z",
+  "calls": [
+    {
+      "seq": 1,
+      "transport": "xhr",
+      "method": "POST",
+      "url": "/etendo/org.openbravo.client.kernel?MODE=EDIT&TAB_ID=263&PARENT_ID=null&ROW_ID=F7FFE26463B84500BDFCD622A5DAE7A0&_action=org.openbravo.client.application.window.FormInitializationComponent",
+      "request_payload": {
+        "inpcDoctypeId": "0",
+        "inpemEtblkpBulkposting": "N",
+        "inpadClientId": "23C59575B9CF467C9620760EB255B389",
+        "inpcInvoiceId": "F7FFE26463B84500BDFCD622A5DAE7A0",
+        "inpissotrx": "Y",
+        "C_Invoice_ID": "F7FFE26463B84500BDFCD622A5DAE7A0",
+        "inpadOrgId": "E443A31992CB4635AFCAEABE7183CE85",
+        "inpdateinvoiced": "19-02-2026",
+        "inpcBpartnerId": "A6750F0D15334FB890C254369AC750A8",
+        "inptotalpaid": "0.00",
+        "inpmPricelistId": "AEE66281A08F42B6BC509B8A80A33C29",
+        "inpdocstatus": "DR",
+        "inpcCurrencyId": "102",
+        "inpispaid": "N",
+        "inpemEtblkpAccountingstatus": "N",
+        "PromotionsDefined": "N",
+        "IsReversalDocument": "N",
+        "HAS_C_INVOICELINES": "Y",
+        "DOCBASETYPE": "ARI",
+        "VoidAutomaticallyCreated": 0,
+        "showAddPayment": "",
+        "ETVFAC_VoidInvoice": "N",
+        "etvfac_has_configuration": "N",
+        "TBAI_ExistTBAIConfig": 0,
+        "TBAI_VoidedInvoiceSended": 0,
+        "TBAI_ExistConfigAndIsAvailable": 0,
+        "TBAI_isReturn": "N",
+        "AEATSII_AcogidaSII": "N",
+        "$Element_U1_ARI_RM_H": "N",
+        "$Element_U2_APC_H": "N",
+        "$Element_U2_ARR_H": "N",
+        "$Element_OO": "Y",
+        "$Element_PJ_APC_H": "Y",
+        "$Element_CC": "",
+        "$Element_U2_ARF_H": "N",
+        "$Element_CC_APP_H": "",
+        "$Element_U2_API_H": "N",
+        "$Element_CC_ARI_H": "",
+        "EM_Aeatsii_Fecha_Reg_Cont": "",
+        "$Element_BP_ARI_H": "Y",
+        "$Element_BP_ARI_RM_H": "Y",
+        "$Element_BP_ARC_H": "Y",
+        "InvoiceProcessButton": "Y",
+        "$Element_CC_ARC_H": "",
+        "$Element_U1_APC_H": "N",
+        "$Element_U1_ARF_H": "N",
+        "$Element_OO_ARR_H": "Y",
+        "$Element_U1_API_H": "N",
+        "AEATSII_PreSII_Invoice": "",
+        "_ShowAcct": "Y",
+        "$Element_U2": "",
+        "$Element_U1": "",
+        "$Element_U1_ARR_H": "N",
+        "$Element_BP_ARR_H": "Y",
+        "$Element_PJ": "Y",
+        "$Element_OO_APC_H": "Y",
+        "$Element_OO_ARF_H": "Y",
+        "$Element_PJ_API_H": "Y",
+        "$Element_MC": "",
+        "Iscashvat": "",
+        "$Element_PJ_ARR_H": "Y",
+        "$Element_PJ_ARF_H": "Y",
+        "$Element_CC_ARI_RM_H": "",
+        "$Element_OO_API_H": "Y",
+        "FinancialManagement": "Y",
+        "$Element_PJ_ARC_H": "Y",
+        "$Element_U2_APP_H": "N",
+        "$Element_U2_ARC_H": "N",
+        "$Element_U2_ARI_H": "N",
+        "$Element_CC_ARR_H": "",
+        "$Element_BP_API_H": "Y",
+        "$Element_CC_API_H": "",
+        "$Element_BP_ARF_H": "Y",
+        "$Element_CC_APC_H": "",
+        "$Element_CC_ARF_H": "",
+        "$Element_U1_ARC_H": "N",
+        "$Element_BP_APC_H": "Y",
+        "$IsAcctDimCentrally": "Y",
+        "$Element_OO_ARI_RM_H": "Y",
+        "ACCT_DIMENSION_DISPLAY": "",
+        "$Element_OO_APP_H": "Y",
+        "$Element_U1_ARI_H": "N",
+        "$Element_U2_ARI_RM_H": "N",
+        "$Element_BP_APP_H": "Y",
+        "$Element_U1_APP_H": "N",
+        "$Element_PJ_ARI_RM_H": "Y",
+        "$Element_OO_ARC_H": "Y",
+        "$Element_BP": "Y",
+        "$Element_PJ_APP_H": "Y",
+        "$Element_PJ_ARI_H": "Y",
+        "$Element_OO_ARI_H": "Y",
+        "_gridVisibleProperties": [
+          "id",
+          "organization",
+          "documentNo",
+          "invoiceDate",
+          "businessPartner",
+          "grandTotalAmount",
+          "paymentComplete",
+          "currency",
+          "totalPaid",
+          "outstandingAmount",
+          "dueAmount",
+          "daysTillDue",
+          "percentageOverdue",
+          "finalSettlementDate",
+          "daysSalesOutstanding",
+          "documentStatus",
+          "cashVAT",
+          "etblkpAccountingstatus",
+          "tbaiReverseinvoicetype",
+          "tbaiIssent",
+          "tbaiIsreverseinvoice",
+          "aeatsiiIssent",
+          "aeatsiiModified",
+          "aeatsiiEstado",
+          "aeatsiiErrorRegistral",
+          "aeatsiiIsauthorization",
+          "aeatsiiAuthorizationno"
+        ]
+      },
+      "response_status": 200,
+      "response_body": {
+        "calloutMessages": [],
+        "columnValues": {
+          "AD_Org_ID": {
+            "value": "E443A31992CB4635AFCAEABE7183CE85",
+            "classicValue": "E443A31992CB4635AFCAEABE7183CE85",
+            "identifier": "F&B España - Región Norte"
+          },
+          "C_DocTypeTarget_ID": {
+            "value": "7FCD49652E104E6BB06C3A0D787412E3",
+            "classicValue": "7FCD49652E104E6BB06C3A0D787412E3",
+            "identifier": "AR Invoice"
+          },
+          "DocumentNo": {
+            "value": "1000373",
+            "classicValue": "1000373"
+          },
+          "DateInvoiced": {
+            "value": "2026-02-19",
+            "classicValue": "19-02-2026"
+          },
+          "C_BPartner_ID": {
+            "value": "A6750F0D15334FB890C254369AC750A8",
+            "classicValue": "A6750F0D15334FB890C254369AC750A8",
+            "identifier": "Alimentos y Supermercados, S.A"
+          },
+          "EM_Etabam_Bankaccount_ID": {
+            "value": "",
+            "classicValue": ""
+          },
+          "C_BPartner_Location_ID": {
+            "value": "6518D3040ED54008A1FC0C09ED140D66",
+            "classicValue": "6518D3040ED54008A1FC0C09ED140D66",
+            "identifier": "C\\Pescadores, 87 -  - 16537 - La Coruña - A CORUÑA  - Spain"
+          },
+          "Description": {
+            "classicValue": ""
+          },
+          "C_PaymentTerm_ID": {
+            "value": "66BA1164A7394344BB9CD1A6ECEED05D",
+            "classicValue": "66BA1164A7394344BB9CD1A6ECEED05D",
+            "identifier": "30 days"
+          },
+          "FIN_Paymentmethod_ID": {
+            "value": "A97CFD2AFC234B59BB0A72189BD8FC2A",
+            "classicValue": "A97CFD2AFC234B59BB0A72189BD8FC2A",
+            "identifier": "Transferencia"
+          },
+          "DocStatus": {
+            "value": "DR",
+            "classicValue": "DR",
+            "entries": [
+              {
+                "id": "CL",
+                "_identifier": "Closed"
+              },
+              {
+                "id": "CO",
+                "_identifier": "Completed"
+              },
+              {
+                "id": "DR",
+                "_identifier": "Draft"
+              },
+              {
+                "id": "NA",
+                "_identifier": "Not Accepted"
+              },
+              {
+                "id": "WP",
+                "_identifier": "Not Paid"
+              },
+              {
+                "id": "RE",
+                "_identifier": "Re-Opened"
+              },
+              {
+                "id": "TEMP",
+                "_identifier": "Temporal"
+              },
+              {
+                "id": "IP",
+                "_identifier": "Under Way"
+              },
+              {
+                "id": "??",
+                "_identifier": "Unknown"
+              },
+              {
+                "id": "VO",
+                "_identifier": "Voided"
+              }
+            ]
+          },
+          "EM_Tbai_Isreverseinvoice": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "GrandTotal": {
+            "value": 7.21,
+            "classicValue": "7.21"
+          },
+          "TotalLines": {
+            "value": 5.96,
+            "classicValue": "5.96"
+          },
+          "C_Currency_ID": {
+            "value": "102",
+            "classicValue": "102",
+            "identifier": "EUR"
+          },
+          "Ispaid": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "Totalpaid": {
+            "value": 0,
+            "classicValue": "0.00",
+            "width": "50%"
+          },
+          "EM_APRM_Addpayment": {
+            "value": true,
+            "classicValue": "Y"
+          },
+          "Posted": {
+            "value": "N",
+            "classicValue": "N",
+            "identifier": "Post"
+          },
+          "EM_APRM_Processinvoice": {
+            "value": "CO",
+            "classicValue": "CO",
+            "identifier": "Complete"
+          },
+          "DocAction": {
+            "value": "CO",
+            "classicValue": "CO",
+            "identifier": "Complete"
+          },
+          "OutstandingAmt": {
+            "value": 0,
+            "classicValue": "0",
+            "width": "50%"
+          },
+          "Createfromorders": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "Createfrominouts": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "CopyFrom": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "DueAmt": {
+            "value": 0,
+            "classicValue": "0",
+            "width": "50%"
+          },
+          "DaysTillDue": {
+            "value": 0,
+            "classicValue": "0",
+            "width": "50%"
+          },
+          "Percentageoverdue": {
+            "classicValue": "",
+            "width": "50%"
+          },
+          "Finalsettlement": {
+            "classicValue": ""
+          },
+          "Daysoutstanding": {
+            "classicValue": "",
+            "width": "50%"
+          },
+          "M_PriceList_ID": {
+            "value": "AEE66281A08F42B6BC509B8A80A33C29",
+            "classicValue": "AEE66281A08F42B6BC509B8A80A33C29",
+            "identifier": "Tarifa de ventas"
+          },
+          "SalesRep_ID": {},
+          "C_Order_ID": {
+            "value": "",
+            "classicValue": ""
+          },
+          "POReference": {
+            "classicValue": ""
+          },
+          "DateAcct": {
+            "value": "2026-02-19",
+            "classicValue": "19-02-2026"
+          },
+          "C_DocType_ID": {
+            "value": "0",
+            "classicValue": "0",
+            "identifier": "** New **"
+          },
+          "Calculate_Promotions": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "Iscashvat": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "BPartner_ExtRef": {
+            "classicValue": ""
+          },
+          "IsActive": {
+            "value": true,
+            "classicValue": "Y"
+          },
+          "EM_Etaf_Issuer_Name": {
+            "value": "F&B España, S.A",
+            "classicValue": "F&B España, S.A"
+          },
+          "C_Project_ID": {
+            "value": "",
+            "classicValue": ""
+          },
+          "C_Costcenter_ID": {
+            "value": "",
+            "classicValue": ""
+          },
+          "C_Campaign_ID": {},
+          "User1_ID": {
+            "value": "",
+            "classicValue": ""
+          },
+          "User2_ID": {
+            "value": "",
+            "classicValue": ""
+          },
+          "Prepaymentamt": {
+            "value": 0,
+            "classicValue": "0",
+            "width": "50%"
+          },
+          "Paidamtatinvoicing": {
+            "value": 0,
+            "classicValue": "0",
+            "width": "50%"
+          },
+          "EM_Etsg_Date_Operation": {
+            "value": "2026-02-19",
+            "classicValue": "19-02-2026"
+          },
+          "EM_Etvfac_Invoice_Status": {
+            "value": "PE",
+            "classicValue": "PE",
+            "entries": [
+              {},
+              {
+                "id": "AC",
+                "_identifier": "Aceptada"
+              },
+              {
+                "id": "AE",
+                "_identifier": "Aceptada con Errores"
+              },
+              {
+                "id": "IN",
+                "_identifier": "Inválida"
+              },
+              {
+                "id": "PE",
+                "_identifier": "Pendiente"
+              },
+              {
+                "id": "ER",
+                "_identifier": "Rechazada"
+              }
+            ]
+          },
+          "EM_Etvfac_Inv_Type": {
+            "value": "F1",
+            "classicValue": "F1",
+            "entries": [
+              {},
+              {
+                "id": "F1",
+                "_identifier": "F1 - Factura (art. 6, 7.2 y 7.3 del RD 1619/2012)"
+              },
+              {
+                "id": "F2",
+                "_identifier": "F2 - Factura Simplificada/sin identificación destinatario"
+              },
+              {
+                "id": "F3",
+                "_identifier": "F3 - Factura emitida en sustitución de simplificadas"
+              },
+              {
+                "id": "R1",
+                "_identifier": "R1 - Factura Rectificativa (Art 80.1, 80.2 y 80.6)"
+              },
+              {
+                "id": "R2",
+                "_identifier": "R2 - Factura Rectificativa (Art. 80.3)"
+              },
+              {
+                "id": "R3",
+                "_identifier": "R3 - Factura Rectificativa (Art. 80.4)"
+              },
+              {
+                "id": "R4",
+                "_identifier": "R4 - Factura Rectificativa (Resto)"
+              },
+              {
+                "id": "R5",
+                "_identifier": "R5 - Factura Rectificativa en facturas simplificadas"
+              }
+            ]
+          },
+          "EM_Etvfac_Verifac_Desc": {
+            "classicValue": ""
+          },
+          "EM_Etvfac_Issubsanation": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etvfac_Reverseinvtype": {
+            "value": "",
+            "classicValue": "",
+            "entries": [
+              {},
+              {
+                "id": "I",
+                "_identifier": "Por Diferencias"
+              },
+              {
+                "id": "S",
+                "_identifier": "Por Sustitución"
+              }
+            ]
+          },
+          "EM_Etvfac_External_Ref": {
+            "classicValue": ""
+          },
+          "EM_Etvfac_Simpinvart7273": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etvfac_Invnoidart61d": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etblkp_Bulkposting": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etvfac_Issue": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etvfac_Qr_Url": {
+            "classicValue": ""
+          },
+          "EM_Etvfac_Corrected_Inv": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etvfac_Date_Issue": {
+            "classicValue": ""
+          },
+          "EM_Etvfac_Issue_Description": {
+            "classicValue": ""
+          },
+          "EM_Etvfac_Void": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etvfac_Issued_Externally": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etvfac_Rect_Create": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etblkp_Accountingstatus": {
+            "value": "N",
+            "classicValue": "N",
+            "entries": [
+              {
+                "id": "NC",
+                "_identifier": "Cost Not Calculated"
+              },
+              {
+                "id": "d",
+                "_identifier": "Disabled For Background"
+              },
+              {
+                "id": "D",
+                "_identifier": "Document Disabled"
+              },
+              {
+                "id": "L",
+                "_identifier": "Document Locked"
+              },
+              {
+                "id": "E",
+                "_identifier": "Error"
+              },
+              {
+                "id": "C",
+                "_identifier": "Error, No cost"
+              },
+              {
+                "id": "i",
+                "_identifier": "Invalid Account"
+              },
+              {
+                "id": "AD",
+                "_identifier": "No Accounting Date"
+              },
+              {
+                "id": "DT",
+                "_identifier": "No Document Type"
+              },
+              {
+                "id": "NO",
+                "_identifier": "No Related PO"
+              },
+              {
+                "id": "b",
+                "_identifier": "Not Balanced"
+              },
+              {
+                "id": "c",
+                "_identifier": "Not Convertible (no rate)"
+              },
+              {
+                "id": "l",
+                "_identifier": "Pending Refresh"
+              },
+              {
+                "id": "p",
+                "_identifier": "Period Closed"
+              },
+              {
+                "id": "Y",
+                "_identifier": "Posted"
+              },
+              {
+                "id": "y",
+                "_identifier": "Post Prepared"
+              },
+              {
+                "id": "T",
+                "_identifier": "Table Disabled"
+              },
+              {
+                "id": "N",
+                "_identifier": "Unposted"
+              }
+            ]
+          },
+          "EM_Etvfac_Senttoverifac": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Tbai_Xmlgenerator": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etblkc_Bulkcompletion": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Tbai_Sequence": {
+            "value": 0,
+            "classicValue": "0",
+            "width": "50%"
+          },
+          "EM_Tbai_Invoicenum": {
+            "classicValue": ""
+          },
+          "EM_Tbai_Invoiceseq": {
+            "classicValue": ""
+          },
+          "EM_Etvfac_Is_Gen_Manual": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etpr_Remove_Payment": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etafdp_Unvoid": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Tbai_Reverseinvoicecode": {
+            "value": "",
+            "classicValue": "",
+            "entries": [
+              {},
+              {
+                "id": "R3",
+                "_identifier": "Factura rectificativa: artículo 80 Cuatro de la Ley del IVA."
+              },
+              {
+                "id": "R2",
+                "_identifier": "Factura rectificativa: artículo 80 Tres de la Ley del IVA."
+              },
+              {
+                "id": "R5",
+                "_identifier": "Factura rectificativa en facturas simplificadas."
+              },
+              {
+                "id": "R1",
+                "_identifier": "Factura rectificativa: error fundado en derecho"
+              },
+              {
+                "id": "R4",
+                "_identifier": "Factura rectificativa: Resto."
+              }
+            ]
+          },
+          "EM_Tbai_Reverseinvoicetype": {
+            "value": "",
+            "classicValue": "",
+            "entries": [
+              {},
+              {
+                "id": "S",
+                "_identifier": "Por sustitución"
+              },
+              {
+                "id": "I",
+                "_identifier": "Por diferencias"
+              }
+            ]
+          },
+          "EM_Tbai_Issent": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etinter_Interco_Orig": {
+            "value": "",
+            "classicValue": ""
+          },
+          "EM_Tbai_Voidxmlgenerator": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Aeatsii_Send": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Aeatsii_Modif": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Aeatsii_Issent": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Aeatsii_Modified": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Aeatsii_Clave_Tipo": {
+            "value": "",
+            "classicValue": "",
+            "entries": [
+              {},
+              {
+                "id": "R",
+                "_identifier": "Corrective invoice"
+              },
+              {
+                "id": "F1",
+                "_identifier": "Invoice"
+              },
+              {
+                "id": "F2",
+                "_identifier": "Simplified invoice"
+              },
+              {
+                "id": "F4",
+                "_identifier": "Simplified invoices summary"
+              }
+            ]
+          },
+          "EM_Aeatsii_Tipo_Rectif": {
+            "value": "",
+            "classicValue": "",
+            "entries": [
+              {},
+              {
+                "id": "I",
+                "_identifier": "Differences"
+              },
+              {
+                "id": "S",
+                "_identifier": "Revise"
+              }
+            ]
+          },
+          "EM_Aeatsii_Motivo_Rectif": {
+            "value": "",
+            "classicValue": "",
+            "entries": [
+              {},
+              {
+                "id": "R1",
+                "_identifier": "R1 - Founded error"
+              },
+              {
+                "id": "R2",
+                "_identifier": "R2 - Competition"
+              },
+              {
+                "id": "R3",
+                "_identifier": "R3 - Bad debt"
+              },
+              {
+                "id": "R4",
+                "_identifier": "R4 - Rest"
+              },
+              {
+                "id": "R5",
+                "_identifier": "R5 - Simplified invoice"
+              }
+            ]
+          },
+          "EM_Aeatsii_Description_ID": {
+            "value": "",
+            "classicValue": ""
+          },
+          "EM_Aeatsii_Descripcion_Sii": {
+            "classicValue": ""
+          },
+          "EM_Aeatsii_Estado": {
+            "value": "PE",
+            "classicValue": "PE",
+            "entries": [
+              {},
+              {
+                "id": "AE",
+                "_identifier": "Accepted with errors"
+              },
+              {
+                "id": "AN",
+                "_identifier": "Annulled"
+              },
+              {
+                "id": "IN",
+                "_identifier": "Incorrect"
+              },
+              {
+                "id": "NR",
+                "_identifier": "Not Registrable to SII"
+              },
+              {
+                "id": "PE",
+                "_identifier": "Pending to send to SII"
+              },
+              {
+                "id": "CO",
+                "_identifier": "Right"
+              },
+              {
+                "id": "EE",
+                "_identifier": "Sending error"
+              },
+              {
+                "id": "BA",
+                "_identifier": "Unsubscribed"
+              }
+            ]
+          },
+          "EM_Aeatsii_Error_Registral": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Aeatsii_Ejercicio": {
+            "classicValue": "",
+            "width": "50%"
+          },
+          "EM_Aeatsii_Periodo": {
+            "classicValue": "",
+            "width": "50%"
+          },
+          "EM_Aeatsii_Cause_Exemption_ID": {
+            "value": "",
+            "classicValue": ""
+          },
+          "EM_Aeatsii_Isauthorization": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Aeatsii_Authorizationno": {
+            "classicValue": ""
+          },
+          "Withholdingamount": {
+            "classicValue": "",
+            "width": "50%"
+          },
+          "Created": {
+            "value": "2026-02-19T17:03:14.0Z",
+            "classicValue": "19-02-2026 17:03:14"
+          },
+          "AD_Client_ID": {
+            "value": "23C59575B9CF467C9620760EB255B389",
+            "classicValue": "23C59575B9CF467C9620760EB255B389",
+            "identifier": "F&B International Group"
+          },
+          "IsSelfService": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "IsPrinted": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "IsDiscountPrinted": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "IsSOTrx": {
+            "value": true,
+            "classicValue": "Y"
+          },
+          "Processed": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "C_Invoice_ID": {
+            "value": "F7FFE26463B84500BDFCD622A5DAE7A0",
+            "classicValue": "F7FFE26463B84500BDFCD622A5DAE7A0"
+          }
+        },
+        "auxiliaryInputValues": {
+          "PromotionsDefined": {
+            "value": "N",
+            "classicValue": "N"
+          },
+          "IsReversalDocument": {
+            "value": "N",
+            "classicValue": "N"
+          },
+          "HAS_C_INVOICELINES": {
+            "value": "Y",
+            "classicValue": "Y"
+          },
+          "DOCBASETYPE": {
+            "value": "ARI",
+            "classicValue": "ARI"
+          },
+          "VoidAutomaticallyCreated": {
+            "value": 0,
+            "classicValue": 0
+          },
+          "showAddPayment": {},
+          "ETVFAC_VoidInvoice": {
+            "value": "N",
+            "classicValue": "N"
+          },
+          "etvfac_has_configuration": {
+            "value": "N",
+            "classicValue": "N"
+          },
+          "TBAI_ExistTBAIConfig": {
+            "value": 0,
+            "classicValue": 0
+          },
+          "TBAI_VoidedInvoiceSended": {
+            "value": 0,
+            "classicValue": 0
+          },
+          "TBAI_ExistConfigAndIsAvailable": {
+            "value": 0,
+            "classicValue": 0
+          },
+          "TBAI_isReturn": {
+            "value": "N",
+            "classicValue": "N"
+          },
+          "AEATSII_AcogidaSII": {
+            "value": "N",
+            "classicValue": "N"
+          }
+        },
+        "overwrittenAuxiliaryInputs": [],
+        "sessionAttributes": {
+          "$Element_U1_ARI_RM_H": "N",
+          "$Element_U2_APC_H": "N",
+          "$Element_U2_ARR_H": "N",
+          "$Element_OO": "Y",
+          "$Element_PJ_APC_H": "Y",
+          "$Element_CC": "",
+          "$Element_U2_ARF_H": "N",
+          "$Element_CC_APP_H": "",
+          "$Element_U2_API_H": "N",
+          "$Element_CC_ARI_H": "",
+          "EM_Aeatsii_Fecha_Reg_Cont": "",
+          "$Element_BP_ARI_H": "Y",
+          "$Element_BP_ARI_RM_H": "Y",
+          "$Element_BP_ARC_H": "Y",
+          "InvoiceProcessButton": "Y",
+          "$Element_CC_ARC_H": "",
+          "$Element_U1_APC_H": "N",
+          "$Element_U1_ARF_H": "N",
+          "$Element_OO_ARR_H": "Y",
+          "$Element_U1_API_H": "N",
+          "AEATSII_PreSII_Invoice": "",
+          "_ShowAcct": "Y",
+          "$Element_U2": "",
+          "$Element_U1": "",
+          "$Element_U1_ARR_H": "N",
+          "$Element_BP_ARR_H": "Y",
+          "$Element_PJ": "Y",
+          "$Element_OO_APC_H": "Y",
+          "$Element_OO_ARF_H": "Y",
+          "$Element_PJ_API_H": "Y",
+          "$Element_MC": "",
+          "Iscashvat": "",
+          "$Element_PJ_ARR_H": "Y",
+          "$Element_PJ_ARF_H": "Y",
+          "$Element_CC_ARI_RM_H": "",
+          "$Element_OO_API_H": "Y",
+          "FinancialManagement": "Y",
+          "$Element_PJ_ARC_H": "Y",
+          "$Element_U2_APP_H": "N",
+          "$Element_U2_ARC_H": "N",
+          "$Element_U2_ARI_H": "N",
+          "$Element_CC_ARR_H": "",
+          "$Element_BP_API_H": "Y",
+          "$Element_CC_API_H": "",
+          "$Element_BP_ARF_H": "Y",
+          "$Element_CC_APC_H": "",
+          "$Element_CC_ARF_H": "",
+          "$Element_U1_ARC_H": "N",
+          "$Element_BP_APC_H": "Y",
+          "$IsAcctDimCentrally": "Y",
+          "$Element_OO_ARI_RM_H": "Y",
+          "ACCT_DIMENSION_DISPLAY": "",
+          "$Element_OO_APP_H": "Y",
+          "$Element_U1_ARI_H": "N",
+          "$Element_U2_ARI_RM_H": "N",
+          "$Element_BP_APP_H": "Y",
+          "$Element_U1_APP_H": "N",
+          "$Element_PJ_ARI_RM_H": "Y",
+          "$Element_OO_ARC_H": "Y",
+          "$Element_BP": "Y",
+          "$Element_PJ_APP_H": "Y",
+          "$Element_PJ_ARI_H": "Y",
+          "$Element_OO_ARI_H": "Y"
+        },
+        "dynamicCols": [
+          "inpadOrgId",
+          "inpissotrx",
+          "inpcBpartnerId",
+          "inpcDoctypetargetId",
+          "inpdateinvoiced",
+          "inpcBpartnerLocationId",
+          "inpfinPaymentmethodId",
+          "inpmPricelistId",
+          "inpdateacct",
+          "inpcProjectId",
+          "inpemAeatsiiDescriptionId",
+          "inpemAeatsiiIsauthorization"
+        ],
+        "noteCount": 0,
+        "attachmentCount": 0,
+        "attachmentExists": false
+      },
+      "duration_ms": 1200,
+      "timestamp": "2026-02-19T17:03:51.733Z"
+    },
+    {
+      "seq": 2,
+      "transport": "xhr",
+      "method": "POST",
+      "url": "/etendo/org.openbravo.service.datasource/Invoice",
+      "request_payload": "windowId=167&tabId=263&moduleId=0&_operationType=fetch&_noActiveFilter=true&sendOriginalIDBack=true&_extraProperties=&Constants_FIELDSEPARATOR=%24&_className=OBViewDataSource&Constants_IDENTIFIER=_identifier&id=F7FFE26463B84500BDFCD622A5DAE7A0&_componentId=isc_OBViewForm_0&_dataSource=isc_OBViewDataSource_22&isc_metaDataPrefix=_&isc_dataFormat=json",
+      "response_status": 200,
+      "response_body": {
+        "response": {
+          "data": [
+            {
+              "_identifier": "1000373 - 19-02-2026 - 7.21",
+              "_entityName": "Invoice",
+              "$ref": "Invoice/F7FFE26463B84500BDFCD622A5DAE7A0",
+              "id": "F7FFE26463B84500BDFCD622A5DAE7A0",
+              "client": "23C59575B9CF467C9620760EB255B389",
+              "client$_identifier": "F&B International Group",
+              "organization": "E443A31992CB4635AFCAEABE7183CE85",
+              "organization$_identifier": "F&B España - Región Norte",
+              "active": true,
+              "creationDate": "2026-02-19T17:03:14+00:00",
+              "createdBy": "100",
+              "createdBy$_identifier": "Admin",
+              "updated": "2026-02-19T17:03:55+00:00",
+              "updatedBy": "100",
+              "updatedBy$_identifier": "Admin",
+              "salesTransaction": true,
+              "documentNo": "1000373",
+              "documentStatus": "CO",
+              "documentAction": "RE",
+              "processNow": false,
+              "processed": true,
+              "posted": "N",
+              "documentType": "7FCD49652E104E6BB06C3A0D787412E3",
+              "documentType$_identifier": "AR Invoice",
+              "transactionDocument": "7FCD49652E104E6BB06C3A0D787412E3",
+              "transactionDocument$_identifier": "AR Invoice",
+              "salesOrder": null,
+              "description": null,
+              "print": false,
+              "salesRepresentative": null,
+              "invoiceDate": "2026-02-19",
+              "datePrinted": null,
+              "accountingDate": "2026-02-19",
+              "businessPartner": "A6750F0D15334FB890C254369AC750A8",
+              "businessPartner$_identifier": "Alimentos y Supermercados, S.A",
+              "partnerAddress": "6518D3040ED54008A1FC0C09ED140D66",
+              "partnerAddress$_identifier": "C\\Pescadores, 87 -  - 16537 - La Coruña - A CORUÑA  - Spain",
+              "orderReference": null,
+              "printDiscount": false,
+              "orderDate": null,
+              "currency": "102",
+              "currency$_identifier": "EUR",
+              "paymentTerms": "66BA1164A7394344BB9CD1A6ECEED05D",
+              "paymentTerms$_identifier": "30 days",
+              "charge": null,
+              "chargeAmount": 0,
+              "summedLineAmount": 5.96,
+              "grandTotalAmount": 7.21,
+              "priceList": "AEE66281A08F42B6BC509B8A80A33C29",
+              "priceList$_identifier": "Tarifa de ventas",
+              "priceIncludesTax": false,
+              "salesCampaign": null,
+              "project": null,
+              "activity": null,
+              "createLinesFrom": false,
+              "generateTo": false,
+              "userContact": "6B1E8F0CA1524850AB3A7F9AE475A16F",
+              "userContact$_identifier": "Luis Rodriguez",
+              "copyFrom": false,
+              "selfService": false,
+              "trxOrganization": null,
+              "stDimension": null,
+              "ndDimension": null,
+              "withholdingamount": 0,
+              "taxDate": null,
+              "withholding": null,
+              "paymentComplete": false,
+              "totalPaid": 0,
+              "outstandingAmount": 7.21,
+              "daysTillDue": 32,
+              "dueAmount": 0,
+              "lastCalculatedOnDate": "2026-02-19",
+              "paymentMethod": "A97CFD2AFC234B59BB0A72189BD8FC2A",
+              "paymentMethod$_identifier": "Transferencia",
+              "fINPaymentPriority": null,
+              "finalSettlementDate": null,
+              "daysSalesOutstanding": null,
+              "percentageOverdue": null,
+              "costcenter": null,
+              "calculatePromotions": false,
+              "asset": null,
+              "aPRMAddpayment": true,
+              "cashVAT": false,
+              "aPRMProcessinvoice": "RE",
+              "prepaymentamt": 0,
+              "createLinesFromOrder": false,
+              "createLinesFromShipment": false,
+              "paidAmountAtInvoicing": 0,
+              "externalBusinessPartnerReference": null,
+              "aeatsiiSend": false,
+              "etblkpAccountingstatus": "N",
+              "aeatsiiIssent": false,
+              "eTABAMBankaccount": null,
+              "etafdpUnvoid": false,
+              "etblkpBulkposting": false,
+              "eTPRRemovePayment": false,
+              "aeatsiiFechaOperacion": null,
+              "eTBLKCBulkcompletion": false,
+              "aeatsiiClaveTipo": null,
+              "etinterIntercoOrig": null,
+              "aeatsiiMotivoRectif": null,
+              "aeatsiiClaveTipoFc": null,
+              "tBAIQRcode": false,
+              "aeatsiiTipoRectif": null,
+              "tbaiUrl": null,
+              "aeatsiiDua": null,
+              "tbaiXmlgenerator": false,
+              "aeatsiiFechaDua": null,
+              "tbaiSignaturevalue": null,
+              "aeatsiiEstado": "PE",
+              "tbaiSequence": 0,
+              "aeatsiiErrorRegistral": false,
+              "tbaiIdtbai": null,
+              "aeatsiiModif": false,
+              "etvfacDateIssue": null,
+              "tbaiReverseinvoicecode": null,
+              "aeatsiiModified": false,
+              "etvfacIssue": false,
+              "tbaiIssent": false,
+              "aeatsiiDescription": null,
+              "etvfacIssueDescription": null,
+              "tbaiReverseinvoicetype": null,
+              "aeatsiiDescripcionSii": null,
+              "etafIssuerName": "F&B España, S.A",
+              "tbaiIsreverseinvoice": false,
+              "aeatsiiFechaRegCont": null,
+              "tbaiInvoiceseq": null,
+              "aeatsiiDup": false,
+              "tbaiInvoicenum": null,
+              "aeatsiiErrorCode": null,
+              "etvfacBpNameCopy": "Alimentos y Supermercados, S.A",
+              "etvfacRectCreate": false,
+              "aeatsiiErrorMsg": null,
+              "etcopagCopilotFeedback": null,
+              "etvfacBpTaxidCopy": "K01927367",
+              "etvfacIsGenManual": false,
+              "aeatsiiUnsubscribe": false,
+              "etvfacContactNameCopy": "Luis Rodriguez",
+              "aeatsiiPurDescription": null,
+              "etvfacAddress1Copy": "C\\Pescadores, 87",
+              "etvfacPostalCopy": "16537",
+              "aeatsiiMultiDua": false,
+              "etvfacCityCopy": "La Coruña",
+              "aeatsiiEjercicio": null,
+              "etvfacRegionCopy": "A CORUÑA ",
+              "aeatsiiPeriodo": null,
+              "etvfacCountryCopy": "Spain",
+              "aeatsiiAutofactura": false,
+              "etvfacPhoneCopy": "639301719",
+              "aeatsiiInvoice": "F7FFE26463B84500BDFCD622A5DAE7A0",
+              "aeatsiiInvoice$_identifier": "1000373 - 19-02-2026 - 7.21",
+              "etvfacFaxCopy": null,
+              "aeatsiiInsiidate": null,
+              "etvfacOrgNameCopy": "F&B España - Región Norte",
+              "aeatsiiCauseExemption": null,
+              "etvfacOrgTaxidCopy": "?",
+              "etvfacOrgLocationCopy": "C\\ de la Costa, 54\n12784 - San Sebastián (GUIPÚZCOA )",
+              "aeatsiiIsauthorization": false,
+              "aeatsiiAuthorizationno": null,
+              "etvfacInvoiceStatus": "PE",
+              "etvfacSentToVerifac": false,
+              "etvfacInvType": "F1",
+              "etvfacInvNoIDArt61d": false,
+              "etvfacVerifacDesc": null,
+              "etvfacCorrectedInv": false,
+              "etvfacDateOperation": null,
+              "etvfacReverseinvtype": null,
+              "tbaiIssueDate": null,
+              "etvfacExternalRef": null,
+              "etsgIsF3": false,
+              "etvfacHash": null,
+              "etsgDateOperation": "2026-02-19",
+              "tbaiDateOperation": null,
+              "etvfacIsSubsanation": false,
+              "etvfacVoid": false,
+              "tbaiVoidxmlgenerator": false,
+              "etvfacSimpinvart7273": false,
+              "aeatsiiHash": null,
+              "aeatsiiDateIssue": null,
+              "etafInvoiceTraceability": "{\n    \"draft_invoice\": {\n        \"lines\": [\n            {\n                \"line\": 10,\n                \"c_aum\": \"100\",\n                \"aumqty\": 4,\n                \"created\": \"2026-02-19T17:03:25.876\",\n                \"explode\": \"N\",\n                \"updated\": \"2026-02-19T17:03:25.876\",\n                \"c_tax_id\": \"696801EA1AAF46A4AF56E367B40459AE\",\n                \"c_uom_id\": \"100\",\n                \"isactive\": \"Y\",\n                \"pricestd\": 1.49,\n                \"user1_id\": null,\n                \"user2_id\": null,\n                \"ad_org_id\": \"E443A31992CB4635AFCAEABE7183CE85\",\n                \"chargeamt\": 0,\n                \"createdby\": \"100\",\n                \"pricelist\": 1.49,\n                \"updatedby\": \"100\",\n                \"a_asset_id\": null,\n                \"account_id\": null,\n                \"isdeferred\": \"N\",\n                \"linenetamt\": 5.96,\n                \"m_offer_id\": null,\n                \"pricelimit\": 0,\n                \"taxbaseamt\": 5.96,\n                \"c_charge_id\": null,\n                \"c_period_id\": null,\n                \"defplantype\": null,\n                \"description\": null,\n                \"priceactual\": 1.49,\n                \"qtyinvoiced\": 4,\n                \"ad_client_id\": \"23C59575B9CF467C9620760EB255B389\",\n                \"c_invoice_id\": \"F7FFE26463B84500BDFCD622A5DAE7A0\",\n                \"c_project_id\": null,\n                \"m_product_id\": \"C11ECF6EF3BC4240B374DD5A76163A85\",\n                \"periodnumber\": null,\n                \"bom_parent_id\": null,\n                \"c_bpartner_id\": \"A6750F0D15334FB890C254369AC750A8\",\n                \"cancelpricead\": \"N\",\n                \"grosspricestd\": 0,\n                \"isdescription\": \"N\",\n                \"match_lccosts\": \"N\",\n                \"quantityorder\": null,\n                \"c_orderline_id\": null,\n                \"grosspricelist\": 0,\n                \"m_inoutline_id\": null,\n                \"c_costcenter_id\": null,\n                \"c_invoiceline_id\": \"9204B86872014D82B59B0BA605B57EF9\",\n                \"c_projectline_id\": null,\n                \"gross_unit_price\": 0,\n                \"iseditlinenetamt\": \"N\",\n                \"m_product_uom_id\": null,\n                \"line_gross_amount\": 0,\n                \"c_invoice_discount_id\": null,\n                \"excludeforwithholding\": \"N\",\n                \"financial_invoice_line\": \"N\",\n                \"s_resourceassignment_id\": null,\n                \"em_etra_linenetamt_wdisc\": 0,\n                \"m_attributesetinstance_id\": null,\n                \"em_etra_revised_for_rappel\": \"N\"\n            }\n        ],\n        \"header\": {\n            \"dueamt\": 0,\n            \"ispaid\": \"N\",\n            \"posted\": \"N\",\n            \"created\": \"2026-02-19T17:03:14.353\",\n            \"issotrx\": \"Y\",\n            \"taxdate\": null,\n            \"updated\": \"2026-02-19T17:03:14.353\",\n            \"copyfrom\": \"N\",\n            \"dateacct\": \"2026-02-19T00:00:00\",\n            \"isactive\": \"Y\",\n            \"user1_id\": null,\n            \"user2_id\": null,\n            \"ad_org_id\": \"E443A31992CB4635AFCAEABE7183CE85\",\n            \"chargeamt\": 0,\n            \"createdby\": \"100\",\n            \"docaction\": \"CO\",\n            \"docstatus\": \"DR\",\n            \"iscashvat\": \"N\",\n            \"isprinted\": \"N\",\n            \"processed\": \"N\",\n            \"totalpaid\": 0,\n            \"updatedby\": \"100\",\n            \"a_asset_id\": null,\n            \"ad_user_id\": \"6B1E8F0CA1524850AB3A7F9AE475A16F\",\n            \"c_order_id\": null,\n            \"createfrom\": \"N\",\n            \"documentno\": \"1000373\",\n            \"generateto\": \"N\",\n            \"grandtotal\": 7.21,\n            \"processing\": \"N\",\n            \"totallines\": 5.96,\n            \"c_charge_id\": null,\n            \"dateordered\": null,\n            \"dateprinted\": null,\n            \"daystilldue\": 0,\n            \"description\": null,\n            \"em_tbai_url\": null,\n            \"poreference\": null,\n            \"salesrep_id\": null,\n            \"ad_client_id\": \"23C59575B9CF467C9620760EB255B389\",\n            \"ad_orgtrx_id\": null,\n            \"c_doctype_id\": \"0\",\n            \"c_invoice_id\": \"F7FFE26463B84500BDFCD622A5DAE7A0\",\n            \"c_project_id\": null,\n            \"dateinvoiced\": \"2026-02-19T00:00:00\",\n            \"c_activity_id\": null,\n            \"c_bpartner_id\": \"A6750F0D15334FB890C254369AC750A8\",\n            \"c_campaign_id\": null,\n            \"c_currency_id\": \"102\",\n            \"em_etsg_is_f3\": \"N\",\n            \"isselfservice\": \"N\",\n            \"istaxincluded\": \"N\",\n            \"prepaymentamt\": 0,\n            \"em_aeatsii_dua\": null,\n            \"em_aeatsii_dup\": \"N\",\n            \"em_etvfac_hash\": null,\n            \"em_etvfac_void\": \"N\",\n            \"em_tbai_idtbai\": null,\n            \"em_tbai_issent\": \"N\",\n            \"em_tbai_qrcode\": \"N\",\n            \"m_pricelist_id\": \"AEE66281A08F42B6BC509B8A80A33C29\",\n            \"outstandingamt\": 0,\n            \"bpartner_extref\": null,\n            \"c_costcenter_id\": null,\n            \"daysoutstanding\": null,\n            \"em_aeatsii_hash\": null,\n            \"em_aeatsii_send\": \"N\",\n            \"em_etvfac_issue\": \"N\",\n            \"finalsettlement\": null,\n            \"c_paymentterm_id\": \"66BA1164A7394344BB9CD1A6ECEED05D\",\n            \"c_withholding_id\": null,\n            \"createfrominouts\": \"N\",\n            \"createfromorders\": \"N\",\n            \"em_aeatsii_modif\": \"N\",\n            \"em_etafdp_unvoid\": \"N\",\n            \"em_etvfac_qr_url\": null,\n            \"em_tbai_sequence\": 0,\n            \"em_aeatsii_estado\": \"PE\",\n            \"em_aeatsii_issent\": \"N\",\n            \"isdiscountprinted\": \"N\",\n            \"percentageoverdue\": null,\n            \"withholdingamount\": null,\n            \"c_doctypetarget_id\": \"7FCD49652E104E6BB06C3A0D787412E3\",\n            \"em_aeatsii_periodo\": null,\n            \"em_aprm_addpayment\": \"Y\",\n            \"em_etvfac_fax_copy\": null,\n            \"em_etvfac_inv_type\": \"F1\",\n            \"em_tbai_invoicenum\": null,\n            \"em_tbai_invoiceseq\": null,\n            \"em_tbai_issue_date\": null,\n            \"paidamtatinvoicing\": 0,\n            \"em_aeatsii_modified\": \"N\",\n            \"em_etaf_issuer_name\": \"F&B España, S.A\",\n            \"em_etvfac_city_copy\": null,\n            \"calculate_promotions\": \"N\",\n            \"em_aeatsii_ejercicio\": null,\n            \"em_aeatsii_error_msg\": null,\n            \"em_aeatsii_fecha_dua\": null,\n            \"em_aeatsii_insiidate\": null,\n            \"em_aeatsii_multi_dua\": \"N\",\n            \"em_etvfac_date_issue\": null,\n            \"em_etvfac_phone_copy\": null,\n            \"em_tbai_xmlgenerator\": \"N\",\n            \"fin_paymentmethod_id\": \"A97CFD2AFC234B59BB0A72189BD8FC2A\",\n            \"lastcalculatedondate\": null,\n            \"em_aeatsii_clave_tipo\": null,\n            \"em_aeatsii_date_issue\": null,\n            \"em_aeatsii_error_code\": null,\n            \"em_aeatsii_invoice_id\": \"F7FFE26463B84500BDFCD622A5DAE7A0\",\n            \"em_etblkp_bulkposting\": \"N\",\n            \"em_etvfac_postal_copy\": null,\n            \"em_etvfac_rect_create\": \"N\",\n            \"em_etvfac_region_copy\": null,\n            \"c_bpartner_location_id\": \"6518D3040ED54008A1FC0C09ED140D66\",\n            \"em_aeatsii_autofactura\": \"N\",\n            \"em_aeatsii_tipo_rectif\": null,\n            \"em_aeatsii_unsubscribe\": \"N\",\n            \"em_aprm_processinvoice\": \"CO\",\n            \"em_etpr_remove_payment\": \"N\",\n            \"em_etsg_date_operation\": \"2026-02-19T00:00:00\",\n            \"em_etvfac_bp_name_copy\": null,\n            \"em_etvfac_country_copy\": null,\n            \"em_etvfac_external_ref\": null,\n            \"em_etvfac_verifac_desc\": null,\n            \"em_tbai_date_operation\": null,\n            \"em_tbai_signaturevalue\": null,\n            \"em_etcopag_cop_feedback\": null,\n            \"em_etinter_interco_orig\": null,\n            \"em_etvfac_address1_copy\": null,\n            \"em_etvfac_bp_taxid_copy\": null,\n            \"em_etvfac_corrected_inv\": \"N\",\n            \"em_etvfac_invnoidart61d\": \"N\",\n            \"em_etvfac_is_gen_manual\": \"N\",\n            \"em_etvfac_issubsanation\": \"N\",\n            \"em_etvfac_org_name_copy\": null,\n            \"em_etvfac_senttoverifac\": \"N\",\n            \"fin_payment_priority_id\": null,\n            \"em_aeatsii_clave_tipo_fc\": null,\n            \"em_aeatsii_motivo_rectif\": null,\n            \"em_etabam_bankaccount_id\": null,\n            \"em_etaf_inv_traceability\": null,\n            \"em_etblkc_bulkcompletion\": \"N\",\n            \"em_etvfac_date_operation\": null,\n            \"em_etvfac_invoice_status\": \"PE\",\n            \"em_etvfac_org_taxid_copy\": null,\n            \"em_etvfac_reverseinvtype\": null,\n            \"em_etvfac_simpinvart7273\": \"N\",\n            \"em_tbai_isreverseinvoice\": \"N\",\n            \"em_tbai_voidxmlgenerator\": \"N\",\n            \"em_aeatsii_description_id\": null,\n            \"em_aeatsii_fecha_reg_cont\": null,\n            \"em_aeatsii_authorizationno\": null,\n            \"em_aeatsii_descripcion_sii\": null,\n            \"em_aeatsii_error_registral\": \"N\",\n            \"em_aeatsii_fecha_operacion\": null,\n            \"em_aeatsii_isauthorization\": \"N\",\n            \"em_etblkp_accountingstatus\": \"N\",\n            \"em_tbai_reverseinvoicecode\": null,\n            \"em_tbai_reverseinvoicetype\": null,\n            \"em_etvfac_contact_name_copy\": null,\n            \"em_etvfac_issue_description\": null,\n            \"em_etvfac_issued_externally\": \"N\",\n            \"em_etvfac_org_location_copy\": null,\n            \"em_aeatsii_cause_exemption_id\": null,\n            \"em_aeatsii_pur_description_id\": null\n        }\n    },\n    \"related_orders\": [\n    ],\n    \"related_in_out_movements\": [\n    ]\n}",
+              "etvfacQRURL": null,
+              "etvfacIssuedExternally": false,
+              "recordTime": 1771520636201
+            }
+          ],
+          "status": 0
+        }
+      },
+      "duration_ms": 607,
+      "timestamp": "2026-02-19T17:03:55.906Z"
+    },
+    {
+      "seq": 3,
+      "transport": "xhr",
+      "method": "POST",
+      "url": "/etendo/org.openbravo.client.kernel?MODE=EDIT&PARENT_ID=null&TAB_ID=263&ROW_ID=F7FFE26463B84500BDFCD622A5DAE7A0&_action=org.openbravo.client.application.window.FormInitializationComponent",
+      "request_payload": {
+        "inptotallines": "5.96",
+        "inpadUserId": "6B1E8F0CA1524850AB3A7F9AE475A16F",
+        "inpemAprmAddpayment": "Y",
+        "inpposted": "N",
+        "inpemAprmProcessinvoice": "RE",
+        "inpdocaction": "RE",
+        "inpcreatefromorders": "N",
+        "inpcreatefrominouts": "N",
+        "inpcopyfrom": "N",
+        "inpadOrgtrxId": null,
+        "inptaxdate": null,
+        "inpcActivityId": null,
+        "inpcChargeId": null,
+        "inpchargeamt": "0.00",
+        "inpdateordered": null,
+        "inpcDoctypeId": "7FCD49652E104E6BB06C3A0D787412E3",
+        "inpcalculatePromotions": "N",
+        "inpemEtafInvTraceability": "{\n    \"draft_invoice\": {\n        \"lines\": [\n            {\n                \"line\": 10,\n                \"c_aum\": \"100\",\n                \"aumqty\": 4,\n                \"created\": \"2026-02-19T17:03:25.876\",\n                \"explode\": \"N\",\n                \"updated\": \"2026-02-19T17:03:25.876\",\n                \"c_tax_id\": \"696801EA1AAF46A4AF56E367B40459AE\",\n                \"c_uom_id\": \"100\",\n                \"isactive\": \"Y\",\n                \"pricestd\": 1.49,\n                \"user1_id\": null,\n                \"user2_id\": null,\n                \"ad_org_id\": \"E443A31992CB4635AFCAEABE7183CE85\",\n                \"chargeamt\": 0,\n                \"createdby\": \"100\",\n                \"pricelist\": 1.49,\n                \"updatedby\": \"100\",\n                \"a_asset_id\": null,\n                \"account_id\": null,\n                \"isdeferred\": \"N\",\n                \"linenetamt\": 5.96,\n                \"m_offer_id\": null,\n                \"pricelimit\": 0,\n                \"taxbaseamt\": 5.96,\n                \"c_charge_id\": null,\n                \"c_period_id\": null,\n                \"defplantype\": null,\n                \"description\": null,\n                \"priceactual\": 1.49,\n                \"qtyinvoiced\": 4,\n                \"ad_client_id\": \"23C59575B9CF467C9620760EB255B389\",\n                \"c_invoice_id\": \"F7FFE26463B84500BDFCD622A5DAE7A0\",\n                \"c_project_id\": null,\n                \"m_product_id\": \"C11ECF6EF3BC4240B374DD5A76163A85\",\n                \"periodnumber\": null,\n                \"bom_parent_id\": null,\n                \"c_bpartner_id\": \"A6750F0D15334FB890C254369AC750A8\",\n                \"cancelpricead\": \"N\",\n                \"grosspricestd\": 0,\n                \"isdescription\": \"N\",\n                \"match_lccosts\": \"N\",\n                \"quantityorder\": null,\n                \"c_orderline_id\": null,\n                \"grosspricelist\": 0,\n                \"m_inoutline_id\": null,\n                \"c_costcenter_id\": null,\n                \"c_invoiceline_id\": \"9204B86872014D82B59B0BA605B57EF9\",\n                \"c_projectline_id\": null,\n                \"gross_unit_price\": 0,\n                \"iseditlinenetamt\": \"N\",\n                \"m_product_uom_id\": null,\n                \"line_gross_amount\": 0,\n                \"c_invoice_discount_id\": null,\n                \"excludeforwithholding\": \"N\",\n                \"financial_invoice_line\": \"N\",\n                \"s_resourceassignment_id\": null,\n                \"em_etra_linenetamt_wdisc\": 0,\n                \"m_attributesetinstance_id\": null,\n                \"em_etra_revised_for_rappel\": \"N\"\n            }\n        ],\n        \"header\": {\n            \"dueamt\": 0,\n            \"ispaid\": \"N\",\n            \"posted\": \"N\",\n            \"created\": \"2026-02-19T17:03:14.353\",\n            \"issotrx\": \"Y\",\n            \"taxdate\": null,\n            \"updated\": \"2026-02-19T17:03:14.353\",\n            \"copyfrom\": \"N\",\n            \"dateacct\": \"2026-02-19T00:00:00\",\n            \"isactive\": \"Y\",\n            \"user1_id\": null,\n            \"user2_id\": null,\n            \"ad_org_id\": \"E443A31992CB4635AFCAEABE7183CE85\",\n            \"chargeamt\": 0,\n            \"createdby\": \"100\",\n            \"docaction\": \"CO\",\n            \"docstatus\": \"DR\",\n            \"iscashvat\": \"N\",\n            \"isprinted\": \"N\",\n            \"processed\": \"N\",\n            \"totalpaid\": 0,\n            \"updatedby\": \"100\",\n            \"a_asset_id\": null,\n            \"ad_user_id\": \"6B1E8F0CA1524850AB3A7F9AE475A16F\",\n            \"c_order_id\": null,\n            \"createfrom\": \"N\",\n            \"documentno\": \"1000373\",\n            \"generateto\": \"N\",\n            \"grandtotal\": 7.21,\n            \"processing\": \"N\",\n            \"totallines\": 5.96,\n            \"c_charge_id\": null,\n            \"dateordered\": null,\n            \"dateprinted\": null,\n            \"daystilldue\": 0,\n            \"description\": null,\n            \"em_tbai_url\": null,\n            \"poreference\": null,\n            \"salesrep_id\": null,\n            \"ad_client_id\": \"23C59575B9CF467C9620760EB255B389\",\n            \"ad_orgtrx_id\": null,\n            \"c_doctype_id\": \"0\",\n            \"c_invoice_id\": \"F7FFE26463B84500BDFCD622A5DAE7A0\",\n            \"c_project_id\": null,\n            \"dateinvoiced\": \"2026-02-19T00:00:00\",\n            \"c_activity_id\": null,\n            \"c_bpartner_id\": \"A6750F0D15334FB890C254369AC750A8\",\n            \"c_campaign_id\": null,\n            \"c_currency_id\": \"102\",\n            \"em_etsg_is_f3\": \"N\",\n            \"isselfservice\": \"N\",\n            \"istaxincluded\": \"N\",\n            \"prepaymentamt\": 0,\n            \"em_aeatsii_dua\": null,\n            \"em_aeatsii_dup\": \"N\",\n            \"em_etvfac_hash\": null,\n            \"em_etvfac_void\": \"N\",\n            \"em_tbai_idtbai\": null,\n            \"em_tbai_issent\": \"N\",\n            \"em_tbai_qrcode\": \"N\",\n            \"m_pricelist_id\": \"AEE66281A08F42B6BC509B8A80A33C29\",\n            \"outstandingamt\": 0,\n            \"bpartner_extref\": null,\n            \"c_costcenter_id\": null,\n            \"daysoutstanding\": null,\n            \"em_aeatsii_hash\": null,\n            \"em_aeatsii_send\": \"N\",\n            \"em_etvfac_issue\": \"N\",\n            \"finalsettlement\": null,\n            \"c_paymentterm_id\": \"66BA1164A7394344BB9CD1A6ECEED05D\",\n            \"c_withholding_id\": null,\n            \"createfrominouts\": \"N\",\n            \"createfromorders\": \"N\",\n            \"em_aeatsii_modif\": \"N\",\n            \"em_etafdp_unvoid\": \"N\",\n            \"em_etvfac_qr_url\": null,\n            \"em_tbai_sequence\": 0,\n            \"em_aeatsii_estado\": \"PE\",\n            \"em_aeatsii_issent\": \"N\",\n            \"isdiscountprinted\": \"N\",\n            \"percentageoverdue\": null,\n            \"withholdingamount\": null,\n            \"c_doctypetarget_id\": \"7FCD49652E104E6BB06C3A0D787412E3\",\n            \"em_aeatsii_periodo\": null,\n            \"em_aprm_addpayment\": \"Y\",\n            \"em_etvfac_fax_copy\": null,\n            \"em_etvfac_inv_type\": \"F1\",\n            \"em_tbai_invoicenum\": null,\n            \"em_tbai_invoiceseq\": null,\n            \"em_tbai_issue_date\": null,\n            \"paidamtatinvoicing\": 0,\n            \"em_aeatsii_modified\": \"N\",\n            \"em_etaf_issuer_name\": \"F&B España, S.A\",\n            \"em_etvfac_city_copy\": null,\n            \"calculate_promotions\": \"N\",\n            \"em_aeatsii_ejercicio\": null,\n            \"em_aeatsii_error_msg\": null,\n            \"em_aeatsii_fecha_dua\": null,\n            \"em_aeatsii_insiidate\": null,\n            \"em_aeatsii_multi_dua\": \"N\",\n            \"em_etvfac_date_issue\": null,\n            \"em_etvfac_phone_copy\": null,\n            \"em_tbai_xmlgenerator\": \"N\",\n            \"fin_paymentmethod_id\": \"A97CFD2AFC234B59BB0A72189BD8FC2A\",\n            \"lastcalculatedondate\": null,\n            \"em_aeatsii_clave_tipo\": null,\n            \"em_aeatsii_date_issue\": null,\n            \"em_aeatsii_error_code\": null,\n            \"em_aeatsii_invoice_id\": \"F7FFE26463B84500BDFCD622A5DAE7A0\",\n            \"em_etblkp_bulkposting\": \"N\",\n            \"em_etvfac_postal_copy\": null,\n            \"em_etvfac_rect_create\": \"N\",\n            \"em_etvfac_region_copy\": null,\n            \"c_bpartner_location_id\": \"6518D3040ED54008A1FC0C09ED140D66\",\n            \"em_aeatsii_autofactura\": \"N\",\n            \"em_aeatsii_tipo_rectif\": null,\n            \"em_aeatsii_unsubscribe\": \"N\",\n            \"em_aprm_processinvoice\": \"CO\",\n            \"em_etpr_remove_payment\": \"N\",\n            \"em_etsg_date_operation\": \"2026-02-19T00:00:00\",\n            \"em_etvfac_bp_name_copy\": null,\n            \"em_etvfac_country_copy\": null,\n            \"em_etvfac_external_ref\": null,\n            \"em_etvfac_verifac_desc\": null,\n            \"em_tbai_date_operation\": null,\n            \"em_tbai_signaturevalue\": null,\n            \"em_etcopag_cop_feedback\": null,\n            \"em_etinter_interco_orig\": null,\n            \"em_etvfac_address1_copy\": null,\n            \"em_etvfac_bp_taxid_copy\": null,\n            \"em_etvfac_corrected_inv\": \"N\",\n            \"em_etvfac_invnoidart61d\": \"N\",\n            \"em_etvfac_is_gen_manual\": \"N\",\n            \"em_etvfac_issubsanation\": \"N\",\n            \"em_etvfac_org_name_copy\": null,\n            \"em_etvfac_senttoverifac\": \"N\",\n            \"fin_payment_priority_id\": null,\n            \"em_aeatsii_clave_tipo_fc\": null,\n            \"em_aeatsii_motivo_rectif\": null,\n            \"em_etabam_bankaccount_id\": null,\n            \"em_etaf_inv_traceability\": null,\n            \"em_etblkc_bulkcompletion\": \"N\",\n            \"em_etvfac_date_operation\": null,\n            \"em_etvfac_invoice_status\": \"PE\",\n            \"em_etvfac_org_taxid_copy\": null,\n            \"em_etvfac_reverseinvtype\": null,\n            \"em_etvfac_simpinvart7273\": \"N\",\n            \"em_tbai_isreverseinvoice\": \"N\",\n            \"em_tbai_voidxmlgenerator\": \"N\",\n            \"em_aeatsii_description_id\": null,\n            \"em_aeatsii_fecha_reg_cont\": null,\n            \"em_aeatsii_authorizationno\": null,\n            \"em_aeatsii_descripcion_sii\": null,\n            \"em_aeatsii_error_registral\": \"N\",\n            \"em_aeatsii_fecha_operacion\": null,\n            \"em_aeatsii_isauthorization\": \"N\",\n            \"em_etblkp_accountingstatus\": \"N\",\n            \"em_tbai_reverseinvoicecode\": null,\n            \"em_tbai_reverseinvoicetype\": null,\n            \"em_etvfac_contact_name_copy\": null,\n            \"em_etvfac_issue_description\": null,\n            \"em_etvfac_issued_externally\": \"N\",\n            \"em_etvfac_org_location_copy\": null,\n            \"em_aeatsii_cause_exemption_id\": null,\n            \"em_aeatsii_pur_description_id\": null\n        }\n    },\n    \"related_orders\": [\n    ],\n    \"related_in_out_movements\": [\n    ]\n}",
+        "inpaAssetId": null,
+        "inpemTbaiQrcode": "N",
+        "inpemEtblkpBulkposting": "N",
+        "inpemEtvfacRectCreate": "N",
+        "inpemEtvfacSenttoverifac": "N",
+        "inpemTbaiXmlgenerator": "N",
+        "inpemEtblkcBulkcompletion": "N",
+        "inpemEtvfacIsGenManual": "N",
+        "inpemEtprRemovePayment": "N",
+        "inpemEtafdpUnvoid": "N",
+        "inpemTbaiVoidxmlgenerator": "N",
+        "inpemAeatsiiSend": "N",
+        "inpemAeatsiiModif": "N",
+        "inpcWithholdingId": null,
+        "inpcreated": "19-02-2026 17:03:14",
+        "inpadClientId": "23C59575B9CF467C9620760EB255B389",
+        "inpcInvoiceId": "F7FFE26463B84500BDFCD622A5DAE7A0",
+        "inpprocessed": "Y",
+        "inpprocessing": "N",
+        "inpdateprinted": null,
+        "inpissotrx": "Y",
+        "inplastcalculatedondate": "19-02-2026",
+        "inpisdiscountprinted": "N",
+        "inpisprinted": "N",
+        "inpistaxincluded": "N",
+        "inpgenerateto": "N",
+        "inpisselfservice": "N",
+        "C_Invoice_ID": "F7FFE26463B84500BDFCD622A5DAE7A0",
+        "inpadOrgId": "E443A31992CB4635AFCAEABE7183CE85",
+        "inpcDoctypetargetId": "7FCD49652E104E6BB06C3A0D787412E3",
+        "inpdocumentno": "1000373",
+        "inpdateinvoiced": "19-02-2026",
+        "inpcBpartnerId": "A6750F0D15334FB890C254369AC750A8",
+        "inpemEtabamBankaccountId": null,
+        "inpcBpartnerLocationId": "6518D3040ED54008A1FC0C09ED140D66",
+        "inpdescription": null,
+        "inpcPaymenttermId": "66BA1164A7394344BB9CD1A6ECEED05D",
+        "inpfinPaymentmethodId": "A97CFD2AFC234B59BB0A72189BD8FC2A",
+        "inpemTbaiIsreverseinvoice": "N",
+        "inptotalpaid": "0.00",
+        "inpoutstandingamt": "7.21",
+        "inpdueamt": "0.00",
+        "inpdaystilldue": "32",
+        "inppercentageoverdue": null,
+        "inpfinalsettlement": null,
+        "inpdaysoutstanding": null,
+        "inpmPricelistId": "AEE66281A08F42B6BC509B8A80A33C29",
+        "inpsalesrepId": null,
+        "inpcOrderId": null,
+        "inpporeference": null,
+        "inpdateacct": "19-02-2026",
+        "inpiscashvat": "N",
+        "inpbpartnerExtref": null,
+        "inpisactive": "Y",
+        "inpemEtafIssuerName": "F&B España, S.A",
+        "inpcProjectId": null,
+        "inpcCostcenterId": null,
+        "inpcCampaignId": null,
+        "inpuser1Id": null,
+        "inpuser2Id": null,
+        "inpemEtsgDateOperation": "19-02-2026",
+        "inpemEtvfacInvoiceStatus": "PE",
+        "inpemEtvfacInvType": "F1",
+        "inpemEtvfacVerifacDesc": null,
+        "inpemEtvfacIssubsanation": "N",
+        "inpemEtvfacReverseinvtype": null,
+        "inpemEtvfacExternalRef": null,
+        "inpemEtvfacSimpinvart7273": "N",
+        "inpemEtvfacInvnoidart61d": "N",
+        "inpemEtvfacIssue": "N",
+        "inpemEtvfacQrUrl": null,
+        "inpemEtvfacCorrectedInv": "N",
+        "inpemEtvfacDateIssue": null,
+        "inpemEtvfacIssueDescription": null,
+        "inpemEtvfacIssuedExternally": "N",
+        "inpemTbaiSequence": "0",
+        "inpemTbaiInvoicenum": null,
+        "inpemTbaiInvoiceseq": null,
+        "inpemTbaiReverseinvoicecode": null,
+        "inpemTbaiReverseinvoicetype": null,
+        "inpemEtinterIntercoOrig": null,
+        "inpemAeatsiiClaveTipo": null,
+        "inpemAeatsiiTipoRectif": null,
+        "inpemAeatsiiMotivoRectif": null,
+        "inpemAeatsiiDescriptionId": null,
+        "inpemAeatsiiDescripcionSii": null,
+        "inpemAeatsiiErrorRegistral": "N",
+        "inpemAeatsiiEjercicio": null,
+        "inpemAeatsiiPeriodo": null,
+        "inpemAeatsiiCauseExemptionId": null,
+        "inpemAeatsiiIsauthorization": "N",
+        "inpemAeatsiiAuthorizationno": null,
+        "inpwithholdingamount": "0.00",
+        "inpdocstatus": "CO",
+        "inpgrandtotal": "7.21",
+        "inpcCurrencyId": "102",
+        "inpispaid": "N",
+        "inpprepaymentamt": "0.00",
+        "inppaidamtatinvoicing": "0.00",
+        "inpemEtvfacVoid": "N",
+        "inpemEtblkpAccountingstatus": "N",
+        "inpemTbaiIssent": "N",
+        "inpemAeatsiiIssent": "N",
+        "inpemAeatsiiModified": "N",
+        "inpemAeatsiiEstado": "PE",
+        "inpTabId": "263",
+        "inpwindowId": "167",
+        "inpTableId": "318",
+        "inpkeyColumnId": "C_Invoice_ID",
+        "keyProperty": "id",
+        "inpKeyName": "inpcInvoiceId",
+        "keyColumnName": "C_Invoice_ID",
+        "keyPropertyType": "_id_13",
+        "PromotionsDefined": "N",
+        "IsReversalDocument": "N",
+        "HAS_C_INVOICELINES": "Y",
+        "DOCBASETYPE": "ARI",
+        "VoidAutomaticallyCreated": 0,
+        "showAddPayment": "",
+        "ETVFAC_VoidInvoice": "N",
+        "etvfac_has_configuration": "N",
+        "TBAI_ExistTBAIConfig": 0,
+        "TBAI_VoidedInvoiceSended": 0,
+        "TBAI_ExistConfigAndIsAvailable": 0,
+        "TBAI_isReturn": "N",
+        "AEATSII_AcogidaSII": "N",
+        "$Element_U1_ARI_RM_H": "N",
+        "$Element_U2_APC_H": "N",
+        "$Element_U2_ARR_H": "N",
+        "$Element_OO": "Y",
+        "$Element_PJ_APC_H": "Y",
+        "$Element_CC": "",
+        "$Element_U2_ARF_H": "N",
+        "$Element_CC_APP_H": "",
+        "$Element_U2_API_H": "N",
+        "$Element_CC_ARI_H": "",
+        "EM_Aeatsii_Fecha_Reg_Cont": "",
+        "$Element_BP_ARI_H": "Y",
+        "$Element_BP_ARI_RM_H": "Y",
+        "$Element_BP_ARC_H": "Y",
+        "InvoiceProcessButton": "Y",
+        "$Element_CC_ARC_H": "",
+        "$Element_U1_APC_H": "N",
+        "$Element_U1_ARF_H": "N",
+        "$Element_OO_ARR_H": "Y",
+        "$Element_U1_API_H": "N",
+        "AEATSII_PreSII_Invoice": "",
+        "_ShowAcct": "Y",
+        "$Element_U2": "",
+        "$Element_U1": "",
+        "$Element_U1_ARR_H": "N",
+        "$Element_BP_ARR_H": "Y",
+        "$Element_PJ": "Y",
+        "$Element_OO_APC_H": "Y",
+        "$Element_OO_ARF_H": "Y",
+        "$Element_PJ_API_H": "Y",
+        "$Element_MC": "",
+        "Iscashvat": "",
+        "$Element_PJ_ARR_H": "Y",
+        "$Element_PJ_ARF_H": "Y",
+        "$Element_CC_ARI_RM_H": "",
+        "$Element_OO_API_H": "Y",
+        "FinancialManagement": "Y",
+        "$Element_PJ_ARC_H": "Y",
+        "$Element_U2_APP_H": "N",
+        "$Element_U2_ARC_H": "N",
+        "$Element_U2_ARI_H": "N",
+        "$Element_CC_ARR_H": "",
+        "$Element_BP_API_H": "Y",
+        "$Element_CC_API_H": "",
+        "$Element_BP_ARF_H": "Y",
+        "$Element_CC_APC_H": "",
+        "$Element_CC_ARF_H": "",
+        "$Element_U1_ARC_H": "N",
+        "$Element_BP_APC_H": "Y",
+        "$IsAcctDimCentrally": "Y",
+        "$Element_OO_ARI_RM_H": "Y",
+        "ACCT_DIMENSION_DISPLAY": "",
+        "$Element_OO_APP_H": "Y",
+        "$Element_U1_ARI_H": "N",
+        "$Element_U2_ARI_RM_H": "N",
+        "$Element_BP_APP_H": "Y",
+        "$Element_U1_APP_H": "N",
+        "$Element_PJ_ARI_RM_H": "Y",
+        "$Element_OO_ARC_H": "Y",
+        "$Element_BP": "Y",
+        "$Element_PJ_APP_H": "Y",
+        "$Element_PJ_ARI_H": "Y",
+        "$Element_OO_ARI_H": "Y",
+        "_gridVisibleProperties": [
+          "id",
+          "organization",
+          "documentNo",
+          "invoiceDate",
+          "businessPartner",
+          "grandTotalAmount",
+          "paymentComplete",
+          "currency",
+          "totalPaid",
+          "outstandingAmount",
+          "dueAmount",
+          "daysTillDue",
+          "percentageOverdue",
+          "finalSettlementDate",
+          "daysSalesOutstanding",
+          "documentStatus",
+          "cashVAT",
+          "etblkpAccountingstatus",
+          "tbaiReverseinvoicetype",
+          "tbaiIssent",
+          "tbaiIsreverseinvoice",
+          "aeatsiiIssent",
+          "aeatsiiModified",
+          "aeatsiiEstado",
+          "aeatsiiErrorRegistral",
+          "aeatsiiIsauthorization",
+          "aeatsiiAuthorizationno"
+        ],
+        "_entityName": "Invoice",
+        "_visibleProperties": [
+          "inpadOrgId",
+          "inpcDoctypetargetId",
+          "inpdocumentno",
+          "inpdateinvoiced",
+          "inpcBpartnerId",
+          "inpemEtabamBankaccountId",
+          "inpcBpartnerLocationId",
+          "inpdescription",
+          "inpcPaymenttermId",
+          "inpfinPaymentmethodId",
+          "inpemTbaiIsreverseinvoice",
+          "inptotalpaid",
+          "inpoutstandingamt",
+          "inpdueamt",
+          "inpdaystilldue",
+          "inppercentageoverdue",
+          "inpfinalsettlement",
+          "inpdaysoutstanding",
+          "inpmPricelistId",
+          "inpsalesrepId",
+          "inpcOrderId",
+          "inpporeference",
+          "inpdateacct",
+          "inpiscashvat",
+          "inpbpartnerExtref",
+          "inpisactive",
+          "inpemEtafIssuerName",
+          "inpcProjectId",
+          "inpcCostcenterId",
+          "inpcCampaignId",
+          "inpuser1Id",
+          "inpuser2Id",
+          "inpemEtsgDateOperation",
+          "inpemEtvfacInvoiceStatus",
+          "inpemEtvfacInvType",
+          "inpemEtvfacVerifacDesc",
+          "inpemEtvfacIssubsanation",
+          "inpemEtvfacReverseinvtype",
+          "inpemEtvfacExternalRef",
+          "inpemEtvfacSimpinvart7273",
+          "inpemEtvfacInvnoidart61d",
+          "inpemEtvfacIssue",
+          "inpemEtvfacQrUrl",
+          "inpemEtvfacCorrectedInv",
+          "inpemEtvfacDateIssue",
+          "inpemEtvfacIssueDescription",
+          "inpemEtvfacIssuedExternally",
+          "inpemTbaiSequence",
+          "inpemTbaiInvoicenum",
+          "inpemTbaiInvoiceseq",
+          "inpemTbaiReverseinvoicecode",
+          "inpemTbaiReverseinvoicetype",
+          "inpemEtinterIntercoOrig",
+          "inpemAeatsiiClaveTipo",
+          "inpemAeatsiiTipoRectif",
+          "inpemAeatsiiMotivoRectif",
+          "inpemAeatsiiDescriptionId",
+          "inpemAeatsiiDescripcionSii",
+          "inpemAeatsiiErrorRegistral",
+          "inpemAeatsiiEjercicio",
+          "inpemAeatsiiPeriodo",
+          "inpemAeatsiiCauseExemptionId",
+          "inpemAeatsiiIsauthorization",
+          "inpemAeatsiiAuthorizationno",
+          "inpwithholdingamount",
+          "inpdocstatus",
+          "inpgrandtotal",
+          "inptotallines",
+          "inpcCurrencyId",
+          "inpispaid",
+          "inpprepaymentamt",
+          "inppaidamtatinvoicing",
+          "inpemEtvfacVoid",
+          "inpemEtblkpAccountingstatus",
+          "inpemEtvfacSenttoverifac",
+          "inpemTbaiIssent",
+          "inpemAeatsiiIssent",
+          "inpemAeatsiiModified",
+          "inpemAeatsiiEstado"
+        ]
+      },
+      "response_status": 200,
+      "response_body": {
+        "calloutMessages": [],
+        "columnValues": {
+          "AD_Org_ID": {
+            "value": "E443A31992CB4635AFCAEABE7183CE85",
+            "classicValue": "E443A31992CB4635AFCAEABE7183CE85",
+            "identifier": "F&B España - Región Norte"
+          },
+          "C_DocTypeTarget_ID": {
+            "value": "7FCD49652E104E6BB06C3A0D787412E3",
+            "classicValue": "7FCD49652E104E6BB06C3A0D787412E3",
+            "identifier": "AR Invoice"
+          },
+          "DocumentNo": {
+            "value": "1000373",
+            "classicValue": "1000373"
+          },
+          "DateInvoiced": {
+            "value": "2026-02-19",
+            "classicValue": "19-02-2026"
+          },
+          "C_BPartner_ID": {
+            "value": "A6750F0D15334FB890C254369AC750A8",
+            "classicValue": "A6750F0D15334FB890C254369AC750A8",
+            "identifier": "Alimentos y Supermercados, S.A"
+          },
+          "EM_Etabam_Bankaccount_ID": {
+            "value": "",
+            "classicValue": ""
+          },
+          "C_BPartner_Location_ID": {
+            "value": "6518D3040ED54008A1FC0C09ED140D66",
+            "classicValue": "6518D3040ED54008A1FC0C09ED140D66",
+            "identifier": "C\\Pescadores, 87 -  - 16537 - La Coruña - A CORUÑA  - Spain"
+          },
+          "Description": {
+            "classicValue": ""
+          },
+          "C_PaymentTerm_ID": {
+            "value": "66BA1164A7394344BB9CD1A6ECEED05D",
+            "classicValue": "66BA1164A7394344BB9CD1A6ECEED05D",
+            "identifier": "30 days"
+          },
+          "FIN_Paymentmethod_ID": {
+            "value": "A97CFD2AFC234B59BB0A72189BD8FC2A",
+            "classicValue": "A97CFD2AFC234B59BB0A72189BD8FC2A",
+            "identifier": "Transferencia"
+          },
+          "DocStatus": {
+            "value": "CO",
+            "classicValue": "CO",
+            "entries": [
+              {
+                "id": "CL",
+                "_identifier": "Closed"
+              },
+              {
+                "id": "CO",
+                "_identifier": "Completed"
+              },
+              {
+                "id": "DR",
+                "_identifier": "Draft"
+              },
+              {
+                "id": "NA",
+                "_identifier": "Not Accepted"
+              },
+              {
+                "id": "WP",
+                "_identifier": "Not Paid"
+              },
+              {
+                "id": "RE",
+                "_identifier": "Re-Opened"
+              },
+              {
+                "id": "TEMP",
+                "_identifier": "Temporal"
+              },
+              {
+                "id": "IP",
+                "_identifier": "Under Way"
+              },
+              {
+                "id": "??",
+                "_identifier": "Unknown"
+              },
+              {
+                "id": "VO",
+                "_identifier": "Voided"
+              }
+            ]
+          },
+          "EM_Tbai_Isreverseinvoice": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "GrandTotal": {
+            "value": 7.21,
+            "classicValue": "7.21"
+          },
+          "TotalLines": {
+            "value": 5.96,
+            "classicValue": "5.96"
+          },
+          "C_Currency_ID": {
+            "value": "102",
+            "classicValue": "102",
+            "identifier": "EUR"
+          },
+          "Ispaid": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "Totalpaid": {
+            "value": 0,
+            "classicValue": "0.00",
+            "width": "50%"
+          },
+          "EM_APRM_Addpayment": {
+            "value": true,
+            "classicValue": "Y"
+          },
+          "Posted": {
+            "value": "N",
+            "classicValue": "N",
+            "identifier": "Post"
+          },
+          "EM_APRM_Processinvoice": {
+            "value": "RE",
+            "classicValue": "RE",
+            "identifier": "Reactivate"
+          },
+          "DocAction": {
+            "value": "RE",
+            "classicValue": "RE",
+            "identifier": "Reactivate"
+          },
+          "OutstandingAmt": {
+            "value": 7.21,
+            "classicValue": "7.21",
+            "width": "50%"
+          },
+          "Createfromorders": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "Createfrominouts": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "CopyFrom": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "DueAmt": {
+            "value": 0,
+            "classicValue": "0.00",
+            "width": "50%"
+          },
+          "DaysTillDue": {
+            "value": 32,
+            "classicValue": "32",
+            "width": "50%"
+          },
+          "Percentageoverdue": {
+            "classicValue": "",
+            "width": "50%"
+          },
+          "Finalsettlement": {
+            "classicValue": ""
+          },
+          "Daysoutstanding": {
+            "classicValue": "",
+            "width": "50%"
+          },
+          "M_PriceList_ID": {
+            "value": "AEE66281A08F42B6BC509B8A80A33C29",
+            "classicValue": "AEE66281A08F42B6BC509B8A80A33C29",
+            "identifier": "Tarifa de ventas"
+          },
+          "SalesRep_ID": {},
+          "C_Order_ID": {
+            "value": "",
+            "classicValue": ""
+          },
+          "POReference": {
+            "classicValue": ""
+          },
+          "DateAcct": {
+            "value": "2026-02-19",
+            "classicValue": "19-02-2026"
+          },
+          "C_DocType_ID": {
+            "value": "7FCD49652E104E6BB06C3A0D787412E3",
+            "classicValue": "7FCD49652E104E6BB06C3A0D787412E3",
+            "identifier": "AR Invoice"
+          },
+          "Calculate_Promotions": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "Iscashvat": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "BPartner_ExtRef": {
+            "classicValue": ""
+          },
+          "IsActive": {
+            "value": true,
+            "classicValue": "Y"
+          },
+          "EM_Etaf_Issuer_Name": {
+            "value": "F&B España, S.A",
+            "classicValue": "F&B España, S.A"
+          },
+          "C_Project_ID": {
+            "value": "",
+            "classicValue": ""
+          },
+          "C_Costcenter_ID": {
+            "value": "",
+            "classicValue": ""
+          },
+          "C_Campaign_ID": {},
+          "User1_ID": {
+            "value": "",
+            "classicValue": ""
+          },
+          "User2_ID": {
+            "value": "",
+            "classicValue": ""
+          },
+          "Prepaymentamt": {
+            "value": 0,
+            "classicValue": "0",
+            "width": "50%"
+          },
+          "Paidamtatinvoicing": {
+            "value": 0,
+            "classicValue": "0",
+            "width": "50%"
+          },
+          "EM_Etsg_Date_Operation": {
+            "value": "2026-02-19",
+            "classicValue": "19-02-2026"
+          },
+          "EM_Etvfac_Invoice_Status": {
+            "value": "PE",
+            "classicValue": "PE",
+            "entries": [
+              {},
+              {
+                "id": "AC",
+                "_identifier": "Aceptada"
+              },
+              {
+                "id": "AE",
+                "_identifier": "Aceptada con Errores"
+              },
+              {
+                "id": "IN",
+                "_identifier": "Inválida"
+              },
+              {
+                "id": "PE",
+                "_identifier": "Pendiente"
+              },
+              {
+                "id": "ER",
+                "_identifier": "Rechazada"
+              }
+            ]
+          },
+          "EM_Etvfac_Inv_Type": {
+            "value": "F1",
+            "classicValue": "F1",
+            "entries": [
+              {},
+              {
+                "id": "F1",
+                "_identifier": "F1 - Factura (art. 6, 7.2 y 7.3 del RD 1619/2012)"
+              },
+              {
+                "id": "F2",
+                "_identifier": "F2 - Factura Simplificada/sin identificación destinatario"
+              },
+              {
+                "id": "F3",
+                "_identifier": "F3 - Factura emitida en sustitución de simplificadas"
+              },
+              {
+                "id": "R1",
+                "_identifier": "R1 - Factura Rectificativa (Art 80.1, 80.2 y 80.6)"
+              },
+              {
+                "id": "R2",
+                "_identifier": "R2 - Factura Rectificativa (Art. 80.3)"
+              },
+              {
+                "id": "R3",
+                "_identifier": "R3 - Factura Rectificativa (Art. 80.4)"
+              },
+              {
+                "id": "R4",
+                "_identifier": "R4 - Factura Rectificativa (Resto)"
+              },
+              {
+                "id": "R5",
+                "_identifier": "R5 - Factura Rectificativa en facturas simplificadas"
+              }
+            ]
+          },
+          "EM_Etvfac_Verifac_Desc": {
+            "classicValue": ""
+          },
+          "EM_Etvfac_Issubsanation": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etvfac_Reverseinvtype": {
+            "value": "",
+            "classicValue": "",
+            "entries": [
+              {},
+              {
+                "id": "I",
+                "_identifier": "Por Diferencias"
+              },
+              {
+                "id": "S",
+                "_identifier": "Por Sustitución"
+              }
+            ]
+          },
+          "EM_Etvfac_External_Ref": {
+            "classicValue": ""
+          },
+          "EM_Etvfac_Simpinvart7273": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etvfac_Invnoidart61d": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etblkp_Bulkposting": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etvfac_Issue": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etvfac_Qr_Url": {
+            "classicValue": ""
+          },
+          "EM_Etvfac_Corrected_Inv": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etvfac_Date_Issue": {
+            "classicValue": ""
+          },
+          "EM_Etvfac_Issue_Description": {
+            "classicValue": ""
+          },
+          "EM_Etvfac_Void": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etvfac_Issued_Externally": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etvfac_Rect_Create": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etblkp_Accountingstatus": {
+            "value": "N",
+            "classicValue": "N",
+            "entries": [
+              {
+                "id": "NC",
+                "_identifier": "Cost Not Calculated"
+              },
+              {
+                "id": "d",
+                "_identifier": "Disabled For Background"
+              },
+              {
+                "id": "D",
+                "_identifier": "Document Disabled"
+              },
+              {
+                "id": "L",
+                "_identifier": "Document Locked"
+              },
+              {
+                "id": "E",
+                "_identifier": "Error"
+              },
+              {
+                "id": "C",
+                "_identifier": "Error, No cost"
+              },
+              {
+                "id": "i",
+                "_identifier": "Invalid Account"
+              },
+              {
+                "id": "AD",
+                "_identifier": "No Accounting Date"
+              },
+              {
+                "id": "DT",
+                "_identifier": "No Document Type"
+              },
+              {
+                "id": "NO",
+                "_identifier": "No Related PO"
+              },
+              {
+                "id": "b",
+                "_identifier": "Not Balanced"
+              },
+              {
+                "id": "c",
+                "_identifier": "Not Convertible (no rate)"
+              },
+              {
+                "id": "l",
+                "_identifier": "Pending Refresh"
+              },
+              {
+                "id": "p",
+                "_identifier": "Period Closed"
+              },
+              {
+                "id": "Y",
+                "_identifier": "Posted"
+              },
+              {
+                "id": "y",
+                "_identifier": "Post Prepared"
+              },
+              {
+                "id": "T",
+                "_identifier": "Table Disabled"
+              },
+              {
+                "id": "N",
+                "_identifier": "Unposted"
+              }
+            ]
+          },
+          "EM_Etvfac_Senttoverifac": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Tbai_Xmlgenerator": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etblkc_Bulkcompletion": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Tbai_Sequence": {
+            "value": 0,
+            "classicValue": "0",
+            "width": "50%"
+          },
+          "EM_Tbai_Invoicenum": {
+            "classicValue": ""
+          },
+          "EM_Tbai_Invoiceseq": {
+            "classicValue": ""
+          },
+          "EM_Etvfac_Is_Gen_Manual": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etpr_Remove_Payment": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etafdp_Unvoid": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Tbai_Reverseinvoicecode": {
+            "value": "",
+            "classicValue": "",
+            "entries": [
+              {},
+              {
+                "id": "R3",
+                "_identifier": "Factura rectificativa: artículo 80 Cuatro de la Ley del IVA."
+              },
+              {
+                "id": "R2",
+                "_identifier": "Factura rectificativa: artículo 80 Tres de la Ley del IVA."
+              },
+              {
+                "id": "R5",
+                "_identifier": "Factura rectificativa en facturas simplificadas."
+              },
+              {
+                "id": "R1",
+                "_identifier": "Factura rectificativa: error fundado en derecho"
+              },
+              {
+                "id": "R4",
+                "_identifier": "Factura rectificativa: Resto."
+              }
+            ]
+          },
+          "EM_Tbai_Reverseinvoicetype": {
+            "value": "",
+            "classicValue": "",
+            "entries": [
+              {},
+              {
+                "id": "S",
+                "_identifier": "Por sustitución"
+              },
+              {
+                "id": "I",
+                "_identifier": "Por diferencias"
+              }
+            ]
+          },
+          "EM_Tbai_Issent": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Etinter_Interco_Orig": {
+            "value": "",
+            "classicValue": ""
+          },
+          "EM_Tbai_Voidxmlgenerator": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Aeatsii_Send": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Aeatsii_Modif": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Aeatsii_Issent": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Aeatsii_Modified": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Aeatsii_Clave_Tipo": {
+            "value": "",
+            "classicValue": "",
+            "entries": [
+              {},
+              {
+                "id": "R",
+                "_identifier": "Corrective invoice"
+              },
+              {
+                "id": "F1",
+                "_identifier": "Invoice"
+              },
+              {
+                "id": "F2",
+                "_identifier": "Simplified invoice"
+              },
+              {
+                "id": "F4",
+                "_identifier": "Simplified invoices summary"
+              }
+            ]
+          },
+          "EM_Aeatsii_Tipo_Rectif": {
+            "value": "",
+            "classicValue": "",
+            "entries": [
+              {},
+              {
+                "id": "I",
+                "_identifier": "Differences"
+              },
+              {
+                "id": "S",
+                "_identifier": "Revise"
+              }
+            ]
+          },
+          "EM_Aeatsii_Motivo_Rectif": {
+            "value": "",
+            "classicValue": "",
+            "entries": [
+              {},
+              {
+                "id": "R1",
+                "_identifier": "R1 - Founded error"
+              },
+              {
+                "id": "R2",
+                "_identifier": "R2 - Competition"
+              },
+              {
+                "id": "R3",
+                "_identifier": "R3 - Bad debt"
+              },
+              {
+                "id": "R4",
+                "_identifier": "R4 - Rest"
+              },
+              {
+                "id": "R5",
+                "_identifier": "R5 - Simplified invoice"
+              }
+            ]
+          },
+          "EM_Aeatsii_Description_ID": {
+            "value": "",
+            "classicValue": ""
+          },
+          "EM_Aeatsii_Descripcion_Sii": {
+            "classicValue": ""
+          },
+          "EM_Aeatsii_Estado": {
+            "value": "PE",
+            "classicValue": "PE",
+            "entries": [
+              {},
+              {
+                "id": "AE",
+                "_identifier": "Accepted with errors"
+              },
+              {
+                "id": "AN",
+                "_identifier": "Annulled"
+              },
+              {
+                "id": "IN",
+                "_identifier": "Incorrect"
+              },
+              {
+                "id": "NR",
+                "_identifier": "Not Registrable to SII"
+              },
+              {
+                "id": "PE",
+                "_identifier": "Pending to send to SII"
+              },
+              {
+                "id": "CO",
+                "_identifier": "Right"
+              },
+              {
+                "id": "EE",
+                "_identifier": "Sending error"
+              },
+              {
+                "id": "BA",
+                "_identifier": "Unsubscribed"
+              }
+            ]
+          },
+          "EM_Aeatsii_Error_Registral": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Aeatsii_Ejercicio": {
+            "classicValue": "",
+            "width": "50%"
+          },
+          "EM_Aeatsii_Periodo": {
+            "classicValue": "",
+            "width": "50%"
+          },
+          "EM_Aeatsii_Cause_Exemption_ID": {
+            "value": "",
+            "classicValue": ""
+          },
+          "EM_Aeatsii_Isauthorization": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "EM_Aeatsii_Authorizationno": {
+            "classicValue": ""
+          },
+          "Withholdingamount": {
+            "value": 0,
+            "classicValue": "0.00",
+            "width": "50%"
+          },
+          "Created": {
+            "value": "2026-02-19T17:03:14.0Z",
+            "classicValue": "19-02-2026 17:03:14"
+          },
+          "AD_Client_ID": {
+            "value": "23C59575B9CF467C9620760EB255B389",
+            "classicValue": "23C59575B9CF467C9620760EB255B389",
+            "identifier": "F&B International Group"
+          },
+          "IsSelfService": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "IsPrinted": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "IsDiscountPrinted": {
+            "value": false,
+            "classicValue": "N"
+          },
+          "IsSOTrx": {
+            "value": true,
+            "classicValue": "Y"
+          },
+          "Processed": {
+            "value": true,
+            "classicValue": "Y"
+          },
+          "C_Invoice_ID": {
+            "value": "F7FFE26463B84500BDFCD622A5DAE7A0",
+            "classicValue": "F7FFE26463B84500BDFCD622A5DAE7A0"
+          }
+        },
+        "auxiliaryInputValues": {
+          "PromotionsDefined": {
+            "value": "N",
+            "classicValue": "N"
+          },
+          "IsReversalDocument": {
+            "value": "N",
+            "classicValue": "N"
+          },
+          "HAS_C_INVOICELINES": {
+            "value": "Y",
+            "classicValue": "Y"
+          },
+          "DOCBASETYPE": {
+            "value": "ARI",
+            "classicValue": "ARI"
+          },
+          "VoidAutomaticallyCreated": {
+            "value": 0,
+            "classicValue": 0
+          },
+          "showAddPayment": {},
+          "ETVFAC_VoidInvoice": {
+            "value": "N",
+            "classicValue": "N"
+          },
+          "etvfac_has_configuration": {
+            "value": "N",
+            "classicValue": "N"
+          },
+          "TBAI_ExistTBAIConfig": {
+            "value": 0,
+            "classicValue": 0
+          },
+          "TBAI_VoidedInvoiceSended": {
+            "value": 0,
+            "classicValue": 0
+          },
+          "TBAI_ExistConfigAndIsAvailable": {
+            "value": 0,
+            "classicValue": 0
+          },
+          "TBAI_isReturn": {
+            "value": "N",
+            "classicValue": "N"
+          },
+          "AEATSII_AcogidaSII": {
+            "value": "N",
+            "classicValue": "N"
+          }
+        },
+        "overwrittenAuxiliaryInputs": [],
+        "sessionAttributes": {
+          "$Element_U1_ARI_RM_H": "N",
+          "$Element_U2_APC_H": "N",
+          "$Element_U2_ARR_H": "N",
+          "$Element_OO": "Y",
+          "$Element_PJ_APC_H": "Y",
+          "$Element_CC": "",
+          "$Element_U2_ARF_H": "N",
+          "$Element_CC_APP_H": "",
+          "$Element_U2_API_H": "N",
+          "$Element_CC_ARI_H": "",
+          "EM_Aeatsii_Fecha_Reg_Cont": "",
+          "$Element_BP_ARI_H": "Y",
+          "$Element_BP_ARI_RM_H": "Y",
+          "$Element_BP_ARC_H": "Y",
+          "InvoiceProcessButton": "Y",
+          "$Element_CC_ARC_H": "",
+          "$Element_U1_APC_H": "N",
+          "$Element_U1_ARF_H": "N",
+          "$Element_OO_ARR_H": "Y",
+          "$Element_U1_API_H": "N",
+          "AEATSII_PreSII_Invoice": "",
+          "_ShowAcct": "Y",
+          "$Element_U2": "",
+          "$Element_U1": "",
+          "$Element_U1_ARR_H": "N",
+          "$Element_BP_ARR_H": "Y",
+          "$Element_PJ": "Y",
+          "$Element_OO_APC_H": "Y",
+          "$Element_OO_ARF_H": "Y",
+          "$Element_PJ_API_H": "Y",
+          "$Element_MC": "",
+          "Iscashvat": "",
+          "$Element_PJ_ARR_H": "Y",
+          "$Element_PJ_ARF_H": "Y",
+          "$Element_CC_ARI_RM_H": "",
+          "$Element_OO_API_H": "Y",
+          "FinancialManagement": "Y",
+          "$Element_PJ_ARC_H": "Y",
+          "$Element_U2_APP_H": "N",
+          "$Element_U2_ARC_H": "N",
+          "$Element_U2_ARI_H": "N",
+          "$Element_CC_ARR_H": "",
+          "$Element_BP_API_H": "Y",
+          "$Element_CC_API_H": "",
+          "$Element_BP_ARF_H": "Y",
+          "$Element_CC_APC_H": "",
+          "$Element_CC_ARF_H": "",
+          "$Element_U1_ARC_H": "N",
+          "$Element_BP_APC_H": "Y",
+          "$IsAcctDimCentrally": "Y",
+          "$Element_OO_ARI_RM_H": "Y",
+          "ACCT_DIMENSION_DISPLAY": "",
+          "$Element_OO_APP_H": "Y",
+          "$Element_U1_ARI_H": "N",
+          "$Element_U2_ARI_RM_H": "N",
+          "$Element_BP_APP_H": "Y",
+          "$Element_U1_APP_H": "N",
+          "$Element_PJ_ARI_RM_H": "Y",
+          "$Element_OO_ARC_H": "Y",
+          "$Element_BP": "Y",
+          "$Element_PJ_APP_H": "Y",
+          "$Element_PJ_ARI_H": "Y",
+          "$Element_OO_ARI_H": "Y"
+        },
+        "dynamicCols": [
+          "inpadOrgId",
+          "inpissotrx",
+          "inpcBpartnerId",
+          "inpcDoctypetargetId",
+          "inpdateinvoiced",
+          "inpcBpartnerLocationId",
+          "inpfinPaymentmethodId",
+          "inpmPricelistId",
+          "inpdateacct",
+          "inpcProjectId",
+          "inpemAeatsiiDescriptionId",
+          "inpemAeatsiiIsauthorization"
+        ],
+        "noteCount": 0,
+        "attachmentCount": 0,
+        "attachmentExists": false
+      },
+      "duration_ms": 689,
+      "timestamp": "2026-02-19T17:03:56.438Z"
+    },
+    {
+      "seq": 4,
+      "transport": "xhr",
+      "method": "POST",
+      "url": "/etendo/org.openbravo.client.kernel?_action=org.openbravo.client.application.window.GetTabMessageActionHandler",
+      "request_payload": {
+        "tabId": "263"
+      },
+      "response_status": 200,
+      "response_body": {
+        "type": "TYPE_SUCCESS",
+        "title": "Process completed successfully",
+        "text": ""
+      },
+      "duration_ms": 774,
+      "timestamp": "2026-02-19T17:03:56.468Z"
+    },
+    {
+      "seq": 5,
+      "transport": "xhr",
+      "method": "POST",
+      "url": "/etendo/org.openbravo.service.datasource/InvoiceLine",
+      "request_payload": "_noCount=true&_orderBy=lineNo&%40Invoice.documentType%40=7FCD49652E104E6BB06C3A0D787412E3&%40Invoice.etblkpBulkposting%40=false&%40Invoice.client%40=23C59575B9CF467C9620760EB255B389&%40Invoice.id%40=F7FFE26463B84500BDFCD622A5DAE7A0&%40Invoice.salesTransaction%40=true&%40Invoice.organization%40=E443A31992CB4635AFCAEABE7183CE85&%40Invoice.invoiceDate%40=2026-02-19&%40Invoice.businessPartner%40=A6750F0D15334FB890C254369AC750A8&%40Invoice.totalPaid%40=0&%40Invoice.priceList%40=AEE66281A08F42B6BC509B8A80A33C29&%40Invoice.documentStatus%40=CO&%40Invoice.currency%40=102&%40Invoice.paymentComplete%40=false&%40Invoice.etblkpAccountingstatus%40=N&PromotionsDefined=N&IsReversalDocument=N&HAS_C_INVOICELINES=Y&DOCBASETYPE=ARI&VoidAutomaticallyCreated=0&showAddPayment=&ETVFAC_VoidInvoice=N&etvfac_has_configuration=N&TBAI_ExistTBAIConfig=0&TBAI_VoidedInvoiceSended=0&TBAI_ExistConfigAndIsAvailable=0&TBAI_isReturn=N&AEATSII_AcogidaSII=N&%24Element_U1_ARI_RM_H=N&%24Element_U2_APC_H=N&%24Element_U2_ARR_H=N&%24Element_OO=Y&%24Element_PJ_APC_H=Y&%24Element_CC=&%24Element_U2_ARF_H=N&%24Element_CC_APP_H=&%24Element_U2_API_H=N&%24Element_CC_ARI_H=&EM_Aeatsii_Fecha_Reg_Cont=&%24Element_BP_ARI_H=Y&%24Element_BP_ARI_RM_H=Y&%24Element_BP_ARC_H=Y&InvoiceProcessButton=Y&%24Element_CC_ARC_H=&%24Element_U1_APC_H=N&%24Element_U1_ARF_H=N&%24Element_OO_ARR_H=Y&%24Element_U1_API_H=N&AEATSII_PreSII_Invoice=&_ShowAcct=Y&%24Element_U2=&%24Element_U1=&%24Element_U1_ARR_H=N&%24Element_BP_ARR_H=Y&%24Element_PJ=Y&%24Element_OO_APC_H=Y&%24Element_OO_ARF_H=Y&%24Element_PJ_API_H=Y&%24Element_MC=&Iscashvat=&%24Element_PJ_ARR_H=Y&%24Element_PJ_ARF_H=Y&%24Element_CC_ARI_RM_H=&%24Element_OO_API_H=Y&FinancialManagement=Y&%24Element_PJ_ARC_H=Y&%24Element_U2_APP_H=N&%24Element_U2_ARC_H=N&%24Element_U2_ARI_H=N&%24Element_CC_ARR_H=&%24Element_BP_API_H=Y&%24Element_CC_API_H=&%24Element_BP_ARF_H=Y&%24Element_CC_APC_H=&%24Element_CC_ARF_H=&%24Element_U1_ARC_H=N&%24Element_BP_APC_H=Y&%24IsAcctDimCentrally=Y&%24Element_OO_ARI_RM_H=Y&ACCT_DIMENSION_DISPLAY=&%24Element_OO_APP_H=Y&%24Element_U1_ARI_H=N&%24Element_U2_ARI_RM_H=N&%24Element_BP_APP_H=Y&%24Element_U1_APP_H=N&%24Element_PJ_ARI_RM_H=Y&%24Element_OO_ARC_H=Y&%24Element_BP=Y&%24Element_PJ_APP_H=Y&%24Element_PJ_ARI_H=Y&%24Element_OO_ARI_H=Y&%40InvoiceLine.client%40=null&%40InvoiceLine.invoice%40=null&%40InvoiceLine.id%40=null&%40InvoiceLine.product%40=null&isImplicitFilterApplied=false&_selectedProperties=id%2Cclient%2Corganization%2CupdatedBy%2Cupdated%2CcreationDate%2CcreatedBy%2Cinvoice%2ClineNo%2ClineNetAmount%2Cexplode%2Cexplode%2CfinancialInvoiceLine%2CorderUOM%2CattributeSetValue%2Cdeferred%2Cinvoice%2Cproduct%2Cclient%2Cinvoice%2Cproduct%2CbusinessPartner%2Ctax%2Cinvoice%2Cproduct%2Cproduct%2Cinvoice%2Cproduct%2Cinvoice%2Cproduct%2Cinvoice%2ClineNo%2Cproduct%2CoperativeQuantity%2CoperativeUOM%2CinvoicedQuantity%2CuOM%2CunitPrice%2ClineNetAmount%2Ctax&windowId=167&tabId=270&moduleId=0&_operationType=fetch&_noActiveFilter=true&sendOriginalIDBack=true&_extraProperties=&Constants_IDENTIFIER=_identifier&Constants_FIELDSEPARATOR=%24&_className=OBViewDataSource&operator=and&_constructor=AdvancedCriteria&criteria=%7B%22fieldName%22%3A%22invoice%22%2C%22operator%22%3A%22equals%22%2C%22value%22%3A%22F7FFE26463B84500BDFCD622A5DAE7A0%22%2C%22_constructor%22%3A%22AdvancedCriteria%22%7D&_startRow=0&_endRow=100&_textMatchStyle=substring&_componentId=isc_OBViewGrid_1&_dataSource=isc_OBViewDataSource_23&isc_metaDataPrefix=_&isc_dataFormat=json",
+      "response_status": 200,
+      "response_body": {
+        "response": {
+          "startRow": 0,
+          "endRow": 0,
+          "totalRows": 1,
+          "data": [
+            {
+              "_identifier": "1000373 - 19-02-2026 - 7.21 - 10 - 5.96",
+              "_entityName": "InvoiceLine",
+              "$ref": "InvoiceLine/9204B86872014D82B59B0BA605B57EF9",
+              "id": "9204B86872014D82B59B0BA605B57EF9",
+              "client": "23C59575B9CF467C9620760EB255B389",
+              "client$_identifier": "F&B International Group",
+              "organization": "E443A31992CB4635AFCAEABE7183CE85",
+              "organization$_identifier": "F&B España - Región Norte",
+              "creationDate": "2026-02-19T17:03:25+00:00",
+              "createdBy": "100",
+              "createdBy$_identifier": "Admin",
+              "updated": "2026-02-19T17:03:55+00:00",
+              "updatedBy": "100",
+              "updatedBy$_identifier": "Admin",
+              "invoice": "F7FFE26463B84500BDFCD622A5DAE7A0",
+              "invoice$_identifier": "1000373 - 19-02-2026 - 7.21",
+              "lineNo": 10,
+              "financialInvoiceLine": false,
+              "product": "C11ECF6EF3BC4240B374DD5A76163A85",
+              "product$_identifier": "Bebida Energética 0,5L",
+              "invoicedQuantity": 4,
+              "unitPrice": 1.49,
+              "lineNetAmount": 5.96,
+              "uOM": "100",
+              "uOM$_identifier": "Unit",
+              "tax": "696801EA1AAF46A4AF56E367B40459AE",
+              "tax$_identifier": "Entregas IVA 21%",
+              "attributeSetValue": null,
+              "orderUOM": null,
+              "businessPartner": "A6750F0D15334FB890C254369AC750A8",
+              "businessPartner$_identifier": "Alimentos y Supermercados, S.A",
+              "deferred": false,
+              "explode": false,
+              "operativeUOM": "100",
+              "operativeUOM$_identifier": "Unit",
+              "operativeQuantity": 4,
+              "recordTime": 1771520637322
+            }
+          ],
+          "status": 0
+        }
+      },
+      "duration_ms": 804,
+      "timestamp": "2026-02-19T17:03:56.509Z"
+    },
+    {
+      "seq": 6,
+      "transport": "xhr",
+      "method": "POST",
+      "url": "/etendo/org.openbravo.client.kernel?MODE=SETSESSION&PARENT_ID=F7FFE26463B84500BDFCD622A5DAE7A0&TAB_ID=270&ROW_ID=9204B86872014D82B59B0BA605B57EF9&_action=org.openbravo.client.application.window.FormInitializationComponent",
+      "request_payload": {
+        "inptotallines": "5.96",
+        "inpadUserId": "6B1E8F0CA1524850AB3A7F9AE475A16F",
+        "inpemAprmAddpayment": "Y",
+        "inpposted": "N",
+        "inpemAprmProcessinvoice": "RE",
+        "inpdocaction": "RE",
+        "inpcreatefromorders": "N",
+        "inpcreatefrominouts": "N",
+        "inpcopyfrom": "N",
+        "inpadOrgtrxId": null,
+        "inptaxdate": null,
+        "inpcActivityId": null,
+        "inpcChargeId": null,
+        "inpchargeamt": null,
+        "inpdateordered": null,
+        "inpcDoctypeId": "7FCD49652E104E6BB06C3A0D787412E3",
+        "inpcalculatePromotions": "N",
+        "inpemEtafInvTraceability": "{\n    \"draft_invoice\": {\n        \"lines\": [\n            {\n                \"line\": 10,\n                \"c_aum\": \"100\",\n                \"aumqty\": 4,\n                \"created\": \"2026-02-19T17:03:25.876\",\n                \"explode\": \"N\",\n                \"updated\": \"2026-02-19T17:03:25.876\",\n                \"c_tax_id\": \"696801EA1AAF46A4AF56E367B40459AE\",\n                \"c_uom_id\": \"100\",\n                \"isactive\": \"Y\",\n                \"pricestd\": 1.49,\n                \"user1_id\": null,\n                \"user2_id\": null,\n                \"ad_org_id\": \"E443A31992CB4635AFCAEABE7183CE85\",\n                \"chargeamt\": 0,\n                \"createdby\": \"100\",\n                \"pricelist\": 1.49,\n                \"updatedby\": \"100\",\n                \"a_asset_id\": null,\n                \"account_id\": null,\n                \"isdeferred\": \"N\",\n                \"linenetamt\": 5.96,\n                \"m_offer_id\": null,\n                \"pricelimit\": 0,\n                \"taxbaseamt\": 5.96,\n                \"c_charge_id\": null,\n                \"c_period_id\": null,\n                \"defplantype\": null,\n                \"description\": null,\n                \"priceactual\": 1.49,\n                \"qtyinvoiced\": 4,\n                \"ad_client_id\": \"23C59575B9CF467C9620760EB255B389\",\n                \"c_invoice_id\": \"F7FFE26463B84500BDFCD622A5DAE7A0\",\n                \"c_project_id\": null,\n                \"m_product_id\": \"C11ECF6EF3BC4240B374DD5A76163A85\",\n                \"periodnumber\": null,\n                \"bom_parent_id\": null,\n                \"c_bpartner_id\": \"A6750F0D15334FB890C254369AC750A8\",\n                \"cancelpricead\": \"N\",\n                \"grosspricestd\": 0,\n                \"isdescription\": \"N\",\n                \"match_lccosts\": \"N\",\n                \"quantityorder\": null,\n                \"c_orderline_id\": null,\n                \"grosspricelist\": 0,\n                \"m_inoutline_id\": null,\n                \"c_costcenter_id\": null,\n                \"c_invoiceline_id\": \"9204B86872014D82B59B0BA605B57EF9\",\n                \"c_projectline_id\": null,\n                \"gross_unit_price\": 0,\n                \"iseditlinenetamt\": \"N\",\n                \"m_product_uom_id\": null,\n                \"line_gross_amount\": 0,\n                \"c_invoice_discount_id\": null,\n                \"excludeforwithholding\": \"N\",\n                \"financial_invoice_line\": \"N\",\n                \"s_resourceassignment_id\": null,\n                \"em_etra_linenetamt_wdisc\": 0,\n                \"m_attributesetinstance_id\": null,\n                \"em_etra_revised_for_rappel\": \"N\"\n            }\n        ],\n        \"header\": {\n            \"dueamt\": 0,\n            \"ispaid\": \"N\",\n            \"posted\": \"N\",\n            \"created\": \"2026-02-19T17:03:14.353\",\n            \"issotrx\": \"Y\",\n            \"taxdate\": null,\n            \"updated\": \"2026-02-19T17:03:14.353\",\n            \"copyfrom\": \"N\",\n            \"dateacct\": \"2026-02-19T00:00:00\",\n            \"isactive\": \"Y\",\n            \"user1_id\": null,\n            \"user2_id\": null,\n            \"ad_org_id\": \"E443A31992CB4635AFCAEABE7183CE85\",\n            \"chargeamt\": 0,\n            \"createdby\": \"100\",\n            \"docaction\": \"CO\",\n            \"docstatus\": \"DR\",\n            \"iscashvat\": \"N\",\n            \"isprinted\": \"N\",\n            \"processed\": \"N\",\n            \"totalpaid\": 0,\n            \"updatedby\": \"100\",\n            \"a_asset_id\": null,\n            \"ad_user_id\": \"6B1E8F0CA1524850AB3A7F9AE475A16F\",\n            \"c_order_id\": null,\n            \"createfrom\": \"N\",\n            \"documentno\": \"1000373\",\n            \"generateto\": \"N\",\n            \"grandtotal\": 7.21,\n            \"processing\": \"N\",\n            \"totallines\": 5.96,\n            \"c_charge_id\": null,\n            \"dateordered\": null,\n            \"dateprinted\": null,\n            \"daystilldue\": 0,\n            \"description\": null,\n            \"em_tbai_url\": null,\n            \"poreference\": null,\n            \"salesrep_id\": null,\n            \"ad_client_id\": \"23C59575B9CF467C9620760EB255B389\",\n            \"ad_orgtrx_id\": null,\n            \"c_doctype_id\": \"0\",\n            \"c_invoice_id\": \"F7FFE26463B84500BDFCD622A5DAE7A0\",\n            \"c_project_id\": null,\n            \"dateinvoiced\": \"2026-02-19T00:00:00\",\n            \"c_activity_id\": null,\n            \"c_bpartner_id\": \"A6750F0D15334FB890C254369AC750A8\",\n            \"c_campaign_id\": null,\n            \"c_currency_id\": \"102\",\n            \"em_etsg_is_f3\": \"N\",\n            \"isselfservice\": \"N\",\n            \"istaxincluded\": \"N\",\n            \"prepaymentamt\": 0,\n            \"em_aeatsii_dua\": null,\n            \"em_aeatsii_dup\": \"N\",\n            \"em_etvfac_hash\": null,\n            \"em_etvfac_void\": \"N\",\n            \"em_tbai_idtbai\": null,\n            \"em_tbai_issent\": \"N\",\n            \"em_tbai_qrcode\": \"N\",\n            \"m_pricelist_id\": \"AEE66281A08F42B6BC509B8A80A33C29\",\n            \"outstandingamt\": 0,\n            \"bpartner_extref\": null,\n            \"c_costcenter_id\": null,\n            \"daysoutstanding\": null,\n            \"em_aeatsii_hash\": null,\n            \"em_aeatsii_send\": \"N\",\n            \"em_etvfac_issue\": \"N\",\n            \"finalsettlement\": null,\n            \"c_paymentterm_id\": \"66BA1164A7394344BB9CD1A6ECEED05D\",\n            \"c_withholding_id\": null,\n            \"createfrominouts\": \"N\",\n            \"createfromorders\": \"N\",\n            \"em_aeatsii_modif\": \"N\",\n            \"em_etafdp_unvoid\": \"N\",\n            \"em_etvfac_qr_url\": null,\n            \"em_tbai_sequence\": 0,\n            \"em_aeatsii_estado\": \"PE\",\n            \"em_aeatsii_issent\": \"N\",\n            \"isdiscountprinted\": \"N\",\n            \"percentageoverdue\": null,\n            \"withholdingamount\": null,\n            \"c_doctypetarget_id\": \"7FCD49652E104E6BB06C3A0D787412E3\",\n            \"em_aeatsii_periodo\": null,\n            \"em_aprm_addpayment\": \"Y\",\n            \"em_etvfac_fax_copy\": null,\n            \"em_etvfac_inv_type\": \"F1\",\n            \"em_tbai_invoicenum\": null,\n            \"em_tbai_invoiceseq\": null,\n            \"em_tbai_issue_date\": null,\n            \"paidamtatinvoicing\": 0,\n            \"em_aeatsii_modified\": \"N\",\n            \"em_etaf_issuer_name\": \"F&B España, S.A\",\n            \"em_etvfac_city_copy\": null,\n            \"calculate_promotions\": \"N\",\n            \"em_aeatsii_ejercicio\": null,\n            \"em_aeatsii_error_msg\": null,\n            \"em_aeatsii_fecha_dua\": null,\n            \"em_aeatsii_insiidate\": null,\n            \"em_aeatsii_multi_dua\": \"N\",\n            \"em_etvfac_date_issue\": null,\n            \"em_etvfac_phone_copy\": null,\n            \"em_tbai_xmlgenerator\": \"N\",\n            \"fin_paymentmethod_id\": \"A97CFD2AFC234B59BB0A72189BD8FC2A\",\n            \"lastcalculatedondate\": null,\n            \"em_aeatsii_clave_tipo\": null,\n            \"em_aeatsii_date_issue\": null,\n            \"em_aeatsii_error_code\": null,\n            \"em_aeatsii_invoice_id\": \"F7FFE26463B84500BDFCD622A5DAE7A0\",\n            \"em_etblkp_bulkposting\": \"N\",\n            \"em_etvfac_postal_copy\": null,\n            \"em_etvfac_rect_create\": \"N\",\n            \"em_etvfac_region_copy\": null,\n            \"c_bpartner_location_id\": \"6518D3040ED54008A1FC0C09ED140D66\",\n            \"em_aeatsii_autofactura\": \"N\",\n            \"em_aeatsii_tipo_rectif\": null,\n            \"em_aeatsii_unsubscribe\": \"N\",\n            \"em_aprm_processinvoice\": \"CO\",\n            \"em_etpr_remove_payment\": \"N\",\n            \"em_etsg_date_operation\": \"2026-02-19T00:00:00\",\n            \"em_etvfac_bp_name_copy\": null,\n            \"em_etvfac_country_copy\": null,\n            \"em_etvfac_external_ref\": null,\n            \"em_etvfac_verifac_desc\": null,\n            \"em_tbai_date_operation\": null,\n            \"em_tbai_signaturevalue\": null,\n            \"em_etcopag_cop_feedback\": null,\n            \"em_etinter_interco_orig\": null,\n            \"em_etvfac_address1_copy\": null,\n            \"em_etvfac_bp_taxid_copy\": null,\n            \"em_etvfac_corrected_inv\": \"N\",\n            \"em_etvfac_invnoidart61d\": \"N\",\n            \"em_etvfac_is_gen_manual\": \"N\",\n            \"em_etvfac_issubsanation\": \"N\",\n            \"em_etvfac_org_name_copy\": null,\n            \"em_etvfac_senttoverifac\": \"N\",\n            \"fin_payment_priority_id\": null,\n            \"em_aeatsii_clave_tipo_fc\": null,\n            \"em_aeatsii_motivo_rectif\": null,\n            \"em_etabam_bankaccount_id\": null,\n            \"em_etaf_inv_traceability\": null,\n            \"em_etblkc_bulkcompletion\": \"N\",\n            \"em_etvfac_date_operation\": null,\n            \"em_etvfac_invoice_status\": \"PE\",\n            \"em_etvfac_org_taxid_copy\": null,\n            \"em_etvfac_reverseinvtype\": null,\n            \"em_etvfac_simpinvart7273\": \"N\",\n            \"em_tbai_isreverseinvoice\": \"N\",\n            \"em_tbai_voidxmlgenerator\": \"N\",\n            \"em_aeatsii_description_id\": null,\n            \"em_aeatsii_fecha_reg_cont\": null,\n            \"em_aeatsii_authorizationno\": null,\n            \"em_aeatsii_descripcion_sii\": null,\n            \"em_aeatsii_error_registral\": \"N\",\n            \"em_aeatsii_fecha_operacion\": null,\n            \"em_aeatsii_isauthorization\": \"N\",\n            \"em_etblkp_accountingstatus\": \"N\",\n            \"em_tbai_reverseinvoicecode\": null,\n            \"em_tbai_reverseinvoicetype\": null,\n            \"em_etvfac_contact_name_copy\": null,\n            \"em_etvfac_issue_description\": null,\n            \"em_etvfac_issued_externally\": \"N\",\n            \"em_etvfac_org_location_copy\": null,\n            \"em_aeatsii_cause_exemption_id\": null,\n            \"em_aeatsii_pur_description_id\": null\n        }\n    },\n    \"related_orders\": [\n    ],\n    \"related_in_out_movements\": [\n    ]\n}",
+        "inpaAssetId": null,
+        "inpemTbaiQrcode": "N",
+        "inpemEtblkpBulkposting": "N",
+        "inpemEtvfacRectCreate": "N",
+        "inpemEtvfacSenttoverifac": "N",
+        "inpemTbaiXmlgenerator": "N",
+        "inpemEtblkcBulkcompletion": "N",
+        "inpemEtvfacIsGenManual": "N",
+        "inpemEtprRemovePayment": "N",
+        "inpemEtafdpUnvoid": "N",
+        "inpemTbaiVoidxmlgenerator": "N",
+        "inpemAeatsiiSend": "N",
+        "inpemAeatsiiModif": "N",
+        "inpcWithholdingId": null,
+        "inpcreated": "19-02-2026 17:03:25",
+        "inpadClientId": "23C59575B9CF467C9620760EB255B389",
+        "inpcInvoiceId": "F7FFE26463B84500BDFCD622A5DAE7A0",
+        "inpprocessed": "Y",
+        "inpprocessing": "N",
+        "inpdateprinted": null,
+        "inpissotrx": "Y",
+        "inplastcalculatedondate": "19-02-2026",
+        "inpisdiscountprinted": "N",
+        "inpisprinted": "N",
+        "inpistaxincluded": "N",
+        "inpgenerateto": "N",
+        "inpisselfservice": "N",
+        "C_Invoice_ID": "F7FFE26463B84500BDFCD622A5DAE7A0",
+        "inpadOrgId": "E443A31992CB4635AFCAEABE7183CE85",
+        "inpcDoctypetargetId": "7FCD49652E104E6BB06C3A0D787412E3",
+        "inpdocumentno": "1000373",
+        "inpdateinvoiced": "19-02-2026",
+        "inpcBpartnerId": "A6750F0D15334FB890C254369AC750A8",
+        "inpemEtabamBankaccountId": null,
+        "inpcBpartnerLocationId": "6518D3040ED54008A1FC0C09ED140D66",
+        "inpdescription": null,
+        "inpcPaymenttermId": "66BA1164A7394344BB9CD1A6ECEED05D",
+        "inpfinPaymentmethodId": "A97CFD2AFC234B59BB0A72189BD8FC2A",
+        "inpemTbaiIsreverseinvoice": "N",
+        "inptotalpaid": "0.00",
+        "inpoutstandingamt": "7.21",
+        "inpdueamt": "0.00",
+        "inpdaystilldue": "32",
+        "inppercentageoverdue": null,
+        "inpfinalsettlement": null,
+        "inpdaysoutstanding": null,
+        "inpmPricelistId": "AEE66281A08F42B6BC509B8A80A33C29",
+        "inpsalesrepId": null,
+        "inpcOrderId": null,
+        "inpporeference": null,
+        "inpdateacct": "19-02-2026",
+        "inpiscashvat": "N",
+        "inpbpartnerExtref": null,
+        "inpisactive": "",
+        "inpemEtafIssuerName": "F&B España, S.A",
+        "inpcProjectId": null,
+        "inpcCostcenterId": null,
+        "inpcCampaignId": null,
+        "inpuser1Id": null,
+        "inpuser2Id": null,
+        "inpemEtsgDateOperation": "19-02-2026",
+        "inpemEtvfacInvoiceStatus": "PE",
+        "inpemEtvfacInvType": "F1",
+        "inpemEtvfacVerifacDesc": null,
+        "inpemEtvfacIssubsanation": "N",
+        "inpemEtvfacReverseinvtype": null,
+        "inpemEtvfacExternalRef": null,
+        "inpemEtvfacSimpinvart7273": "N",
+        "inpemEtvfacInvnoidart61d": "N",
+        "inpemEtvfacIssue": "N",
+        "inpemEtvfacQrUrl": null,
+        "inpemEtvfacCorrectedInv": "N",
+        "inpemEtvfacDateIssue": null,
+        "inpemEtvfacIssueDescription": null,
+        "inpemEtvfacIssuedExternally": "N",
+        "inpemTbaiSequence": "0",
+        "inpemTbaiInvoicenum": null,
+        "inpemTbaiInvoiceseq": null,
+        "inpemTbaiReverseinvoicecode": null,
+        "inpemTbaiReverseinvoicetype": null,
+        "inpemEtinterIntercoOrig": null,
+        "inpemAeatsiiClaveTipo": null,
+        "inpemAeatsiiTipoRectif": null,
+        "inpemAeatsiiMotivoRectif": null,
+        "inpemAeatsiiDescriptionId": null,
+        "inpemAeatsiiDescripcionSii": null,
+        "inpemAeatsiiErrorRegistral": "N",
+        "inpemAeatsiiEjercicio": null,
+        "inpemAeatsiiPeriodo": null,
+        "inpemAeatsiiCauseExemptionId": null,
+        "inpemAeatsiiIsauthorization": "N",
+        "inpemAeatsiiAuthorizationno": null,
+        "inpwithholdingamount": "0.00",
+        "inpdocstatus": "CO",
+        "inpgrandtotal": "7.21",
+        "inpcCurrencyId": "102",
+        "inpispaid": "N",
+        "inpprepaymentamt": "0.00",
+        "inppaidamtatinvoicing": "0.00",
+        "inpemEtvfacVoid": "N",
+        "inpemEtblkpAccountingstatus": "N",
+        "inpemTbaiIssent": "N",
+        "inpemAeatsiiIssent": "N",
+        "inpemAeatsiiModified": "N",
+        "inpemAeatsiiEstado": "PE",
+        "inpTabId": "270",
+        "inpwindowId": "167",
+        "inpTableId": "333",
+        "inpkeyColumnId": "C_InvoiceLine_ID",
+        "keyProperty": "id",
+        "inpKeyName": "inpcInvoicelineId",
+        "keyColumnName": "C_InvoiceLine_ID",
+        "keyPropertyType": "_id_13",
+        "PromotionsDefined": "N",
+        "IsReversalDocument": "N",
+        "HAS_C_INVOICELINES": "Y",
+        "DOCBASETYPE": "ARI",
+        "VoidAutomaticallyCreated": 0,
+        "showAddPayment": "",
+        "ETVFAC_VoidInvoice": "N",
+        "etvfac_has_configuration": "N",
+        "TBAI_ExistTBAIConfig": 0,
+        "TBAI_VoidedInvoiceSended": 0,
+        "TBAI_ExistConfigAndIsAvailable": 0,
+        "TBAI_isReturn": "N",
+        "AEATSII_AcogidaSII": "N",
+        "$Element_U1_ARI_RM_H": "N",
+        "$Element_U2_APC_H": "N",
+        "$Element_U2_ARR_H": "N",
+        "$Element_OO": "Y",
+        "$Element_PJ_APC_H": "Y",
+        "$Element_CC": "",
+        "$Element_U2_ARF_H": "N",
+        "$Element_CC_APP_H": "",
+        "$Element_U2_API_H": "N",
+        "$Element_CC_ARI_H": "",
+        "EM_Aeatsii_Fecha_Reg_Cont": "",
+        "$Element_BP_ARI_H": "Y",
+        "$Element_BP_ARI_RM_H": "Y",
+        "$Element_BP_ARC_H": "Y",
+        "InvoiceProcessButton": "Y",
+        "$Element_CC_ARC_H": "",
+        "$Element_U1_APC_H": "N",
+        "$Element_U1_ARF_H": "N",
+        "$Element_OO_ARR_H": "Y",
+        "$Element_U1_API_H": "N",
+        "AEATSII_PreSII_Invoice": "",
+        "_ShowAcct": "Y",
+        "$Element_U2": "",
+        "$Element_U1": "",
+        "$Element_U1_ARR_H": "N",
+        "$Element_BP_ARR_H": "Y",
+        "$Element_PJ": "Y",
+        "$Element_OO_APC_H": "Y",
+        "$Element_OO_ARF_H": "Y",
+        "$Element_PJ_API_H": "Y",
+        "$Element_MC": "",
+        "Iscashvat": "",
+        "$Element_PJ_ARR_H": "Y",
+        "$Element_PJ_ARF_H": "Y",
+        "$Element_CC_ARI_RM_H": "",
+        "$Element_OO_API_H": "Y",
+        "FinancialManagement": "Y",
+        "$Element_PJ_ARC_H": "Y",
+        "$Element_U2_APP_H": "N",
+        "$Element_U2_ARC_H": "N",
+        "$Element_U2_ARI_H": "N",
+        "$Element_CC_ARR_H": "",
+        "$Element_BP_API_H": "Y",
+        "$Element_CC_API_H": "",
+        "$Element_BP_ARF_H": "Y",
+        "$Element_CC_APC_H": "",
+        "$Element_CC_ARF_H": "",
+        "$Element_U1_ARC_H": "N",
+        "$Element_BP_APC_H": "Y",
+        "$IsAcctDimCentrally": "Y",
+        "$Element_OO_ARI_RM_H": "Y",
+        "ACCT_DIMENSION_DISPLAY": "",
+        "$Element_OO_APP_H": "Y",
+        "$Element_U1_ARI_H": "N",
+        "$Element_U2_ARI_RM_H": "N",
+        "$Element_BP_APP_H": "Y",
+        "$Element_U1_APP_H": "N",
+        "$Element_PJ_ARI_RM_H": "Y",
+        "$Element_OO_ARC_H": "Y",
+        "$Element_BP": "Y",
+        "$Element_PJ_APP_H": "Y",
+        "$Element_PJ_ARI_H": "Y",
+        "$Element_OO_ARI_H": "Y",
+        "inpiseditlinenetamt": "",
+        "inpexcludeforwithholding": "",
+        "inpmProductUomId": null,
+        "inpquantityorder": null,
+        "inpexplode": "N",
+        "inpbomParentId": null,
+        "inpcInvoicelineId": "9204B86872014D82B59B0BA605B57EF9",
+        "inppricelimit": null,
+        "inpsResourceassignmentId": null,
+        "inpcInvoiceDiscountId": null,
+        "inpcProjectlineId": null,
+        "inpmOfferId": null,
+        "inpisdescription": "",
+        "C_InvoiceLine_ID": "9204B86872014D82B59B0BA605B57EF9",
+        "inpline": "10",
+        "inpmProductId": "C11ECF6EF3BC4240B374DD5A76163A85",
+        "inpaumqty": "4",
+        "inpcAum": "100",
+        "inpqtyinvoiced": "4",
+        "inpcUomId": "100",
+        "inppriceactual": "1.49",
+        "inpgrossUnitPrice": null,
+        "inplinenetamt": "5.96",
+        "inplineGrossAmount": null,
+        "inpcTaxId": "696801EA1AAF46A4AF56E367B40459AE",
+        "inpemEtraRevisedForRappel": "",
+        "inppricelist": null,
+        "inpgrosspricelist": null,
+        "inpfinancialInvoiceLine": "N",
+        "inpaccountId": null,
+        "inpmAttributesetinstanceId": null,
+        "inpcOrderlineId": null,
+        "inpmInoutlineId": null,
+        "inptaxbaseamt": null,
+        "inpisdeferred": "N",
+        "inpcancelpricead": "",
+        "inpgrosspricestd": null,
+        "inppricestd": null,
+        "inpdefplantype": null,
+        "inpperiodnumber": null,
+        "inpcPeriodId": null,
+        "_gridVisibleProperties": [
+          "lineNo",
+          "product",
+          "operativeQuantity",
+          "operativeUOM",
+          "invoicedQuantity",
+          "uOM",
+          "unitPrice",
+          "lineNetAmount",
+          "tax"
+        ]
+      },
+      "response_status": 200,
+      "response_body": {
+        "auxiliaryInputValues": {
+          "HASSECONDUOM": {
+            "value": 0,
+            "classicValue": 0
+          },
+          "C_BPARTNER_ID": {
+            "value": "A6750F0D15334FB890C254369AC750A8",
+            "classicValue": "A6750F0D15334FB890C254369AC750A8"
+          },
+          "UsesAlternate": {
+            "value": "N",
+            "classicValue": "N"
+          },
+          "Parent_AD_Org": {
+            "value": "E443A31992CB4635AFCAEABE7183CE85",
+            "classicValue": "E443A31992CB4635AFCAEABE7183CE85"
+          },
+          "isBOM": {
+            "value": "N",
+            "classicValue": "N"
+          },
+          "IsStocked": {
+            "value": "Y",
+            "classicValue": "Y"
+          },
+          "Processed": {
+            "value": "Y",
+            "classicValue": "Y"
+          },
+          "ATTRSETVALUETYPE": {},
+          "Posted": {
+            "value": "N",
+            "classicValue": "N"
+          },
+          "ATTRIBUTESET": {},
+          "DOCBASETYPE": {
+            "value": "ARI",
+            "classicValue": "ARI"
+          },
+          "GROSSPRICE": {
+            "value": "N",
+            "classicValue": "N"
+          }
+        },
+        "overwrittenAuxiliaryInputs": [],
+        "sessionAttributes": {
+          "$Element_U2_APC_L": "N",
+          "$Element_U2_ARI_L": "N",
+          "$Element_OO": "Y",
+          "$Element_CC": "",
+          "$Element_U2_API_L": "N",
+          "$Element_U2_ARC_L": "N",
+          "$Element_U1_ARI_RM_L": "N",
+          "$Element_U2_ARF_L": "N",
+          "$Element_CC_ARI_L": "",
+          "$Element_BP_API_L": "N",
+          "$Element_CC_API_L": "",
+          "$Element_CC_APC_L": "",
+          "$Element_BP_ARF_L": "N",
+          "$Element_AS": "",
+          "$Element_BP_ARI_L": "N",
+          "$Element_BP_ARI_RM_L": "N",
+          "$Element_CC_ARF_L": "",
+          "$Element_BP_ARC_L": "N",
+          "$Element_CC_ARC_L": "",
+          "$Element_BP_APC_L": "N",
+          "$IsAcctDimCentrally": "Y",
+          "$Element_U1_ARC_L": "N",
+          "ACCT_DIMENSION_DISPLAY": "",
+          "$Element_OO_ARI_RM_L": "N",
+          "$Element_U1_APC_L": "N",
+          "$Element_U1_ARF_L": "N",
+          "UomManagement": "Y",
+          "$Element_U2_ARI_RM_L": "N",
+          "$Element_U1_API_L": "N",
+          "$Element_U1_ARI_L": "N",
+          "$Element_U2": "",
+          "$Element_U1": "",
+          "$Element_PJ": "Y",
+          "$Element_OO_ARC_L": "N",
+          "Iscashvat": "",
+          "$Element_PJ_APC_L": "Y",
+          "$Element_PJ_ARI_RM_L": "Y",
+          "$Element_PJ_ARC_L": "Y",
+          "$Element_OO_API_L": "N",
+          "$Element_BP": "Y",
+          "$Element_OO_ARI_L": "N",
+          "$Element_OO_APC_L": "N",
+          "$Element_OO_ARF_L": "N",
+          "$Element_PJ_ARF_L": "Y",
+          "$Element_PJ_API_L": "Y",
+          "$Element_CC_ARI_RM_L": "",
+          "$Element_PJ_ARI_L": "Y"
+        },
+        "dynamicCols": [
+          "inpmProductId",
+          "inpadClientId",
+          "inpadOrgId",
+          "inpaumqty",
+          "inpcAum",
+          "inpqtyinvoiced",
+          "inppriceactual",
+          "inpgrossUnitPrice",
+          "inplinenetamt",
+          "inpcTaxId",
+          "inpaccountId",
+          "inpmProductUomId",
+          "inpquantityorder",
+          "inpcancelpricead",
+          "inpcChargeId"
+        ],
+        "attachmentCount": 0,
+        "attachmentExists": false
+      },
+      "duration_ms": 422,
+      "timestamp": "2026-02-19T17:03:57.505Z"
+    }
+  ]
+}

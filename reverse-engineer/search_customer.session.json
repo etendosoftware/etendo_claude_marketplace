@@ -1,0 +1,108 @@
+{
+  "operation": "search_customer",
+  "phase": "execution",
+  "etendo_version": "26Q1",
+  "recorded_at": "2026-02-19T16:57:19.509Z",
+  "calls": [
+    {
+      "seq": 1,
+      "transport": "xhr",
+      "method": "POST",
+      "url": "/etendo/org.openbravo.service.datasource/F8DD408F2F3A414188668836F84C21AF",
+      "request_payload": "inpcReturnReasonId=null&inprmPickfromshipment=false&inprmReceivematerials=false&inprmCreateinvoice=false&inptotallines=0&inpadUserId=100&inpcDoctypeId=0&inpsoResStatus=null&inpemAprmAddpayment=false&inpdocaction=CO&inpcopyfrom=false&inpcopyfrompo=false&inpdeliveryviarule=P&inpmShipperId=null&inpdeliveryrule=A&inpfreightcostrule=I&inpfreightamt=0&inpisdiscountprinted=false&inppriorityrule=5&inpcCampaignId=null&inpchargeamt=0&inpcChargeId=null&inpcActivityId=null&inpadOrgtrxId=null&inpemObwplGenpickinglist=false&inpcalculatePromotions=false&inprmAddorphanline=false&inpconvertquotation=false&inpcRejectReasonId=null&inpvaliduntil=null&inpreplacementorderId=null&inpcancelandreplace=false&inppaymentstatus=null&inpconfirmcancelandreplace=false&inpemEtblkcBulkcompletion=false&inpemEtprRemovePayment=false&inpemEtafdpUndoclose=false&inpemEquotChangebpandpl=false&inpcOrderId=null&inpadClientId=23C59575B9CF467C9620760EB255B389&inpisinvoiced=false&inpisprinted=false&inpdateacct=2026-02-19&inpprocessing=false&inpprocessed=false&inpdateprinted=null&inpissotrx=true&inppaymentrule=P&inpposted=N&inpistaxincluded=false&inpisselected=false&inpdropshipUserId=null&inpdropshipBpartnerId=null&inpdropshipLocationId=null&inpisselfservice=false&inpgeneratetemplate=false&inpdeliverynotes=null&inpcIncotermsId=null&inpincotermsdescription=null&C_Order_ID=null&inpadOrgId=E443A31992CB4635AFCAEABE7183CE85&inpcDoctypetargetId=466AF4B0136A4A3F9F84129711DA8BD3&inpdocumentno=%3C1000366%3E&inpdateordered=2026-02-19&inpcBpartnerId=null&inpemEtabamBankaccountId=null&inpcBpartnerLocationId=null&inpmPricelistId=AEE66281A08F42B6BC509B8A80A33C29&inpdatepromised=2026-02-19&inpemEquotDeliverytime=5&inpemEquotOumdeliverytime=WEEK&inpfinPaymentmethodId=null&inpcPaymenttermId=B62EDD9166D146539E9A19C05BCF85E5&inpmWarehouseId=B2D40D8A5D644DD89E329DC297309055&inpinvoicerule=D&inpemObwplReadypl=false&inpporeference=null&inpsalesrepId=null&inpdescription=null&inpbilltoId=null&inpdeliveryLocationId=null&inpquotationId=null&inpiscashvat=false&inpcancelledorderId=null&inpreplacedorderId=null&inpiscancelled=false&inpbpartnerExtref=null&inpemAeatsiiFechaOperacion=null&inpemAeatsiiDescripcionSii=null&inpcProjectId=null&inpcCostcenterId=null&inpaAssetId=null&inpuser1Id=null&inpuser2Id=null&inpemEquotOrigOrder=null&inpemEtvfacReversedInvoice=null&inpemEtinterIntercoOrig=null&inpisactive=true&inpdocstatus=DR&inpgrandtotal=0&inpcCurrencyId=102&inpdeliverystatus=null&inpinvoicestatus=null&inpemObwplIsinpickinglist=false&inpisdelivered=false&inpTabId=186&inpwindowId=143&inpTableId=259&inpkeyColumnId=C_Order_ID&keyProperty=id&inpKeyName=inpcOrderId&keyColumnName=C_Order_ID&keyPropertyType=_id_13&ORDERTYPE=SO&DOCBASETYPE=SOO&showAddPayment=&PromotionsDefined=N&APRM_OrderIsPaid=&AEATSII_AcogidaSII4=N&%24Element_U2_SOO_H=N&%24Element_U2_ARR_H=N&EnableCanceAndReplace=&%24Element_U2_APP_H=N&StockReservations=Y&Replacementorder_ID=&%24Element_OO=Y&%24Element_CC=&%24Element_OO_POO_H=Y&%24Element_U1_POO_H=N&%24Element_PJ_SOO_H=Y&%24Element_CC_APP_H=&%24Element_CC_ARR_H=&%24Element_BP_POO_H=Y&%24Element_AS=&%24Element_BP_SOO_H=Y&%24Element_CC_SOO_H=&%24Element_U1_SOO_H=N&%24IsAcctDimCentrally=Y&ACCT_DIMENSION_DISPLAY=&HASRELATEDSERVICE=N&%24Element_OO_ARR_H=Y&%24Element_U2_POO_H=N&%24Element_OO_APP_H=Y&%24Element_U2=&%24Element_BP_APP_H=Y&%24Element_U1=&%24Element_U1_ARR_H=N&%24Element_BP_ARR_H=Y&%24Element_PJ=Y&%24Element_CC_POO_H=&%24Element_U1_APP_H=N&PRODUCTTYPE=I&%24Element_PJ_POO_H=Y&%24Element_PJ_ARR_H=Y&EQUOT_changebp_salesorder=N&%24Element_OO_SOO_H=Y&%24Element_BP=Y&%24Element_PJ_APP_H=Y&windowId=143&tabId=186&moduleId=0&_org=E443A31992CB4635AFCAEABE7183CE85&_selectorDefinitionId=862F54CB1B074513BD791C6789F4AA42&filterClass=org.openbravo.userinterface.selector.SelectorDataSourceFilter&_sortBy=name&_selectedProperties=id%2Cname&_extraProperties=bpid%2Cname%2C&_noCount=true&recordIdInForm=_1771520235613&adTabId=186&Constants_IDENTIFIER=_identifier&Constants_FIELDSEPARATOR=%24&targetProperty=businessPartner&columnName=C_BPartner_ID&IsSelectorItem=true&operator=or&_constructor=AdvancedCriteria&criteria=%7B%22fieldName%22%3A%22_dummy%22%2C%22operator%22%3A%22equals%22%2C%22value%22%3A1771520242363%2C%22_constructor%22%3A%22AdvancedCriteria%22%7D&_operationType=fetch&_startRow=0&_endRow=75&_textMatchStyle=substring&_componentId=isc_PickListMenu_3&_dataSource=isc_OBRestDataSource_78&isc_metaDataPrefix=_&isc_dataFormat=json",
+      "response_status": 200,
+      "response_body": {
+        "response": {
+          "status": 0,
+          "startRow": 0,
+          "endRow": 1,
+          "totalRows": 2,
+          "data": [
+            {
+              "category": "Customer - Tier 1",
+              "value": "ES-C1/0001",
+              "creditAvailable": -151.65,
+              "creditUsed": 151.65,
+              "name": "Alimentos y Supermercados, S.A",
+              "customer": true,
+              "bpid": "A6750F0D15334FB890C254369AC750A8",
+              "vendor": false
+            },
+            {
+              "category": "Customer - Tier 2",
+              "value": "ES-C2/0001",
+              "creditAvailable": -29.32,
+              "creditUsed": 29.32,
+              "name": "Restaurantes Luna Llena, S.A.",
+              "customer": true,
+              "bpid": "44CB679908C64EF5B852E8DB8A1AA061",
+              "vendor": false
+            }
+          ]
+        }
+      },
+      "duration_ms": 844,
+      "timestamp": "2026-02-19T16:57:22.365Z"
+    },
+    {
+      "seq": 2,
+      "transport": "xhr",
+      "method": "POST",
+      "url": "/etendo/org.openbravo.service.datasource/F8DD408F2F3A414188668836F84C21AF",
+      "request_payload": "inpcReturnReasonId=null&inprmPickfromshipment=false&inprmReceivematerials=false&inprmCreateinvoice=false&inptotallines=0&inpadUserId=100&inpcDoctypeId=0&inpsoResStatus=null&inpemAprmAddpayment=false&inpdocaction=CO&inpcopyfrom=false&inpcopyfrompo=false&inpdeliveryviarule=P&inpmShipperId=null&inpdeliveryrule=A&inpfreightcostrule=I&inpfreightamt=0&inpisdiscountprinted=false&inppriorityrule=5&inpcCampaignId=null&inpchargeamt=0&inpcChargeId=null&inpcActivityId=null&inpadOrgtrxId=null&inpemObwplGenpickinglist=false&inpcalculatePromotions=false&inprmAddorphanline=false&inpconvertquotation=false&inpcRejectReasonId=null&inpvaliduntil=null&inpreplacementorderId=null&inpcancelandreplace=false&inppaymentstatus=null&inpconfirmcancelandreplace=false&inpemEtblkcBulkcompletion=false&inpemEtprRemovePayment=false&inpemEtafdpUndoclose=false&inpemEquotChangebpandpl=false&inpcOrderId=null&inpadClientId=23C59575B9CF467C9620760EB255B389&inpisinvoiced=false&inpisprinted=false&inpdateacct=2026-02-19&inpprocessing=false&inpprocessed=false&inpdateprinted=null&inpissotrx=true&inppaymentrule=P&inpposted=N&inpistaxincluded=false&inpisselected=false&inpdropshipUserId=null&inpdropshipBpartnerId=null&inpdropshipLocationId=null&inpisselfservice=false&inpgeneratetemplate=false&inpdeliverynotes=null&inpcIncotermsId=null&inpincotermsdescription=null&C_Order_ID=null&inpadOrgId=E443A31992CB4635AFCAEABE7183CE85&inpcDoctypetargetId=466AF4B0136A4A3F9F84129711DA8BD3&inpdocumentno=%3C1000366%3E&inpdateordered=2026-02-19&inpcBpartnerId=null&inpemEtabamBankaccountId=null&inpcBpartnerLocationId=null&inpmPricelistId=AEE66281A08F42B6BC509B8A80A33C29&inpdatepromised=2026-02-19&inpemEquotDeliverytime=5&inpemEquotOumdeliverytime=WEEK&inpfinPaymentmethodId=null&inpcPaymenttermId=B62EDD9166D146539E9A19C05BCF85E5&inpmWarehouseId=B2D40D8A5D644DD89E329DC297309055&inpinvoicerule=D&inpemObwplReadypl=false&inpporeference=null&inpsalesrepId=null&inpdescription=null&inpbilltoId=null&inpdeliveryLocationId=null&inpquotationId=null&inpiscashvat=false&inpcancelledorderId=null&inpreplacedorderId=null&inpiscancelled=false&inpbpartnerExtref=null&inpemAeatsiiFechaOperacion=null&inpemAeatsiiDescripcionSii=null&inpcProjectId=null&inpcCostcenterId=null&inpaAssetId=null&inpuser1Id=null&inpuser2Id=null&inpemEquotOrigOrder=null&inpemEtvfacReversedInvoice=null&inpemEtinterIntercoOrig=null&inpisactive=true&inpdocstatus=DR&inpgrandtotal=0&inpcCurrencyId=102&inpdeliverystatus=null&inpinvoicestatus=null&inpemObwplIsinpickinglist=false&inpisdelivered=false&inpTabId=186&inpwindowId=143&inpTableId=259&inpkeyColumnId=C_Order_ID&keyProperty=id&inpKeyName=inpcOrderId&keyColumnName=C_Order_ID&keyPropertyType=_id_13&ORDERTYPE=SO&DOCBASETYPE=SOO&showAddPayment=&PromotionsDefined=N&APRM_OrderIsPaid=&AEATSII_AcogidaSII4=N&%24Element_U2_SOO_H=N&%24Element_U2_ARR_H=N&EnableCanceAndReplace=&%24Element_U2_APP_H=N&StockReservations=Y&Replacementorder_ID=&%24Element_OO=Y&%24Element_CC=&%24Element_OO_POO_H=Y&%24Element_U1_POO_H=N&%24Element_PJ_SOO_H=Y&%24Element_CC_APP_H=&%24Element_CC_ARR_H=&%24Element_BP_POO_H=Y&%24Element_AS=&%24Element_BP_SOO_H=Y&%24Element_CC_SOO_H=&%24Element_U1_SOO_H=N&%24IsAcctDimCentrally=Y&ACCT_DIMENSION_DISPLAY=&HASRELATEDSERVICE=N&%24Element_OO_ARR_H=Y&%24Element_U2_POO_H=N&%24Element_OO_APP_H=Y&%24Element_U2=&%24Element_BP_APP_H=Y&%24Element_U1=&%24Element_U1_ARR_H=N&%24Element_BP_ARR_H=Y&%24Element_PJ=Y&%24Element_CC_POO_H=&%24Element_U1_APP_H=N&PRODUCTTYPE=I&%24Element_PJ_POO_H=Y&%24Element_PJ_ARR_H=Y&EQUOT_changebp_salesorder=N&%24Element_OO_SOO_H=Y&%24Element_BP=Y&%24Element_PJ_APP_H=Y&windowId=143&tabId=186&moduleId=0&_org=E443A31992CB4635AFCAEABE7183CE85&_selectorDefinitionId=862F54CB1B074513BD791C6789F4AA42&filterClass=org.openbravo.userinterface.selector.SelectorDataSourceFilter&_sortBy=name&_selectedProperties=id%2Cname&_extraProperties=bpid%2Cname%2C&_noCount=true&_OrExpression=true&recordIdInForm=_1771520235613&adTabId=186&Constants_IDENTIFIER=_identifier&Constants_FIELDSEPARATOR=%24&targetProperty=businessPartner&columnName=C_BPartner_ID&IsSelectorItem=true&operator=or&_constructor=AdvancedCriteria&criteria=%7B%22fieldName%22%3A%22_dummy%22%2C%22operator%22%3A%22equals%22%2C%22value%22%3A1771520245125%7D&criteria=%7B%22fieldName%22%3A%22value%22%2C%22operator%22%3A%22iContains%22%2C%22value%22%3A%22re%22%7D&criteria=%7B%22fieldName%22%3A%22name%22%2C%22operator%22%3A%22iContains%22%2C%22value%22%3A%22re%22%7D&_operationType=fetch&_startRow=0&_endRow=75&_textMatchStyle=substring&_componentId=isc_PickListMenu_3&_dataSource=isc_OBRestDataSource_78&isc_metaDataPrefix=_&isc_dataFormat=json",
+      "response_status": 200,
+      "response_body": {
+        "response": {
+          "status": 0,
+          "startRow": 0,
+          "endRow": 0,
+          "totalRows": 1,
+          "data": [
+            {
+              "category": "Customer - Tier 2",
+              "value": "ES-C2/0001",
+              "creditAvailable": -29.32,
+              "creditUsed": 29.32,
+              "name": "Restaurantes Luna Llena, S.A.",
+              "customer": true,
+              "bpid": "44CB679908C64EF5B852E8DB8A1AA061",
+              "vendor": false
+            }
+          ]
+        }
+      },
+      "duration_ms": 276,
+      "timestamp": "2026-02-19T16:57:25.126Z"
+    },
+    {
+      "seq": 3,
+      "transport": "xhr",
+      "method": "POST",
+      "url": "/etendo/org.openbravo.service.datasource/F8DD408F2F3A414188668836F84C21AF",
+      "request_payload": "inpcReturnReasonId=null&inprmPickfromshipment=false&inprmReceivematerials=false&inprmCreateinvoice=false&inptotallines=0&inpadUserId=100&inpcDoctypeId=0&inpsoResStatus=null&inpemAprmAddpayment=false&inpdocaction=CO&inpcopyfrom=false&inpcopyfrompo=false&inpdeliveryviarule=P&inpmShipperId=null&inpdeliveryrule=A&inpfreightcostrule=I&inpfreightamt=0&inpisdiscountprinted=false&inppriorityrule=5&inpcCampaignId=null&inpchargeamt=0&inpcChargeId=null&inpcActivityId=null&inpadOrgtrxId=null&inpemObwplGenpickinglist=false&inpcalculatePromotions=false&inprmAddorphanline=false&inpconvertquotation=false&inpcRejectReasonId=null&inpvaliduntil=null&inpreplacementorderId=null&inpcancelandreplace=false&inppaymentstatus=null&inpconfirmcancelandreplace=false&inpemEtblkcBulkcompletion=false&inpemEtprRemovePayment=false&inpemEtafdpUndoclose=false&inpemEquotChangebpandpl=false&inpcOrderId=null&inpadClientId=23C59575B9CF467C9620760EB255B389&inpisinvoiced=false&inpisprinted=false&inpdateacct=2026-02-19&inpprocessing=false&inpprocessed=false&inpdateprinted=null&inpissotrx=true&inppaymentrule=P&inpposted=N&inpistaxincluded=false&inpisselected=false&inpdropshipUserId=null&inpdropshipBpartnerId=null&inpdropshipLocationId=null&inpisselfservice=false&inpgeneratetemplate=false&inpdeliverynotes=null&inpcIncotermsId=null&inpincotermsdescription=null&C_Order_ID=null&inpadOrgId=E443A31992CB4635AFCAEABE7183CE85&inpcDoctypetargetId=466AF4B0136A4A3F9F84129711DA8BD3&inpdocumentno=%3C1000366%3E&inpdateordered=2026-02-19&inpcBpartnerId=null&inpemEtabamBankaccountId=null&inpcBpartnerLocationId=null&inpmPricelistId=AEE66281A08F42B6BC509B8A80A33C29&inpdatepromised=2026-02-19&inpemEquotDeliverytime=5&inpemEquotOumdeliverytime=WEEK&inpfinPaymentmethodId=null&inpcPaymenttermId=B62EDD9166D146539E9A19C05BCF85E5&inpmWarehouseId=B2D40D8A5D644DD89E329DC297309055&inpinvoicerule=D&inpemObwplReadypl=false&inpporeference=null&inpsalesrepId=null&inpdescription=null&inpbilltoId=null&inpdeliveryLocationId=null&inpquotationId=null&inpiscashvat=false&inpcancelledorderId=null&inpreplacedorderId=null&inpiscancelled=false&inpbpartnerExtref=null&inpemAeatsiiFechaOperacion=null&inpemAeatsiiDescripcionSii=null&inpcProjectId=null&inpcCostcenterId=null&inpaAssetId=null&inpuser1Id=null&inpuser2Id=null&inpemEquotOrigOrder=null&inpemEtvfacReversedInvoice=null&inpemEtinterIntercoOrig=null&inpisactive=true&inpdocstatus=DR&inpgrandtotal=0&inpcCurrencyId=102&inpdeliverystatus=null&inpinvoicestatus=null&inpemObwplIsinpickinglist=false&inpisdelivered=false&inpTabId=186&inpwindowId=143&inpTableId=259&inpkeyColumnId=C_Order_ID&keyProperty=id&inpKeyName=inpcOrderId&keyColumnName=C_Order_ID&keyPropertyType=_id_13&ORDERTYPE=SO&DOCBASETYPE=SOO&showAddPayment=&PromotionsDefined=N&APRM_OrderIsPaid=&AEATSII_AcogidaSII4=N&%24Element_U2_SOO_H=N&%24Element_U2_ARR_H=N&EnableCanceAndReplace=&%24Element_U2_APP_H=N&StockReservations=Y&Replacementorder_ID=&%24Element_OO=Y&%24Element_CC=&%24Element_OO_POO_H=Y&%24Element_U1_POO_H=N&%24Element_PJ_SOO_H=Y&%24Element_CC_APP_H=&%24Element_CC_ARR_H=&%24Element_BP_POO_H=Y&%24Element_AS=&%24Element_BP_SOO_H=Y&%24Element_CC_SOO_H=&%24Element_U1_SOO_H=N&%24IsAcctDimCentrally=Y&ACCT_DIMENSION_DISPLAY=&HASRELATEDSERVICE=N&%24Element_OO_ARR_H=Y&%24Element_U2_POO_H=N&%24Element_OO_APP_H=Y&%24Element_U2=&%24Element_BP_APP_H=Y&%24Element_U1=&%24Element_U1_ARR_H=N&%24Element_BP_ARR_H=Y&%24Element_PJ=Y&%24Element_CC_POO_H=&%24Element_U1_APP_H=N&PRODUCTTYPE=I&%24Element_PJ_POO_H=Y&%24Element_PJ_ARR_H=Y&EQUOT_changebp_salesorder=N&%24Element_OO_SOO_H=Y&%24Element_BP=Y&%24Element_PJ_APP_H=Y&windowId=143&tabId=186&moduleId=0&_org=E443A31992CB4635AFCAEABE7183CE85&_selectorDefinitionId=862F54CB1B074513BD791C6789F4AA42&filterClass=org.openbravo.userinterface.selector.SelectorDataSourceFilter&_sortBy=name&_selectedProperties=id%2Cname&_extraProperties=bpid%2Cname%2C&_noCount=true&_OrExpression=true&recordIdInForm=_1771520235613&adTabId=186&Constants_IDENTIFIER=_identifier&Constants_FIELDSEPARATOR=%24&targetProperty=businessPartner&columnName=C_BPartner_ID&IsSelectorItem=true&operator=or&_constructor=AdvancedCriteria&criteria=%7B%22fieldName%22%3A%22_dummy%22%2C%22operator%22%3A%22equals%22%2C%22value%22%3A1771520245367%7D&criteria=%7B%22fieldName%22%3A%22value%22%2C%22operator%22%3A%22iContains%22%2C%22value%22%3A%22res%22%7D&criteria=%7B%22fieldName%22%3A%22name%22%2C%22operator%22%3A%22iContains%22%2C%22value%22%3A%22res%22%7D&_operationType=fetch&_startRow=0&_endRow=75&_textMatchStyle=substring&_componentId=isc_PickListMenu_3&_dataSource=isc_OBRestDataSource_78&isc_metaDataPrefix=_&isc_dataFormat=json",
+      "response_status": 200,
+      "response_body": {
+        "response": {
+          "status": 0,
+          "startRow": 0,
+          "endRow": 0,
+          "totalRows": 1,
+          "data": [
+            {
+              "category": "Customer - Tier 2",
+              "value": "ES-C2/0001",
+              "creditAvailable": -29.32,
+              "creditUsed": 29.32,
+              "name": "Restaurantes Luna Llena, S.A.",
+              "customer": true,
+              "bpid": "44CB679908C64EF5B852E8DB8A1AA061",
+              "vendor": false
+            }
+          ]
+        }
+      },
+      "duration_ms": 304,
+      "timestamp": "2026-02-19T16:57:25.368Z"
+    }
+  ]
+}

@@ -1,0 +1,611 @@
+{
+  "operation": "search_customer3",
+  "phase": "execution",
+  "etendo_version": "26Q1",
+  "recorded_at": "2026-02-19T17:50:04.370Z",
+  "calls": [
+    {
+      "seq": 1,
+      "transport": "xhr",
+      "method": "POST",
+      "url": "/etendo/org.openbravo.client.kernel?_action=org.openbravo.userinterface.selector.SelectorDefaultFilterActionHandler",
+      "request_payload": {
+        "_selectorDefinitionId": "862F54CB1B074513BD791C6789F4AA42",
+        "_isFilterByIdSupported": true,
+        "inpcReturnReasonId": null,
+        "inprmPickfromshipment": false,
+        "inprmReceivematerials": false,
+        "inprmCreateinvoice": false,
+        "inptotallines": 0,
+        "inpadUserId": "100",
+        "inpcDoctypeId": "0",
+        "inpsoResStatus": null,
+        "inpemAprmAddpayment": false,
+        "inpdocaction": "CO",
+        "inpcopyfrom": false,
+        "inpcopyfrompo": false,
+        "inpdeliveryviarule": "P",
+        "inpmShipperId": null,
+        "inpdeliveryrule": "A",
+        "inpfreightcostrule": "I",
+        "inpfreightamt": 0,
+        "inpisdiscountprinted": false,
+        "inppriorityrule": "5",
+        "inpcCampaignId": null,
+        "inpchargeamt": 0,
+        "inpcChargeId": null,
+        "inpcActivityId": null,
+        "inpadOrgtrxId": null,
+        "inpemObwplGenpickinglist": false,
+        "inpcalculatePromotions": false,
+        "inprmAddorphanline": false,
+        "inpconvertquotation": false,
+        "inpcRejectReasonId": null,
+        "inpvaliduntil": null,
+        "inpreplacementorderId": null,
+        "inpcancelandreplace": false,
+        "inppaymentstatus": null,
+        "inpconfirmcancelandreplace": false,
+        "inpemEtblkcBulkcompletion": false,
+        "inpemEtprRemovePayment": false,
+        "inpemEtafdpUndoclose": false,
+        "inpemEquotChangebpandpl": false,
+        "inpcOrderId": null,
+        "inpadClientId": "23C59575B9CF467C9620760EB255B389",
+        "inpisinvoiced": false,
+        "inpisprinted": false,
+        "inpdateacct": "2026-02-19",
+        "inpprocessing": false,
+        "inpprocessed": false,
+        "inpdateprinted": null,
+        "inpissotrx": true,
+        "inppaymentrule": "P",
+        "inpposted": "N",
+        "inpistaxincluded": false,
+        "inpisselected": false,
+        "inpdropshipUserId": null,
+        "inpdropshipBpartnerId": null,
+        "inpdropshipLocationId": null,
+        "inpisselfservice": false,
+        "inpgeneratetemplate": false,
+        "inpdeliverynotes": null,
+        "inpcIncotermsId": null,
+        "inpincotermsdescription": null,
+        "C_Order_ID": null,
+        "inpadOrgId": "E443A31992CB4635AFCAEABE7183CE85",
+        "inpcDoctypetargetId": "466AF4B0136A4A3F9F84129711DA8BD3",
+        "inpdocumentno": "<1000366>",
+        "inpdateordered": "2026-02-19",
+        "inpcBpartnerId": null,
+        "inpemEtabamBankaccountId": null,
+        "inpcBpartnerLocationId": null,
+        "inpmPricelistId": "AEE66281A08F42B6BC509B8A80A33C29",
+        "inpdatepromised": "2026-02-19",
+        "inpemEquotDeliverytime": 5,
+        "inpemEquotOumdeliverytime": "WEEK",
+        "inpfinPaymentmethodId": null,
+        "inpcPaymenttermId": "B62EDD9166D146539E9A19C05BCF85E5",
+        "inpmWarehouseId": "B2D40D8A5D644DD89E329DC297309055",
+        "inpinvoicerule": "D",
+        "inpemObwplReadypl": false,
+        "inpporeference": null,
+        "inpsalesrepId": null,
+        "inpdescription": null,
+        "inpbilltoId": null,
+        "inpdeliveryLocationId": null,
+        "inpquotationId": null,
+        "inpiscashvat": false,
+        "inpcancelledorderId": null,
+        "inpreplacedorderId": null,
+        "inpiscancelled": false,
+        "inpbpartnerExtref": null,
+        "inpemAeatsiiFechaOperacion": null,
+        "inpemAeatsiiDescripcionSii": null,
+        "inpcProjectId": null,
+        "inpcCostcenterId": null,
+        "inpaAssetId": null,
+        "inpuser1Id": null,
+        "inpuser2Id": null,
+        "inpemEquotOrigOrder": null,
+        "inpemEtvfacReversedInvoice": null,
+        "inpemEtinterIntercoOrig": null,
+        "inpisactive": true,
+        "inpdocstatus": "DR",
+        "inpgrandtotal": 0,
+        "inpcCurrencyId": "102",
+        "inpdeliverystatus": null,
+        "inpinvoicestatus": null,
+        "inpemObwplIsinpickinglist": false,
+        "inpisdelivered": false,
+        "inpTabId": "186",
+        "inpwindowId": "143",
+        "inpTableId": "259",
+        "inpkeyColumnId": "C_Order_ID",
+        "keyProperty": "id",
+        "inpKeyName": "inpcOrderId",
+        "keyColumnName": "C_Order_ID",
+        "keyPropertyType": "_id_13",
+        "ORDERTYPE": "SO",
+        "DOCBASETYPE": "SOO",
+        "showAddPayment": "",
+        "PromotionsDefined": "N",
+        "APRM_OrderIsPaid": "",
+        "AEATSII_AcogidaSII4": "N",
+        "$Element_U2_SOO_H": "N",
+        "$Element_U2_ARR_H": "N",
+        "EnableCanceAndReplace": "",
+        "$Element_U2_APP_H": "N",
+        "StockReservations": "Y",
+        "Replacementorder_ID": "",
+        "$Element_OO": "Y",
+        "$Element_CC": "",
+        "$Element_OO_POO_H": "Y",
+        "$Element_U1_POO_H": "N",
+        "$Element_PJ_SOO_H": "Y",
+        "$Element_CC_APP_H": "",
+        "$Element_CC_ARR_H": "",
+        "$Element_BP_POO_H": "Y",
+        "$Element_AS": "",
+        "$Element_BP_SOO_H": "Y",
+        "$Element_CC_SOO_H": "",
+        "$Element_U1_SOO_H": "N",
+        "$IsAcctDimCentrally": "Y",
+        "ACCT_DIMENSION_DISPLAY": "",
+        "HASRELATEDSERVICE": "N",
+        "$Element_OO_ARR_H": "Y",
+        "$Element_U2_POO_H": "N",
+        "$Element_OO_APP_H": "Y",
+        "$Element_U2": "",
+        "$Element_BP_APP_H": "Y",
+        "$Element_U1": "",
+        "$Element_U1_ARR_H": "N",
+        "$Element_BP_ARR_H": "Y",
+        "$Element_PJ": "Y",
+        "$Element_CC_POO_H": "",
+        "$Element_U1_APP_H": "N",
+        "PRODUCTTYPE": "I",
+        "$Element_PJ_POO_H": "Y",
+        "$Element_PJ_ARR_H": "Y",
+        "EQUOT_changebp_salesorder": "N",
+        "$Element_OO_SOO_H": "Y",
+        "$Element_BP": "Y",
+        "$Element_PJ_APP_H": "Y"
+      },
+      "response_status": 200,
+      "response_body": {
+        "customer": "true",
+        "vendor": "",
+        "filterExpression": " ad_isorgincluded('E443A31992CB4635AFCAEABE7183CE85', bp.organization.id, '23C59575B9CF467C9620760EB255B389') <> -1 "
+      },
+      "duration_ms": 915,
+      "timestamp": "2026-02-19T17:50:06.693Z"
+    },
+    {
+      "seq": 2,
+      "transport": "xhr",
+      "method": "POST",
+      "url": "/etendo/org.openbravo.service.datasource/F8DD408F2F3A414188668836F84C21AF",
+      "request_payload": "inpcReturnReasonId=null&inprmPickfromshipment=false&inprmReceivematerials=false&inprmCreateinvoice=false&inptotallines=0&inpadUserId=100&inpcDoctypeId=0&inpsoResStatus=null&inpemAprmAddpayment=false&inpdocaction=CO&inpcopyfrom=false&inpcopyfrompo=false&inpdeliveryviarule=P&inpmShipperId=null&inpdeliveryrule=A&inpfreightcostrule=I&inpfreightamt=0&inpisdiscountprinted=false&inppriorityrule=5&inpcCampaignId=null&inpchargeamt=0&inpcChargeId=null&inpcActivityId=null&inpadOrgtrxId=null&inpemObwplGenpickinglist=false&inpcalculatePromotions=false&inprmAddorphanline=false&inpconvertquotation=false&inpcRejectReasonId=null&inpvaliduntil=null&inpreplacementorderId=null&inpcancelandreplace=false&inppaymentstatus=null&inpconfirmcancelandreplace=false&inpemEtblkcBulkcompletion=false&inpemEtprRemovePayment=false&inpemEtafdpUndoclose=false&inpemEquotChangebpandpl=false&inpcOrderId=null&inpadClientId=23C59575B9CF467C9620760EB255B389&inpisinvoiced=false&inpisprinted=false&inpdateacct=2026-02-19&inpprocessing=false&inpprocessed=false&inpdateprinted=null&inpissotrx=true&inppaymentrule=P&inpposted=N&inpistaxincluded=false&inpisselected=false&inpdropshipUserId=null&inpdropshipBpartnerId=null&inpdropshipLocationId=null&inpisselfservice=false&inpgeneratetemplate=false&inpdeliverynotes=null&inpcIncotermsId=null&inpincotermsdescription=null&C_Order_ID=null&inpadOrgId=E443A31992CB4635AFCAEABE7183CE85&inpcDoctypetargetId=466AF4B0136A4A3F9F84129711DA8BD3&inpdocumentno=%3C1000366%3E&inpdateordered=2026-02-19&inpcBpartnerId=null&inpemEtabamBankaccountId=null&inpcBpartnerLocationId=null&inpmPricelistId=AEE66281A08F42B6BC509B8A80A33C29&inpdatepromised=2026-02-19&inpemEquotDeliverytime=5&inpemEquotOumdeliverytime=WEEK&inpfinPaymentmethodId=null&inpcPaymenttermId=B62EDD9166D146539E9A19C05BCF85E5&inpmWarehouseId=B2D40D8A5D644DD89E329DC297309055&inpinvoicerule=D&inpemObwplReadypl=false&inpporeference=null&inpsalesrepId=null&inpdescription=null&inpbilltoId=null&inpdeliveryLocationId=null&inpquotationId=null&inpiscashvat=false&inpcancelledorderId=null&inpreplacedorderId=null&inpiscancelled=false&inpbpartnerExtref=null&inpemAeatsiiFechaOperacion=null&inpemAeatsiiDescripcionSii=null&inpcProjectId=null&inpcCostcenterId=null&inpaAssetId=null&inpuser1Id=null&inpuser2Id=null&inpemEquotOrigOrder=null&inpemEtvfacReversedInvoice=null&inpemEtinterIntercoOrig=null&inpisactive=true&inpdocstatus=DR&inpgrandtotal=0&inpcCurrencyId=102&inpdeliverystatus=null&inpinvoicestatus=null&inpemObwplIsinpickinglist=false&inpisdelivered=false&inpTabId=186&inpwindowId=143&inpTableId=259&inpkeyColumnId=C_Order_ID&keyProperty=id&inpKeyName=inpcOrderId&keyColumnName=C_Order_ID&keyPropertyType=_id_13&ORDERTYPE=SO&DOCBASETYPE=SOO&showAddPayment=&PromotionsDefined=N&APRM_OrderIsPaid=&AEATSII_AcogidaSII4=N&%24Element_U2_SOO_H=N&%24Element_U2_ARR_H=N&EnableCanceAndReplace=&%24Element_U2_APP_H=N&StockReservations=Y&Replacementorder_ID=&%24Element_OO=Y&%24Element_CC=&%24Element_OO_POO_H=Y&%24Element_U1_POO_H=N&%24Element_PJ_SOO_H=Y&%24Element_CC_APP_H=&%24Element_CC_ARR_H=&%24Element_BP_POO_H=Y&%24Element_AS=&%24Element_BP_SOO_H=Y&%24Element_CC_SOO_H=&%24Element_U1_SOO_H=N&%24IsAcctDimCentrally=Y&ACCT_DIMENSION_DISPLAY=&HASRELATEDSERVICE=N&%24Element_OO_ARR_H=Y&%24Element_U2_POO_H=N&%24Element_OO_APP_H=Y&%24Element_U2=&%24Element_BP_APP_H=Y&%24Element_U1=&%24Element_U1_ARR_H=N&%24Element_BP_ARR_H=Y&%24Element_PJ=Y&%24Element_CC_POO_H=&%24Element_U1_APP_H=N&PRODUCTTYPE=I&%24Element_PJ_POO_H=Y&%24Element_PJ_ARR_H=Y&EQUOT_changebp_salesorder=N&%24Element_OO_SOO_H=Y&%24Element_BP=Y&%24Element_PJ_APP_H=Y&windowId=143&tabId=186&moduleId=0&_org=E443A31992CB4635AFCAEABE7183CE85&_selectorDefinitionId=862F54CB1B074513BD791C6789F4AA42&filterClass=org.openbravo.userinterface.selector.SelectorDataSourceFilter&_sortBy=name&_requestType=Window&adTabId=186&Constants_IDENTIFIER=_identifier&Constants_FIELDSEPARATOR=%24&targetProperty=businessPartner&_extraProperties=category%2Cvalue%2CcreditAvailable%2CcreditUsed%2Cname%2Ccustomer%2Cbpid%2Cvendor&columnName=C_BPartner_ID&IsSelectorItem=true&operator=and&_constructor=AdvancedCriteria&criteria=%7B%22fieldName%22%3A%22customer%22%2C%22operator%22%3A%22equals%22%2C%22value%22%3Atrue%7D&criteria=%7B%22operator%22%3A%22iContains%22%2C%22fieldName%22%3A%22filterExpression%22%2C%22value%22%3A%22%20ad_isorgincluded('E443A31992CB4635AFCAEABE7183CE85'%2C%20bp.organization.id%2C%20'23C59575B9CF467C9620760EB255B389')%20%3C%3E%20-1%20%22%7D&criteria=%7B%22operator%22%3A%22iContains%22%2C%22fieldName%22%3A%22_selectorDefinitionId%22%2C%22value%22%3A%22862F54CB1B074513BD791C6789F4AA42%22%7D&_operationType=fetch&_startRow=0&_endRow=75&_textMatchStyle=substring&_componentId=isc_OBGrid_39&_dataSource=isc_OBRestDataSource_289&isc_metaDataPrefix=_&isc_dataFormat=json",
+      "response_status": 200,
+      "response_body": {
+        "response": {
+          "status": 0,
+          "startRow": 0,
+          "endRow": 1,
+          "totalRows": 2,
+          "data": [
+            {
+              "category": "Customer - Tier 1",
+              "value": "ES-C1/0001",
+              "creditAvailable": -158.86,
+              "creditUsed": 158.86,
+              "name": "Alimentos y Supermercados, S.A",
+              "customer": true,
+              "bpid": "A6750F0D15334FB890C254369AC750A8",
+              "vendor": false
+            },
+            {
+              "category": "Customer - Tier 2",
+              "value": "ES-C2/0001",
+              "creditAvailable": -29.32,
+              "creditUsed": 29.32,
+              "name": "Restaurantes Luna Llena, S.A.",
+              "customer": true,
+              "bpid": "44CB679908C64EF5B852E8DB8A1AA061",
+              "vendor": false
+            }
+          ]
+        }
+      },
+      "duration_ms": 267,
+      "timestamp": "2026-02-19T17:50:07.523Z"
+    },
+    {
+      "seq": 3,
+      "transport": "xhr",
+      "method": "POST",
+      "url": "/etendo/org.openbravo.service.datasource/F8DD408F2F3A414188668836F84C21AF",
+      "request_payload": "inpcReturnReasonId=null&inprmPickfromshipment=false&inprmReceivematerials=false&inprmCreateinvoice=false&inptotallines=0&inpadUserId=100&inpcDoctypeId=0&inpsoResStatus=null&inpemAprmAddpayment=false&inpdocaction=CO&inpcopyfrom=false&inpcopyfrompo=false&inpdeliveryviarule=P&inpmShipperId=null&inpdeliveryrule=A&inpfreightcostrule=I&inpfreightamt=0&inpisdiscountprinted=false&inppriorityrule=5&inpcCampaignId=null&inpchargeamt=0&inpcChargeId=null&inpcActivityId=null&inpadOrgtrxId=null&inpemObwplGenpickinglist=false&inpcalculatePromotions=false&inprmAddorphanline=false&inpconvertquotation=false&inpcRejectReasonId=null&inpvaliduntil=null&inpreplacementorderId=null&inpcancelandreplace=false&inppaymentstatus=null&inpconfirmcancelandreplace=false&inpemEtblkcBulkcompletion=false&inpemEtprRemovePayment=false&inpemEtafdpUndoclose=false&inpemEquotChangebpandpl=false&inpcOrderId=null&inpadClientId=23C59575B9CF467C9620760EB255B389&inpisinvoiced=false&inpisprinted=false&inpdateacct=2026-02-19&inpprocessing=false&inpprocessed=false&inpdateprinted=null&inpissotrx=true&inppaymentrule=P&inpposted=N&inpistaxincluded=false&inpisselected=false&inpdropshipUserId=null&inpdropshipBpartnerId=null&inpdropshipLocationId=null&inpisselfservice=false&inpgeneratetemplate=false&inpdeliverynotes=null&inpcIncotermsId=null&inpincotermsdescription=null&C_Order_ID=null&inpadOrgId=E443A31992CB4635AFCAEABE7183CE85&inpcDoctypetargetId=466AF4B0136A4A3F9F84129711DA8BD3&inpdocumentno=%3C1000366%3E&inpdateordered=2026-02-19&inpcBpartnerId=null&inpemEtabamBankaccountId=null&inpcBpartnerLocationId=null&inpmPricelistId=AEE66281A08F42B6BC509B8A80A33C29&inpdatepromised=2026-02-19&inpemEquotDeliverytime=5&inpemEquotOumdeliverytime=WEEK&inpfinPaymentmethodId=null&inpcPaymenttermId=B62EDD9166D146539E9A19C05BCF85E5&inpmWarehouseId=B2D40D8A5D644DD89E329DC297309055&inpinvoicerule=D&inpemObwplReadypl=false&inpporeference=null&inpsalesrepId=null&inpdescription=null&inpbilltoId=null&inpdeliveryLocationId=null&inpquotationId=null&inpiscashvat=false&inpcancelledorderId=null&inpreplacedorderId=null&inpiscancelled=false&inpbpartnerExtref=null&inpemAeatsiiFechaOperacion=null&inpemAeatsiiDescripcionSii=null&inpcProjectId=null&inpcCostcenterId=null&inpaAssetId=null&inpuser1Id=null&inpuser2Id=null&inpemEquotOrigOrder=null&inpemEtvfacReversedInvoice=null&inpemEtinterIntercoOrig=null&inpisactive=true&inpdocstatus=DR&inpgrandtotal=0&inpcCurrencyId=102&inpdeliverystatus=null&inpinvoicestatus=null&inpemObwplIsinpickinglist=false&inpisdelivered=false&inpTabId=186&inpwindowId=143&inpTableId=259&inpkeyColumnId=C_Order_ID&keyProperty=id&inpKeyName=inpcOrderId&keyColumnName=C_Order_ID&keyPropertyType=_id_13&ORDERTYPE=SO&DOCBASETYPE=SOO&showAddPayment=&PromotionsDefined=N&APRM_OrderIsPaid=&AEATSII_AcogidaSII4=N&%24Element_U2_SOO_H=N&%24Element_U2_ARR_H=N&EnableCanceAndReplace=&%24Element_U2_APP_H=N&StockReservations=Y&Replacementorder_ID=&%24Element_OO=Y&%24Element_CC=&%24Element_OO_POO_H=Y&%24Element_U1_POO_H=N&%24Element_PJ_SOO_H=Y&%24Element_CC_APP_H=&%24Element_CC_ARR_H=&%24Element_BP_POO_H=Y&%24Element_AS=&%24Element_BP_SOO_H=Y&%24Element_CC_SOO_H=&%24Element_U1_SOO_H=N&%24IsAcctDimCentrally=Y&ACCT_DIMENSION_DISPLAY=&HASRELATEDSERVICE=N&%24Element_OO_ARR_H=Y&%24Element_U2_POO_H=N&%24Element_OO_APP_H=Y&%24Element_U2=&%24Element_BP_APP_H=Y&%24Element_U1=&%24Element_U1_ARR_H=N&%24Element_BP_ARR_H=Y&%24Element_PJ=Y&%24Element_CC_POO_H=&%24Element_U1_APP_H=N&PRODUCTTYPE=I&%24Element_PJ_POO_H=Y&%24Element_PJ_ARR_H=Y&EQUOT_changebp_salesorder=N&%24Element_OO_SOO_H=Y&%24Element_BP=Y&%24Element_PJ_APP_H=Y&windowId=143&tabId=186&moduleId=0&_org=E443A31992CB4635AFCAEABE7183CE85&_selectorDefinitionId=862F54CB1B074513BD791C6789F4AA42&filterClass=org.openbravo.userinterface.selector.SelectorDataSourceFilter&_sortBy=name&_requestType=Window&adTabId=186&Constants_IDENTIFIER=_identifier&Constants_FIELDSEPARATOR=%24&targetProperty=businessPartner&_extraProperties=category%2Cvalue%2CcreditAvailable%2CcreditUsed%2Cname%2Ccustomer%2Cbpid%2Cvendor&columnName=C_BPartner_ID&IsSelectorItem=true&operator=and&_constructor=AdvancedCriteria&criteria=%7B%22fieldName%22%3A%22name%22%2C%22operator%22%3A%22iContains%22%2C%22value%22%3A%22re%22%7D&criteria=%7B%22fieldName%22%3A%22customer%22%2C%22operator%22%3A%22equals%22%2C%22value%22%3Atrue%7D&_operationType=fetch&_startRow=0&_endRow=75&_textMatchStyle=substring&_componentId=isc_OBGrid_39&_dataSource=isc_OBRestDataSource_289&isc_metaDataPrefix=_&isc_dataFormat=json",
+      "response_status": 200,
+      "response_body": {
+        "response": {
+          "status": 0,
+          "startRow": 0,
+          "endRow": 0,
+          "totalRows": 1,
+          "data": [
+            {
+              "category": "Customer - Tier 2",
+              "value": "ES-C2/0001",
+              "creditAvailable": -29.32,
+              "creditUsed": 29.32,
+              "name": "Restaurantes Luna Llena, S.A.",
+              "customer": true,
+              "bpid": "44CB679908C64EF5B852E8DB8A1AA061",
+              "vendor": false
+            }
+          ]
+        }
+      },
+      "duration_ms": 270,
+      "timestamp": "2026-02-19T17:50:10.064Z"
+    },
+    {
+      "seq": 4,
+      "transport": "xhr",
+      "method": "POST",
+      "url": "/etendo/org.openbravo.service.datasource/F8DD408F2F3A414188668836F84C21AF",
+      "request_payload": "inpcReturnReasonId=null&inprmPickfromshipment=false&inprmReceivematerials=false&inprmCreateinvoice=false&inptotallines=0&inpadUserId=100&inpcDoctypeId=0&inpsoResStatus=null&inpemAprmAddpayment=false&inpdocaction=CO&inpcopyfrom=false&inpcopyfrompo=false&inpdeliveryviarule=P&inpmShipperId=null&inpdeliveryrule=A&inpfreightcostrule=I&inpfreightamt=0&inpisdiscountprinted=false&inppriorityrule=5&inpcCampaignId=null&inpchargeamt=0&inpcChargeId=null&inpcActivityId=null&inpadOrgtrxId=null&inpemObwplGenpickinglist=false&inpcalculatePromotions=false&inprmAddorphanline=false&inpconvertquotation=false&inpcRejectReasonId=null&inpvaliduntil=null&inpreplacementorderId=null&inpcancelandreplace=false&inppaymentstatus=null&inpconfirmcancelandreplace=false&inpemEtblkcBulkcompletion=false&inpemEtprRemovePayment=false&inpemEtafdpUndoclose=false&inpemEquotChangebpandpl=false&inpcOrderId=null&inpadClientId=23C59575B9CF467C9620760EB255B389&inpisinvoiced=false&inpisprinted=false&inpdateacct=2026-02-19&inpprocessing=false&inpprocessed=false&inpdateprinted=null&inpissotrx=true&inppaymentrule=P&inpposted=N&inpistaxincluded=false&inpisselected=false&inpdropshipUserId=null&inpdropshipBpartnerId=null&inpdropshipLocationId=null&inpisselfservice=false&inpgeneratetemplate=false&inpdeliverynotes=null&inpcIncotermsId=null&inpincotermsdescription=null&C_Order_ID=null&inpadOrgId=E443A31992CB4635AFCAEABE7183CE85&inpcDoctypetargetId=466AF4B0136A4A3F9F84129711DA8BD3&inpdocumentno=%3C1000366%3E&inpdateordered=2026-02-19&inpcBpartnerId=null&inpemEtabamBankaccountId=null&inpcBpartnerLocationId=null&inpmPricelistId=AEE66281A08F42B6BC509B8A80A33C29&inpdatepromised=2026-02-19&inpemEquotDeliverytime=5&inpemEquotOumdeliverytime=WEEK&inpfinPaymentmethodId=null&inpcPaymenttermId=B62EDD9166D146539E9A19C05BCF85E5&inpmWarehouseId=B2D40D8A5D644DD89E329DC297309055&inpinvoicerule=D&inpemObwplReadypl=false&inpporeference=null&inpsalesrepId=null&inpdescription=null&inpbilltoId=null&inpdeliveryLocationId=null&inpquotationId=null&inpiscashvat=false&inpcancelledorderId=null&inpreplacedorderId=null&inpiscancelled=false&inpbpartnerExtref=null&inpemAeatsiiFechaOperacion=null&inpemAeatsiiDescripcionSii=null&inpcProjectId=null&inpcCostcenterId=null&inpaAssetId=null&inpuser1Id=null&inpuser2Id=null&inpemEquotOrigOrder=null&inpemEtvfacReversedInvoice=null&inpemEtinterIntercoOrig=null&inpisactive=true&inpdocstatus=DR&inpgrandtotal=0&inpcCurrencyId=102&inpdeliverystatus=null&inpinvoicestatus=null&inpemObwplIsinpickinglist=false&inpisdelivered=false&inpTabId=186&inpwindowId=143&inpTableId=259&inpkeyColumnId=C_Order_ID&keyProperty=id&inpKeyName=inpcOrderId&keyColumnName=C_Order_ID&keyPropertyType=_id_13&ORDERTYPE=SO&DOCBASETYPE=SOO&showAddPayment=&PromotionsDefined=N&APRM_OrderIsPaid=&AEATSII_AcogidaSII4=N&%24Element_U2_SOO_H=N&%24Element_U2_ARR_H=N&EnableCanceAndReplace=&%24Element_U2_APP_H=N&StockReservations=Y&Replacementorder_ID=&%24Element_OO=Y&%24Element_CC=&%24Element_OO_POO_H=Y&%24Element_U1_POO_H=N&%24Element_PJ_SOO_H=Y&%24Element_CC_APP_H=&%24Element_CC_ARR_H=&%24Element_BP_POO_H=Y&%24Element_AS=&%24Element_BP_SOO_H=Y&%24Element_CC_SOO_H=&%24Element_U1_SOO_H=N&%24IsAcctDimCentrally=Y&ACCT_DIMENSION_DISPLAY=&HASRELATEDSERVICE=N&%24Element_OO_ARR_H=Y&%24Element_U2_POO_H=N&%24Element_OO_APP_H=Y&%24Element_U2=&%24Element_BP_APP_H=Y&%24Element_U1=&%24Element_U1_ARR_H=N&%24Element_BP_ARR_H=Y&%24Element_PJ=Y&%24Element_CC_POO_H=&%24Element_U1_APP_H=N&PRODUCTTYPE=I&%24Element_PJ_POO_H=Y&%24Element_PJ_ARR_H=Y&EQUOT_changebp_salesorder=N&%24Element_OO_SOO_H=Y&%24Element_BP=Y&%24Element_PJ_APP_H=Y&windowId=143&tabId=186&moduleId=0&_org=E443A31992CB4635AFCAEABE7183CE85&_selectorDefinitionId=862F54CB1B074513BD791C6789F4AA42&filterClass=org.openbravo.userinterface.selector.SelectorDataSourceFilter&_sortBy=name&_requestType=Window&_targetRecordId=null&adTabId=186&Constants_IDENTIFIER=_identifier&Constants_FIELDSEPARATOR=%24&targetProperty=businessPartner&_extraProperties=category%2Cvalue%2CcreditAvailable%2CcreditUsed%2Cname%2Ccustomer%2Cbpid%2Cvendor&columnName=C_BPartner_ID&IsSelectorItem=true&operator=and&_constructor=AdvancedCriteria&criteria=%7B%22fieldName%22%3A%22name%22%2C%22operator%22%3A%22iContains%22%2C%22value%22%3A%22res%22%7D&criteria=%7B%22fieldName%22%3A%22customer%22%2C%22operator%22%3A%22equals%22%2C%22value%22%3Atrue%7D&_operationType=fetch&_startRow=0&_endRow=75&_textMatchStyle=substring&_componentId=isc_OBGrid_39&_dataSource=isc_OBRestDataSource_289&isc_metaDataPrefix=_&isc_dataFormat=json",
+      "response_status": 200,
+      "response_body": {
+        "response": {
+          "status": 0,
+          "startRow": 0,
+          "endRow": 0,
+          "totalRows": 1,
+          "data": [
+            {
+              "category": "Customer - Tier 2",
+              "value": "ES-C2/0001",
+              "creditAvailable": -29.32,
+              "creditUsed": 29.32,
+              "name": "Restaurantes Luna Llena, S.A.",
+              "customer": true,
+              "bpid": "44CB679908C64EF5B852E8DB8A1AA061",
+              "vendor": false
+            }
+          ]
+        }
+      },
+      "duration_ms": 265,
+      "timestamp": "2026-02-19T17:50:10.383Z"
+    },
+    {
+      "seq": 5,
+      "transport": "xhr",
+      "method": "POST",
+      "url": "/etendo/org.openbravo.client.kernel?MODE=CHANGE&PARENT_ID=null&TAB_ID=186&ROW_ID=null&CHANGED_COLUMN=inpcBpartnerId&_action=org.openbravo.client.application.window.FormInitializationComponent",
+      "request_payload": {
+        "inpcReturnReasonId": null,
+        "inprmPickfromshipment": "N",
+        "inprmReceivematerials": "N",
+        "inprmCreateinvoice": "N",
+        "inptotallines": "0.00",
+        "inpadUserId": "100",
+        "inpcDoctypeId": "0",
+        "inpsoResStatus": null,
+        "inpemAprmAddpayment": "N",
+        "inpdocaction": "CO",
+        "inpcopyfrom": "N",
+        "inpcopyfrompo": "N",
+        "inpdeliveryviarule": "P",
+        "inpmShipperId": null,
+        "inpdeliveryrule": "A",
+        "inpfreightcostrule": "I",
+        "inpfreightamt": "0.00",
+        "inpisdiscountprinted": "N",
+        "inppriorityrule": "5",
+        "inpcCampaignId": null,
+        "inpchargeamt": "0.00",
+        "inpcChargeId": null,
+        "inpcActivityId": null,
+        "inpadOrgtrxId": null,
+        "inpemObwplGenpickinglist": "N",
+        "inpcalculatePromotions": "N",
+        "inprmAddorphanline": "N",
+        "inpconvertquotation": "N",
+        "inpcRejectReasonId": null,
+        "inpvaliduntil": null,
+        "inpreplacementorderId": null,
+        "inpcancelandreplace": "N",
+        "inppaymentstatus": null,
+        "inpconfirmcancelandreplace": "N",
+        "inpemEtblkcBulkcompletion": "N",
+        "inpemEtprRemovePayment": "N",
+        "inpemEtafdpUndoclose": "N",
+        "inpemEquotChangebpandpl": "N",
+        "inpcOrderId": null,
+        "inpadClientId": "23C59575B9CF467C9620760EB255B389",
+        "inpisinvoiced": "N",
+        "inpisprinted": "N",
+        "inpdateacct": "19-02-2026",
+        "inpprocessing": "N",
+        "inpprocessed": "N",
+        "inpdateprinted": null,
+        "inpissotrx": "Y",
+        "inppaymentrule": "P",
+        "inpposted": "N",
+        "inpistaxincluded": "N",
+        "inpisselected": "N",
+        "inpdropshipUserId": null,
+        "inpdropshipBpartnerId": null,
+        "inpdropshipLocationId": null,
+        "inpisselfservice": "N",
+        "inpgeneratetemplate": "N",
+        "inpdeliverynotes": null,
+        "inpcIncotermsId": null,
+        "inpincotermsdescription": null,
+        "C_Order_ID": null,
+        "inpadOrgId": "E443A31992CB4635AFCAEABE7183CE85",
+        "inpcDoctypetargetId": "466AF4B0136A4A3F9F84129711DA8BD3",
+        "inpdocumentno": "<1000366>",
+        "inpdateordered": "19-02-2026",
+        "inpcBpartnerId": "44CB679908C64EF5B852E8DB8A1AA061",
+        "inpemEtabamBankaccountId": null,
+        "inpcBpartnerLocationId": null,
+        "inpmPricelistId": "AEE66281A08F42B6BC509B8A80A33C29",
+        "inpdatepromised": "19-02-2026",
+        "inpemEquotDeliverytime": "5",
+        "inpemEquotOumdeliverytime": "WEEK",
+        "inpfinPaymentmethodId": null,
+        "inpcPaymenttermId": "B62EDD9166D146539E9A19C05BCF85E5",
+        "inpmWarehouseId": "B2D40D8A5D644DD89E329DC297309055",
+        "inpinvoicerule": "D",
+        "inpemObwplReadypl": "N",
+        "inpporeference": null,
+        "inpsalesrepId": null,
+        "inpdescription": null,
+        "inpbilltoId": null,
+        "inpdeliveryLocationId": null,
+        "inpquotationId": null,
+        "inpiscashvat": "N",
+        "inpcancelledorderId": null,
+        "inpreplacedorderId": null,
+        "inpiscancelled": "N",
+        "inpbpartnerExtref": null,
+        "inpemAeatsiiFechaOperacion": null,
+        "inpemAeatsiiDescripcionSii": null,
+        "inpcProjectId": null,
+        "inpcCostcenterId": null,
+        "inpaAssetId": null,
+        "inpuser1Id": null,
+        "inpuser2Id": null,
+        "inpemEquotOrigOrder": null,
+        "inpemEtvfacReversedInvoice": null,
+        "inpemEtinterIntercoOrig": null,
+        "inpisactive": "Y",
+        "inpdocstatus": "DR",
+        "inpgrandtotal": "0.00",
+        "inpcCurrencyId": "102",
+        "inpdeliverystatus": null,
+        "inpinvoicestatus": null,
+        "inpemObwplIsinpickinglist": "N",
+        "inpisdelivered": "N",
+        "inpTabId": "186",
+        "inpwindowId": "143",
+        "inpTableId": "259",
+        "inpkeyColumnId": "C_Order_ID",
+        "keyProperty": "id",
+        "inpKeyName": "inpcOrderId",
+        "keyColumnName": "C_Order_ID",
+        "keyPropertyType": "_id_13",
+        "ORDERTYPE": "SO",
+        "DOCBASETYPE": "SOO",
+        "showAddPayment": "",
+        "PromotionsDefined": "N",
+        "APRM_OrderIsPaid": "",
+        "AEATSII_AcogidaSII4": "N",
+        "$Element_U2_SOO_H": "N",
+        "$Element_U2_ARR_H": "N",
+        "EnableCanceAndReplace": "",
+        "$Element_U2_APP_H": "N",
+        "StockReservations": "Y",
+        "Replacementorder_ID": "",
+        "$Element_OO": "Y",
+        "$Element_CC": "",
+        "$Element_OO_POO_H": "Y",
+        "$Element_U1_POO_H": "N",
+        "$Element_PJ_SOO_H": "Y",
+        "$Element_CC_APP_H": "",
+        "$Element_CC_ARR_H": "",
+        "$Element_BP_POO_H": "Y",
+        "$Element_AS": "",
+        "$Element_BP_SOO_H": "Y",
+        "$Element_CC_SOO_H": "",
+        "$Element_U1_SOO_H": "N",
+        "$IsAcctDimCentrally": "Y",
+        "ACCT_DIMENSION_DISPLAY": "",
+        "HASRELATEDSERVICE": "N",
+        "$Element_OO_ARR_H": "Y",
+        "$Element_U2_POO_H": "N",
+        "$Element_OO_APP_H": "Y",
+        "$Element_U2": "",
+        "$Element_BP_APP_H": "Y",
+        "$Element_U1": "",
+        "$Element_U1_ARR_H": "N",
+        "$Element_BP_ARR_H": "Y",
+        "$Element_PJ": "Y",
+        "$Element_CC_POO_H": "",
+        "$Element_U1_APP_H": "N",
+        "PRODUCTTYPE": "I",
+        "$Element_PJ_POO_H": "Y",
+        "$Element_PJ_ARR_H": "Y",
+        "EQUOT_changebp_salesorder": "N",
+        "$Element_OO_SOO_H": "Y",
+        "$Element_BP": "Y",
+        "$Element_PJ_APP_H": "Y",
+        "_entityName": "Order",
+        "overwrittenAuxiliaryInputs": [
+          "ORDERTYPE"
+        ]
+      },
+      "response_status": 200,
+      "response_body": {
+        "hiddenInputs": {
+          "inpcDoctypetargetId_R": "Standard Order",
+          "inpcProjectId_R": ""
+        },
+        "calloutMessages": [
+          {
+            "text": "Note: Credit Limit over by 29.32",
+            "severity": "TYPE_INFO"
+          }
+        ],
+        "columnValues": {
+          "EM_Etabam_Bankaccount_ID": {
+            "value": "",
+            "classicValue": ""
+          },
+          "C_BPartner_Location_ID": {
+            "value": "6F0E64374DA9411CA39E8F059ACD8E1B",
+            "classicValue": "6F0E64374DA9411CA39E8F059ACD8E1B",
+            "identifier": "Pl. Mayor, 78 -  - 76746 - Sevilla - SEVILLA  - Spain"
+          },
+          "FIN_Paymentmethod_ID": {
+            "value": "A97CFD2AFC234B59BB0A72189BD8FC2A",
+            "classicValue": "A97CFD2AFC234B59BB0A72189BD8FC2A",
+            "identifier": "Transferencia"
+          },
+          "C_PaymentTerm_ID": {
+            "value": "66BA1164A7394344BB9CD1A6ECEED05D",
+            "classicValue": "66BA1164A7394344BB9CD1A6ECEED05D",
+            "identifier": "30 days"
+          },
+          "M_Warehouse_ID": {
+            "value": "B2D40D8A5D644DD89E329DC297309055",
+            "classicValue": "B2D40D8A5D644DD89E329DC297309055",
+            "entries": [
+              {
+                "id": "B2D40D8A5D644DD89E329DC297309055",
+                "_identifier": "España Región Norte"
+              }
+            ]
+          },
+          "InvoiceRule": {
+            "value": "D",
+            "classicValue": "D",
+            "entries": [
+              {
+                "id": "D",
+                "_identifier": "After Delivery"
+              },
+              {
+                "id": "O",
+                "_identifier": "After Order Delivered"
+              },
+              {
+                "id": "S",
+                "_identifier": "Customer Schedule After Delivery"
+              },
+              {
+                "id": "N",
+                "_identifier": "Do Not Invoice"
+              },
+              {
+                "id": "I",
+                "_identifier": "Immediate"
+              }
+            ]
+          },
+          "AD_User_ID": {
+            "value": "6A3D3D6A808C455EAF1DAB48058FDBF4",
+            "classicValue": "6A3D3D6A808C455EAF1DAB48058FDBF4",
+            "entries": [
+              {
+                "id": "6A3D3D6A808C455EAF1DAB48058FDBF4",
+                "_identifier": "Ana Cortés"
+              }
+            ]
+          },
+          "SalesRep_ID": {
+            "entries": [
+              {},
+              {
+                "id": "C3503BEFB3CB4848A674284A656163B9",
+                "_identifier": "Javier Martín"
+              },
+              {
+                "id": "8537B1F5669E423ABA79F1F57B1E4222",
+                "_identifier": "John Smith"
+              },
+              {
+                "id": "CADCDC3549FB4201B5F24E4C03AD2349",
+                "_identifier": "Juan López"
+              }
+            ]
+          },
+          "BillTo_ID": {
+            "value": "6F0E64374DA9411CA39E8F059ACD8E1B",
+            "classicValue": "6F0E64374DA9411CA39E8F059ACD8E1B",
+            "identifier": "Sevilla, Pl. Mayor, 78"
+          },
+          "Delivery_Location_ID": {},
+          "DeliveryRule": {
+            "value": "A",
+            "classicValue": "A",
+            "entries": [
+              {
+                "id": "R",
+                "_identifier": "After Receipt"
+              },
+              {
+                "id": "A",
+                "_identifier": "Availability"
+              },
+              {
+                "id": "L",
+                "_identifier": "Complete Line"
+              },
+              {
+                "id": "O",
+                "_identifier": "Complete Order"
+              }
+            ]
+          },
+          "C_Project_ID": {
+            "value": "",
+            "classicValue": ""
+          }
+        },
+        "auxiliaryInputValues": {
+          "ORDERTYPE": {
+            "value": "SO",
+            "classicValue": "SO"
+          },
+          "DOCBASETYPE": {
+            "value": "SOO",
+            "classicValue": "SOO"
+          },
+          "showAddPayment": {},
+          "PromotionsDefined": {
+            "value": "N",
+            "classicValue": "N"
+          },
+          "APRM_OrderIsPaid": {},
+          "AEATSII_AcogidaSII4": {
+            "value": "N",
+            "classicValue": "N"
+          }
+        },
+        "overwrittenAuxiliaryInputs": [
+          "ORDERTYPE"
+        ],
+        "noteCount": 0,
+        "attachmentCount": 0,
+        "attachmentExists": false
+      },
+      "duration_ms": 913,
+      "timestamp": "2026-02-19T17:50:13.748Z"
+    }
+  ]
+}

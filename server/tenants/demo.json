@@ -1,0 +1,19 @@
+{
+  "id": "demo",
+  "etendoUrl": "http://localhost:8080",
+  "swsLoginRole": "42D0EEB1C66F497A90DD526DC597E6F0",
+  "organization": "E443A31992CB4635AFCAEABE7183CE85",
+  "client": "23C59575B9CF467C9620760EB255B389",
+  "warehouse": "B2D40D8A5D644DD89E329DC297309055",
+  "currency": "102",
+  "salesOrderDocType": "466AF4B0136A4A3F9F84129711DA8BD3",
+  "userContactId": "6B1E8F0CA1524850AB3A7F9AE475A16F",
+  "productSelectorId": "2E64F551C7C4470C80C29DBA24B34A5F",
+  "customerDatasourceId": "F8DD408F2F3A414188668836F84C21AF",
+  "defaultCustomerBPGroup": "713643BF6582479BAD2AF21B80836AA2",
+  "defaultVendorBPGroup": "1B7DCAD27AF64D16ADCFB4EBE8600078",
+  "defaultLanguage": "en_US",
+  "defaultPriceListVersionId": "77C9C35A341E405B8E88587075556052",
+  "defaultCountryId": "106",
+  "classicAuth": "Basic YWRtaW46YWRtaW4="
+}
