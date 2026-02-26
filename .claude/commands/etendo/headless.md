@@ -83,8 +83,38 @@ Ask conversationally:
 
 4. **Operations allowed**: GET (list/fetch), POST (create), PUT (update)? Default: all three.
 
-## Step 4: Generate SQL
+## Step 4: Register via webhook
 
+Use the `RegisterHeadlessEndpoint` webhook (requires Tomcat running + API key):
+
+```bash
+ETENDO_URL=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('etendoUrl','http://localhost:8080/etendo'))")
+API_KEY=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('apikey',''))")
+MODULE_ID=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('moduleId',''))")
+
+# Register by table name (auto-resolves to first header tab):
+RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterHeadlessEndpoint&apikey=${API_KEY}" \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"RequestName\": \"{EndpointName}\",
+    \"ModuleID\": \"${MODULE_ID}\",
+    \"TableName\": \"{db_table_name}\",
+    \"Description\": \"{description}\"
+  }")
+echo $RESP
+
+# Or register by explicit TabID:
+RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterHeadlessEndpoint&apikey=${API_KEY}" \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"RequestName\": \"{EndpointName}\",
+    \"ModuleID\": \"${MODULE_ID}\",
+    \"TabID\": \"{AD_TAB_ID}\"
+  }")
+echo $RESP
+```
+
+If Tomcat is not running, fall back to SQL:
 ```sql
 DO $$
 DECLARE
@@ -92,41 +122,18 @@ DECLARE
   v_oapi_tab_id   TEXT := REPLACE(gen_random_uuid()::text, '-', '');
   v_module_id     TEXT := '{AD_MODULE_ID}';
   v_tab_id        TEXT := '{AD_TAB_ID}';
-  -- one v_field_id per field
 BEGIN
-
-  -- 1. OpenAPI Request (the endpoint definition)
   INSERT INTO ETAPI_OPENAPI_REQ (
     ETAPI_OPENAPI_REQ_ID, AD_CLIENT_ID, AD_ORG_ID, ISACTIVE, CREATED, CREATEDBY, UPDATED, UPDATEDBY,
     NAME, AD_MODULE_ID
-  ) VALUES (
-    v_req_id, '0', '0', 'Y', now(), '0', now(), '0',
-    '{EndpointName}', v_module_id
-  );
+  ) VALUES (v_req_id, '0', '0', 'Y', now(), '0', now(), '0', '{EndpointName}', v_module_id);
 
-  -- 2. OpenAPI Tab (maps endpoint to a Tab/table)
   INSERT INTO ETRX_OPENAPI_TAB (
     ETRX_OPENAPI_TAB_ID, AD_CLIENT_ID, AD_ORG_ID, ISACTIVE, CREATED, CREATEDBY, UPDATED, UPDATEDBY,
     ETAPI_OPENAPI_REQ_ID, AD_TAB_ID, AD_MODULE_ID
-  ) VALUES (
-    v_oapi_tab_id, '0', '0', 'Y', now(), '0', now(), '0',
-    v_req_id, v_tab_id, v_module_id
-  );
-
-  -- 3. Entity Fields (one per exposed column)
-  INSERT INTO ETRX_ENTITY_FIELD (
-    ETRX_ENTITY_FIELD_ID, AD_CLIENT_ID, AD_ORG_ID, ISACTIVE, CREATED, CREATEDBY, UPDATED, UPDATEDBY,
-    ETRX_OPENAPI_TAB_ID, NAME, AD_MODULE_ID, FIELDMAPPING
-  ) VALUES
-    (REPLACE(gen_random_uuid()::text, '-', ''), '0', '0', 'Y', now(), '0', now(), '0',
-     v_oapi_tab_id, '{columnname}', v_module_id, '{columnname}'),
-  -- ... repeat for each field
-  ;
-
+  ) VALUES (v_oapi_tab_id, '0', '0', 'Y', now(), '0', now(), '0', v_req_id, v_tab_id, v_module_id);
 END $$;
 ```
-
-Show complete SQL. Ask: "Execute? (Y/N)"
 
 ## Step 5: Execute and verify
 
