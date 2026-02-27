@@ -18,7 +18,16 @@
       "category": "testing",
       "tags": ["dummy", "test"]
     },
-{
+    {
+      "name": "dev-assistant",
+      "source": "./plugins/dev-assistant",
+      "description": "A comprehensive set of skills for Etendo ERP development — module creation, database changes, window configuration, Java scaffolding, builds, and more",
+      "version": "1.0.0",
+      "author": { "name": "Etendo" },
+      "category": "development",
+      "tags": ["etendo", "erp", "development", "database", "java"]
+    },
+    {
       "name": "etendo-workflow-manager",
       "source": "./plugins/etendo-workflow-manager",
       "description": "Manages the full Etendo development workflow — creating Jira issues, GitHub issues, branches, and commits following Etendo conventions",

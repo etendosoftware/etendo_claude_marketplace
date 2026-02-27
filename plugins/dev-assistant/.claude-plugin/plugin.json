@@ -1,0 +1,9 @@
+{
+  "name": "dev-assistant",
+  "description": "A comprehensive set of skills for Etendo ERP development — module creation, database changes, window configuration, Java scaffolding, builds, and more",
+  "author": {
+    "name": "Etendo",
+    "email": "dev@etendo.software"
+  },
+  "license": "MIT"
+}
