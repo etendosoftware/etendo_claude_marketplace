@@ -111,9 +111,23 @@ The active module determines:
   "module": "com.mycompany.mymodule",
   "modulePath": "modules/com.mycompany.mymodule",
   "dbPrefix": "MYMOD",
-  "etendoUrl": "http://localhost:8080"
+  "etendoUrl": "http://localhost:8080",
+  "apikey": "claude-etendo-key-XXXXXXXX"
 }
 ```
+
+Fields:
+- `module` — Java package name (used to resolve AD_MODULE_ID via SQL)
+- `modulePath` — relative path to the module directory
+- `dbPrefix` — DB prefix for table/column naming
+- `etendoUrl` — base URL of the Etendo instance (with context name)
+- `apikey` — webhook API key (set by `_webhooks` skill)
+
+> **Note:** `AD_MODULE_ID` is NOT stored in context.json. Resolve it at runtime:
+> ```bash
+> MODULE_ID=$(docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -t -c \
+>   "SELECT ad_module_id FROM ad_module WHERE javapackage = '{module}';" | tr -d ' ')
+> ```
 
 To find dbPrefix of a module, query:
 ```sql

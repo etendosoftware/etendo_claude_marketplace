@@ -14,6 +14,26 @@ Also read `docs/application-dictionary.md` for the XML structure reference.
 
 A **module** in Etendo is the unit of deployment. All custom tables, windows, Java code, and configurations belong to a module. Modules are identified by a Java package name (e.g. `com.mycompany.mymodule`) and a DB prefix (e.g. `MYMOD`).
 
+## Headless REST endpoints (complement to webhooks)
+
+These EtendoRX headless endpoints provide read/query capabilities and some creation operations. Use them for **validation before creation** and for **info/search** operations. The base URL is `{ETENDO_URL}/sws/com.etendoerp.etendorx.datasource/`.
+
+| Endpoint | Methods | Use for |
+|---|---|---|
+| `moduleHeader` | GET, POST, PUT | Search modules by name/javapackage, create module header |
+| `moduleDBPrefix` | GET, POST, PUT | Check if a DB prefix exists, create prefix |
+| `moduleDependency` | GET, POST, PUT | List/add dependencies |
+| `moduleDataPackage` | GET, POST, PUT | Create the data package entry (no webhook equivalent) |
+
+All endpoints require Bearer token authentication:
+```bash
+ETENDO_TOKEN="..."  # From context or Etendo login
+curl -s -H "Authorization: Bearer ${ETENDO_TOKEN}" \
+  "${ETENDO_URL}/sws/com.etendoerp.etendorx.datasource/moduleHeader?javaPackage=com.example.mymod"
+```
+
+> **Strategy**: Use webhooks (`CreateModule`, `AddModuleDependency`) as the primary creation method because they handle internal logic (triggers, validation). Use headless endpoints for pre-creation checks and for the Data Package step (which has no webhook).
+
 ## Step 1: Determine operation
 
 Based on `$ARGUMENTS`:
@@ -21,13 +41,31 @@ Based on `$ARGUMENTS`:
 - `info` or `{javapackage}` -> show info about an existing module
 - Natural language description -> infer intent
 
-For **info**: query the DB and show module details:
+For **info**: search by name, javapackage, or DB prefix.
+
+**Via headless (preferred if Tomcat is running):**
+```bash
+# Search by javapackage:
+curl -s -H "Authorization: Bearer ${ETENDO_TOKEN}" \
+  "${ETENDO_URL}/sws/com.etendoerp.etendorx.datasource/moduleHeader?javaPackage={javapackage}"
+
+# Search by name (partial match):
+curl -s -H "Authorization: Bearer ${ETENDO_TOKEN}" \
+  "${ETENDO_URL}/sws/com.etendoerp.etendorx.datasource/moduleHeader?name={name}"
+
+# Search by DB prefix:
+curl -s -H "Authorization: Bearer ${ETENDO_TOKEN}" \
+  "${ETENDO_URL}/sws/com.etendoerp.etendorx.datasource/moduleDBPrefix?name={PREFIX}"
+```
+
+**Via SQL (fallback):**
 ```sql
 SELECT m.javapackage, m.name, m.version, m.isindevelopment,
        p.name AS dbprefix
 FROM ad_module m
 LEFT JOIN ad_module_dbprefix p ON p.ad_module_id = m.ad_module_id
 WHERE m.javapackage = '{module}' OR m.name ILIKE '%{args}%'
+      OR p.name ILIKE '%{args}%'
 ORDER BY m.name;
 ```
 
@@ -39,16 +77,44 @@ Ask conversationally, with smart defaults:
 |---|---|---|
 | Java package | Yes | `com.{company}.{modulename}` |
 | Module name | Yes | Title case of package last segment |
-| DB prefix | Yes | Uppercase abbreviation, e.g. `MYMOD` -- must be unique |
-| Description | Optional | -- |
+| DB prefix | Yes | Uppercase abbreviation, e.g. `MYMOD` — must be unique |
+| Description | Optional | Infer from module name if not provided |
 | Version | Default | `1.0.0` |
 | Dependencies | Ask | "Does this module extend another? (e.g. com.etendoerp.etendorx)" |
 
-**Validate DB prefix uniqueness:**
+**DB prefix rules:** Must be **3 to 7 uppercase letters only**. No numbers, no special characters. Examples: `MYMOD`, `COPDEV`, `SMFT`. Never exceed 7 characters.
+
+### Pre-creation validations
+
+Before creating anything, verify both javapackage and DB prefix are available. Use headless endpoints if Tomcat is running, or SQL otherwise:
+
+**Check javapackage uniqueness (headless):**
+```bash
+EXISTING=$(curl -s -H "Authorization: Bearer ${ETENDO_TOKEN}" \
+  "${ETENDO_URL}/sws/com.etendoerp.etendorx.datasource/moduleHeader?javaPackage={javapackage}")
+# If results found, the javapackage is taken
+```
+If taken, suggest `{javapackage}.new` or ask the user for an alternative.
+
+**Check javapackage uniqueness (SQL fallback):**
+```sql
+SELECT ad_module_id, name FROM ad_module WHERE javapackage = '{javapackage}';
+```
+
+**Check DB prefix uniqueness (headless):**
+```bash
+EXISTING=$(curl -s -H "Authorization: Bearer ${ETENDO_TOKEN}" \
+  "${ETENDO_URL}/sws/com.etendoerp.etendorx.datasource/moduleDBPrefix?name={PREFIX}")
+# If results found, the prefix is taken
+```
+
+**Check DB prefix uniqueness (SQL fallback):**
 ```sql
 SELECT name FROM ad_module_dbprefix WHERE UPPER(name) = UPPER('{prefix}');
 ```
-If taken, suggest alternatives.
+If taken, suggest alternatives (e.g., add a letter: `MYMOD` → `MYMODA`).
+
+> **Important**: When searching modules and getting multiple results, always show the list and ask the user to pick the correct one. Module configurations are sensitive — never auto-select ambiguous matches.
 
 ## Step 3: Create directory structure
 
@@ -65,6 +131,7 @@ modules/{javapackage}/
         AD_MODULE.xml
         AD_MODULE_DEPENDENCY.xml
         AD_MODULE_DBPREFIX.xml
+        AD_MODULE_DATAPACKAGE.xml
 ```
 
 Create all directories and generate the XML files from templates.
@@ -140,17 +207,67 @@ END $$;
 
 Write the captured `MODULE_ID` into the XML files.
 
-If there are dependencies, also insert into `AD_MODULE_DEPENDENCY`.
+**Add dependencies (if specified in Step 2):**
+
+Every module needs at least a dependency on core (`DependsOnModuleID="0"`). Use the `AddModuleDependency` webhook:
+
+```bash
+# Dependency on Etendo core (almost always required):
+curl -s -X POST "${ETENDO_URL}/webhooks/?name=AddModuleDependency&apikey=${API_KEY}" \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"ModuleID\": \"${MODULE_ID}\",
+    \"DependsOnModuleID\": \"0\",
+    \"FirstVersion\": \"3.0.0\",
+    \"Enforcement\": \"MAJOR\"
+  }"
+
+# Dependency on another module (e.g., com.etendoerp.etendorx):
+curl -s -X POST "${ETENDO_URL}/webhooks/?name=AddModuleDependency&apikey=${API_KEY}" \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"ModuleID\": \"${MODULE_ID}\",
+    \"DependsOnJavaPackage\": \"{dependency_javapackage}\",
+    \"FirstVersion\": \"1.0.0\",
+    \"Enforcement\": \"MAJOR\"
+  }"
+```
+
+If Tomcat is not running, add dependencies via SQL (see `_webhooks` skill for the `AD_MODULE_DEPENDENCY` schema).
+
+**Create the Data Package (required):**
+
+Every module needs a Data Package entry. This has no webhook equivalent — use the headless endpoint:
+
+```bash
+curl -s -X POST "${ETENDO_URL}/sws/com.etendoerp.etendorx.datasource/moduleDataPackage" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"module\": \"${MODULE_ID}\",
+    \"javaPackage\": \"{javapackage}.data\"
+  }"
+```
+
+If Tomcat is not running, fall back to SQL:
+```sql
+INSERT INTO AD_MODULE_DATAPACKAGE (AD_MODULE_DATAPACKAGE_ID, AD_CLIENT_ID, AD_ORG_ID, ISACTIVE,
+                                    CREATED, CREATEDBY, UPDATED, UPDATEDBY,
+                                    AD_MODULE_ID, JAVAPACKAGE, NAME)
+VALUES (get_uuid(), '0', '0', 'Y', now(), '0', now(), '0',
+        '{MODULE_ID}', '{javapackage}.data', '{name} Data Package');
+```
 
 ## Step 5: Update context
 
-Write to `.etendo/context.json`:
+Write to `.etendo/context.json` (see `_context` skill for field definitions):
 ```json
 {
   "module": "{javapackage}",
   "modulePath": "modules/{javapackage}",
   "dbPrefix": "{PREFIX}",
-  "etendoUrl": "http://localhost:{port}/{context.name}"
+  "etendoUrl": "http://localhost:{port}/{context.name}",
+  "apikey": "{existing apikey if available}"
 }
 ```
 
@@ -164,9 +281,10 @@ Only relevant for modules sourced from a repository. For in-development local mo
 
 ```
 + Module created: {javapackage}
-  DB prefix:  {PREFIX}
-  Path:       modules/{javapackage}/
-  Module ID:  {UUID}
+  DB prefix:      {PREFIX}
+  Data package:   {javapackage}.data
+  Path:           modules/{javapackage}/
+  Module ID:      {UUID}
 
   Context set to this module.
 

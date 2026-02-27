@@ -98,6 +98,10 @@ Save the key in `.etendo/context.json`:
 
 **ALWAYS use POST with JSON body.** The webhook uses `?name=` for routing, and all parameters go in the JSON body.
 
+> **Parameter casing matters.** Most webhooks use PascalCase (`ModuleID`, `Name`, `DBPrefix`).
+> The exception is `CreateColumn`, which uses camelCase (`tableID`, `columnNameDB`, `moduleID`, `canBeNull`).
+> Using the wrong case causes silent failures — always copy parameter names exactly from the examples below.
+
 ```bash
 ETENDO_URL="http://localhost:8080/etendo"
 API_KEY="{apikey from context.json}"
@@ -570,10 +574,20 @@ curl -s -X POST "${ETENDO_URL}/webhooks/?name=GetWindowTabOrTableInfo&apikey=${A
 
 ## Extract IDs from response
 
+Webhooks return the ID in two different formats. Use the correct regex:
+
+| Format | Webhooks |
+|---|---|
+| `ID: XXXX` (no quotes) | `CreateModule`, `RegisterWindow`, `RegisterBGProcessWebHook`, `ProcessDefinitionButton`, `ProcessDefinitionJasper` |
+| `ID: 'XXXX'` (single quotes) | `CreateAndRegisterTable`, `RegisterTab`, `CreateColumn`, `CreateReference` |
+
 ```bash
-# ID without quotes (CreateModule, RegisterWindow):
+# ID without quotes:
 ID=$(echo $RESP | python3 -c "import sys,json,re; r=json.load(sys.stdin); m=re.search(r'ID:\s*([A-F0-9a-f]{32})',r.get('message','')); print(m.group(1) if m else r.get('error','FAIL'))")
 
-# ID wrapped in single quotes (RegisterTab, CreateAndRegisterTable):
+# ID wrapped in single quotes:
 ID=$(echo $RESP | python3 -c "import sys,json,re; r=json.load(sys.stdin); m=re.search(r\"ID: '([A-F0-9a-f]{32})'\",r.get('message','')); print(m.group(1) if m else r.get('error','FAIL'))")
+
+# Universal (handles both formats):
+ID=$(echo $RESP | python3 -c "import sys,json,re; r=json.load(sys.stdin); m=re.search(r\"ID:?\s*'?([A-F0-9a-f]{32})'?\",r.get('message','')); print(m.group(1) if m else r.get('error','FAIL'))")
 ```

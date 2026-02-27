@@ -13,6 +13,28 @@ First, read `skills/etendo-_context/SKILL.md` and `skills/etendo-_webhooks/SKILL
 
 A **Window** in Etendo is the UI entry point. It contains Tabs (level 0 = header, 1 = detail, etc.), each Tab maps to a table.
 
+## Headless REST endpoints (complement to webhooks)
+
+| Endpoint | Methods | Use for |
+|---|---|---|
+| `ModulePrefix` | GET, PUT | Look up module by DB prefix name — returns the module ID in the `module` property (not `id`) |
+| `TreeCheck` | GET, PUT | Configure a table as a tree (`"istree": true` — must be boolean, not string) |
+
+Base URL: `{ETENDO_URL}/sws/com.etendoerp.etendorx.datasource/`
+
+## Complete workflow sequence
+
+The correct order for creating a window with tabs is:
+
+1. **Get table IDs** — Look up all tables that will be used via `GetWindowTabOrTableInfo`
+2. **SyncTerms** — Synchronize terminology before creating
+3. **RegisterWindow** — Create the window + menu entry
+4. **RegisterTab** — Create each tab (header first, then children in order)
+5. **RegisterFields** — Register fields for each tab
+6. **Read Elements** — Use `ElementsHandler` with mode `READ_ELEMENTS` to find elements missing descriptions
+7. **Write Elements** — Use `ElementsHandler` with mode `WRITE_ELEMENTS` to fill missing descriptions/help
+8. **SyncTerms** — Final synchronization
+
 ## Step 1: Context
 
 Resolve:
@@ -26,13 +48,23 @@ Resolve:
 - `alter {WindowName}` → modify existing window (use `GetWindowTabOrTableInfo`)
 - Natural language → infer intent
 
+**Look up existing elements with `GetWindowTabOrTableInfo`:**
+```bash
+# Search by keyword (WINDOW, TAB, TABLE, or COLUMN) + name:
+curl -s -X POST "${ETENDO_URL}/webhooks/?name=GetWindowTabOrTableInfo&apikey=${API_KEY}" \
+  -H "Content-Type: application/json" \
+  -d "{\"Keyword\": \"WINDOW\", \"Name\": \"{WindowName}\"}"
+```
+If multiple matches are returned, show the list and ask the user to pick the correct one. Try the exact name first; if no results, try the English translation.
+
 ## Step 3: Gather information
 
 Ask only what cannot be inferred:
 
 **Window:**
-- Name (required)
-- Description (optional)
+- Name (required) — words separated by spaces, each word capitalized
+- Description — auto-generate if not provided. Describes what the window shows.
+- HelpComment — auto-generate if not provided. Explains when/why to use the window.
 
 **Tabs:** for each tab:
 - Which table? (list module tables or manual entry)
@@ -42,15 +74,30 @@ Ask only what cannot be inferred:
 
 **Menu:** Add a menu entry? (default yes)
 
+**Naming conventions:**
+- In the database: words separated with `_`, all lowercase (e.g., `smft_course_edition`)
+- In the Application Dictionary: words separated by spaces, each word capitalized (e.g., `Course Edition`)
+- All AD configuration (names, help texts, descriptions) must be in English, even if the user speaks another language
+
 Confirm everything together before executing.
 
-## Step 4: Create the window
+## Step 4: Pre-sync terminology
+
+Run SyncTerms before creating the window to ensure all existing terms are up to date:
 
 ```bash
 ETENDO_URL="http://localhost:8080/etendo"
 API_KEY="{apikey}"
 DB_PREFIX="{dbprefix}"
 
+curl -s -X POST "${ETENDO_URL}/webhooks/?name=SyncTerms&apikey=${API_KEY}" \
+  -H "Content-Type: application/json" \
+  -d '{"CleanTerms": "true"}'
+```
+
+## Step 5: Create the window
+
+```bash
 # 1. Create window + menu
 RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterWindow&apikey=${API_KEY}" \
   -H "Content-Type: application/json" \
@@ -65,9 +112,16 @@ WINDOW_ID=$(echo $RESP | python3 -c "import sys,json,re; r=json.load(sys.stdin);
 echo "Window ID: $WINDOW_ID"
 ```
 
-## Step 5: Create tabs
+## Step 6: Create tabs
 
-For each tab in order (level 0 first, then 1, 2...):
+**Tab hierarchy:** Tabs are linked by `TabLevel` + `SequenceNumber`. A tab at level N is a child of the nearest preceding tab at level N-1 (by sequence). Example:
+```
+Seq 10, Level 0: Course          (header)
+Seq 20, Level 1:   Edition       (child of Course)
+Seq 30, Level 2:     Enrollment  (child of Edition)
+Seq 40, Level 1:   Subject       (child of Course, sibling of Edition)
+```
+You can have multiple tabs at level 0 — each one becomes an independent header section. Create tabs in order (level 0 first, then 1, 2...):
 
 ```bash
 # Create tab
@@ -100,7 +154,49 @@ curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterFields&apikey=${API_KEY}" 
 
 Repeat for each tab in the tree.
 
-## Step 6: WhereClause (if applicable)
+> **Field customization after RegisterFields:** The webhook registers ALL columns as visible and editable.
+> To hide fields or make them read-only, update `ad_field` via SQL:
+> ```sql
+> -- Hide a field:
+> UPDATE ad_field SET isdisplayed = 'N' WHERE ad_tab_id = '{tab_id}' AND name = '{FieldName}';
+> -- Make a field read-only:
+> UPDATE ad_field SET isreadonly = 'Y' WHERE ad_tab_id = '{tab_id}' AND name = '{FieldName}';
+> -- Change field sequence (display order):
+> UPDATE ad_field SET seqno = {N} WHERE ad_tab_id = '{tab_id}' AND name = '{FieldName}';
+> ```
+
+## Step 7: Handle elements (descriptions and help)
+
+After registering all fields, check and fill missing element descriptions. This is important because elements without descriptions appear incomplete in the AD.
+
+```bash
+# 1. Read elements to find which are missing descriptions:
+RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/?name=ElementsHandler&apikey=${API_KEY}" \
+  -H "Content-Type: application/json" \
+  -d "{\"TableID\": \"${TABLE_ID}\", \"Mode\": \"READ_ELEMENTS\"}")
+echo $RESP
+# Parse the response to find columns missing Description or HelpComment
+
+# 2. For each element missing descriptions, write them:
+curl -s -X POST "${ETENDO_URL}/webhooks/?name=ElementsHandler&apikey=${API_KEY}" \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"Mode\": \"WRITE_ELEMENTS\",
+    \"ColumnID\": \"{column_id}\",
+    \"Description\": \"{auto-generated description}\",
+    \"HelpComment\": \"{auto-generated help}\"
+  }"
+
+# 3. Final SyncTerms to apply element changes:
+curl -s -X POST "${ETENDO_URL}/webhooks/?name=SyncTerms&apikey=${API_KEY}" \
+  -H "Content-Type: application/json" \
+  -d '{"CleanTerms": "true"}'
+```
+
+**Auto-generating descriptions:** The Description should explain what the field stores. The HelpComment should explain how the field is used. Both must be in English and cannot be empty. Example:
+- Field "Admission Date": Description = "Stores the date when the patient was admitted" / HelpComment = "Used for tracking treatment timeline and scheduling follow-ups"
+
+## Step 8: WhereClause (if applicable)
 
 If a tab needs a filter (e.g., only show products that are courses), use the `SetTabFilter` webhook:
 
@@ -113,18 +209,20 @@ curl -s -X POST "${ETENDO_URL}/webhooks/?name=SetTabFilter&apikey=${API_KEY}" \
   }'
 ```
 
-## Step 7: Export to XML
+## Step 9: Export to XML
 
-With Tomcat DOWN:
+With Tomcat DOWN (important — export.database requires Tomcat stopped):
 ```bash
 ./gradlew resources.down
-JAVA_HOME={java_home_path} \
+JAVA_HOME={java_home} \
   ./gradlew export.database -Dmodule={javapackage} > /tmp/etendo-export.log 2>&1
 tail -5 /tmp/etendo-export.log
+# IMPORTANT: bring services back up after export
 ./gradlew resources.up
 ```
+Wait for containers to be healthy before proceeding.
 
-## Step 8: Result
+## Step 10: Result
 
 ```
 + Window "{name}" created

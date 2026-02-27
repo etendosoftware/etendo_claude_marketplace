@@ -95,7 +95,11 @@ Use the `RegisterHeadlessEndpoint` webhook (requires Tomcat running + API key):
 ```bash
 ETENDO_URL=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('etendoUrl','http://localhost:8080/etendo'))")
 API_KEY=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('apikey',''))")
-MODULE_ID=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('moduleId',''))")
+
+# moduleId is NOT stored in context.json — resolve it from the module's javapackage:
+MODULE_JP=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('module',''))")
+MODULE_ID=$(docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -t -c \
+  "SELECT ad_module_id FROM ad_module WHERE javapackage = '${MODULE_JP}';" | tr -d ' ')
 
 # Register by table name (auto-resolves to first header tab):
 RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterHeadlessEndpoint&apikey=${API_KEY}" \
