@@ -159,10 +159,21 @@ curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CreateColumn" \
 | `15` | Date | Dates |
 | `20` | Yes/No | Checkboxes, boolean flags |
 | `17` | List | Fields with a closed list of values |
-| `19` | TableDir | FK to another table in the same module |
-| `30` | Search | FK to a table in another module |
+| `19` | TableDir | FK to another table — **only works if your module owns the table** |
+| `30` | Search | FK to any table (required for extension columns on other modules' tables) |
 
-**For FK columns to tables from ANOTHER module**, the webhook automatically adds the `EM_` prefix — no need to specify it manually.
+### Extension columns (EM_ prefix)
+
+When your module adds a column to a table owned by **another module** (not just core — any other module), the webhook detects this automatically (`moduleID ≠ table's owner module`) and adds the `EM_{PREFIX}_` prefix. This keeps extensions logically separate in the schema.
+
+**How it works:**
+- You pass `"columnNameDB": "Is_Course"` (without your prefix)
+- The webhook creates `EM_SMFT_Is_Course` (adds `EM_` + your module's DB prefix)
+- If you accidentally pass `"SMFT_Is_Course"`, the webhook detects the prefix is already there and avoids duplication
+
+**Restrictions on extension columns:**
+- **TableDir (ref 19) cannot be used** — the webhook throws `COPDEV_ExternalTableDirRef`. Use **Search (ref 30)** instead for FK references on extension columns.
+- Extension columns need an `AD_ELEMENT` record — `CreateColumn` creates it automatically, but columns created via SQL need the element sync (see Step 6).
 
 ## Step 5b: Create view (if applicable)
 
@@ -290,10 +301,42 @@ curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=SyncTerms" \
 curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=ElementsHandler" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
-  -d "{\"TableID\": \"${TABLE_ID}\"}"
+  -d "{\"TableID\": \"${TABLE_ID}\", \"Mode\": \"READ_ELEMENTS\"}"
 ```
 
 This sequence is **mandatory** — skipping it leads to inconsistencies in the Application Dictionary (missing element translations, unregistered columns, etc.).
+
+**Important — columns created via SQL vs webhook:**
+
+The `CreateColumn` webhook creates the physical column, the `AD_COLUMN`, and the `AD_ELEMENT` all in one call. But if a column was created directly via SQL (`ALTER TABLE ADD COLUMN`), only the physical column exists — there is no `AD_COLUMN` and no `AD_ELEMENT`. In that case:
+
+1. `CheckTablesColumnHook` detects the physical column and creates the missing `AD_COLUMN`
+2. But it does **not** create the `AD_ELEMENT` — you must sync elements manually
+3. Without the `AD_ELEMENT`, `RegisterFields` will fail with NPE
+
+Run this SQL after `CheckTablesColumnHook` to create and link missing elements:
+
+```sql
+-- Create missing AD_ELEMENT records
+INSERT INTO ad_element (ad_element_id, ad_client_id, ad_org_id, isactive,
+  created, createdby, updated, updatedby, columnname, name, printname)
+SELECT get_uuid(), '0', '0', 'Y', now(), '0', now(), '0',
+  c.columnname, c.name, c.name
+FROM ad_column c
+WHERE c.ad_table_id = '{TABLE_ID}'
+  AND NOT EXISTS (
+    SELECT 1 FROM ad_element e
+    WHERE LOWER(e.columnname) = LOWER(c.columnname)
+  );
+
+-- Link columns to their elements
+UPDATE ad_column c SET ad_element_id = (
+  SELECT ad_element_id FROM ad_element e
+  WHERE LOWER(e.columnname) = LOWER(c.columnname) LIMIT 1
+)
+WHERE c.ad_table_id = '{TABLE_ID}'
+  AND c.ad_element_id IS NULL;
+```
 
 ## Step 7: Export to XML
 

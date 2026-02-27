@@ -6,7 +6,7 @@ description: "Etendo Webhooks — Shared Helper. Internal reference read by all 
 
 This file is NOT a user-facing command. It is read by `/etendo:*` skills to invoke AD operations via HTTP webhooks instead of manual SQL.
 
-For known bugs and workarounds, see `references/known-bugs-*.md`.
+For known bugs and workarounds, see `references/known-bugs-webhooks.md`.
 When you encounter new bugs or improvement opportunities, document them in `.etendo/webhook-issues.md` in the user's project (see guidelines section 16).
 
 ---
@@ -202,9 +202,9 @@ The ID comes wrapped in single quotes.
 Adds a column to an existing table (physical in PostgreSQL + registration in AD_COLUMN).
 
 > **Parameters in camelCase** — NOT uppercase like other webhooks.
-> **`canBeNull`** accepts `"true"`/`"false"` (not `"Y"`/`"N"`).
-> **Columns on core tables** (M_Product, C_BPartner, etc.) get the `EM_{PREFIX}_` prefix automatically.
->   Pass the name WITHOUT the module prefix: `"columnNameDB": "Is_Course"` → creates `EM_SMFT_Is_Course`.
+> **`canBeNull`** accepts `"true"`/`"false"` or `"Y"`/`"N"`.
+> **Extension columns (EM_ prefix):** When `moduleID` differs from the table's owner module (not just core — any other module), the webhook automatically adds `EM_{PREFIX}_` to the column name. Pass the name WITHOUT your module prefix: `"columnNameDB": "Is_Course"` → creates `EM_SMFT_Is_Course`. If you pass the prefix already included, the webhook detects it and avoids duplication.
+> **TableDir (ref 19) cannot be used on extension columns** — use Search (ref 30) instead.
 > **`referenceValueID` is not supported** — for list columns, create with `referenceID=10` and update
 >   `ad_reference_value_id` via SQL afterwards.
 

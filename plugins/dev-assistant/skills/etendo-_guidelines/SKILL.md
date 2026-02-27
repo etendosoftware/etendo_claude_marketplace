@@ -117,6 +117,8 @@ These apply everywhere in Etendo development:
 
 **Language rule:** All Application Dictionary configuration (names, descriptions, help texts) must be in **English**, even if the user communicates in another language. This ensures consistency across translations and avoids encoding issues.
 
+**Extension columns (EM_ prefix):** When a module adds a column to a table owned by a **different** module (not just core tables — any other module), the column name must be prefixed with `EM_{PREFIX}_`. The `CreateColumn` webhook handles this automatically — always pass the column name **without** your module prefix. Example: pass `"Is_Course"`, the webhook creates `EM_SMFT_Is_Course`. TableDir references (ref 19) are not allowed on extension columns — use Search (ref 30) instead. See `alter-db` skill for details.
+
 ---
 
 ## 6. Webhook parameter casing
@@ -231,10 +233,12 @@ curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=SyncTerms" \
 curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=ElementsHandler" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
-  -d "{\"TableID\": \"${TABLE_ID}\"}"
+  -d "{\"TableID\": \"${TABLE_ID}\", \"Mode\": \"READ_ELEMENTS\"}"
 ```
 
 Never skip or reorder these steps. See `alter-db` and `window` skills for full details.
+
+**AD_ELEMENT sync:** The `CreateColumn` webhook creates the physical column + `AD_COLUMN` + `AD_ELEMENT` in one call. But if columns were created directly via SQL (`ALTER TABLE ADD COLUMN`), only the physical column exists. `CheckTablesColumnHook` creates the missing `AD_COLUMN`, but **not** the `AD_ELEMENT`. Without it, `RegisterFields` fails with NPE. See the element sync SQL in the `alter-db` skill.
 
 If the `com.etendoerp.copilot.devassistant` module is not installed, these webhooks won't be available. In that case, ask the user to perform these steps manually from the Etendo UI (Application Dictionary → Synchronize Terminology, etc.).
 
@@ -364,7 +368,39 @@ XML editing requires `update.database` afterwards (XML → DB direction), which 
 
 ---
 
-## 16. Webhook feedback collection
+## 16. Reading sourcedata XML files
+
+Etendo stores Application Dictionary data as XML in `src-db/database/sourcedata/`. These files are verbose and hard to read raw. Use the bundled `scripts/xml2json.py` to inspect them quickly:
+
+```bash
+# List all records (compact table, audit columns hidden)
+python3 scripts/xml2json.py SMFWHE_DEFINEDWEBHOOK.xml
+
+# Show specific columns only
+python3 scripts/xml2json.py SMFWHE_DEFINEDWEBHOOK.xml --cols NAME,JAVA_CLASS
+
+# Filter by field value (partial, case-insensitive)
+python3 scripts/xml2json.py AD_TABLE.xml --filter TABLENAME=smft
+
+# Filter by record ID prefix
+python3 scripts/xml2json.py AD_COLUMN.xml --id 0D9B036E
+
+# Find records in file A missing from file B (by shared key)
+python3 scripts/xml2json.py SMFWHE_DEFINEDWEBHOOK.xml \
+  --diff SMFWHE_DEFINEDWEBHOOK_ROLE.xml --key SMFWHE_DEFINEDWEBHOOK_ID
+
+# Output raw JSON (for piping to other tools)
+python3 scripts/xml2json.py AD_TABLE.xml --json
+
+# Just count records
+python3 scripts/xml2json.py AD_COLUMN.xml --count
+```
+
+The script auto-resolves filenames — pass just the filename and it searches `src-db/database/sourcedata/` directories. Use this instead of grepping raw XML.
+
+---
+
+## 17. Webhook feedback collection
 
 When you encounter a **bug**, **limitation**, or **improvement opportunity** in the webhooks from `com.etendoerp.copilot.devassistant`, document it in `.etendo/webhook-issues.md` in the user's project directory. This file helps the user report issues upstream.
 
