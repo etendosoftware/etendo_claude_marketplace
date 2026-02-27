@@ -1,0 +1,9 @@
+{
+  "name": "etendo-workflow-manager",
+  "description": "Manages the full Etendo development workflow — creating Jira issues, GitHub issues, branches, and commits following Etendo conventions",
+  "author": {
+    "name": "Etendo",
+    "email": "dev@etendo.software"
+  },
+  "license": "MIT"
+}

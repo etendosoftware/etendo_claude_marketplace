@@ -1,0 +1,31 @@
+{
+  "name": "etendo-marketplace",
+  "owner": {
+    "name": "Etendo",
+    "email": "dev@etendo.software"
+  },
+  "metadata": {
+    "description": "Etendo Dev Assistant plugin marketplace — tools and skills for Etendo ERP development with Claude Code",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "plugin1",
+      "source": "./plugins/plugin1",
+      "description": "Dummy plugin 1 — placeholder for marketplace testing",
+      "version": "0.1.0",
+      "author": { "name": "Etendo" },
+      "category": "testing",
+      "tags": ["dummy", "test"]
+    },
+{
+      "name": "etendo-workflow-manager",
+      "source": "./plugins/etendo-workflow-manager",
+      "description": "Manages the full Etendo development workflow — creating Jira issues, GitHub issues, branches, and commits following Etendo conventions",
+      "version": "1.0.0",
+      "author": { "name": "Etendo" },
+      "category": "development",
+      "tags": ["etendo", "jira", "github", "workflow", "git"]
+    }
+  ]
+}
