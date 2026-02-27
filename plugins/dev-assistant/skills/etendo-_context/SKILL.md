@@ -1,5 +1,4 @@
 ---
-name: "etendo:_context"
 description: "Etendo Dev Assistant — Shared Context"
 ---
 
@@ -127,31 +126,38 @@ SELECT name FROM ad_module_dbprefix WHERE ad_module_id = (
 
 ## 6. Key Gradle Tasks Reference
 
-**CRITICO**: Siempre usar el JAVA_HOME correcto. Sin el, Gradle falla con "Unsupported class file major version":
+**CRITICAL**: Always use the correct JAVA_HOME. Without it, Gradle fails with "Unsupported class file major version".
 
+Detect JAVA_HOME automatically:
 ```bash
-# Siempre prefixar asi:
-JAVA_HOME=/Users/sebastianbarrozo/Library/Java/JavaVirtualMachines/corretto-17.0.18/Contents/Home \
-  ./gradlew {task}
+# macOS with multiple JDKs:
+JAVA_HOME=$(/usr/libexec/java_home -v 17 2>/dev/null || echo "$JAVA_HOME")
+# Or read from gradle.properties if org.gradle.java.home is set
+```
+
+Always prefix Gradle commands with JAVA_HOME:
+```bash
+JAVA_HOME={java_home} ./gradlew {task}
 ```
 
 | Task | Use for |
 |---|---|
-| `./gradlew setup.web` | Full initial install (DB + WAR) |
+| `./gradlew setup` | Initialize config/Openbravo.properties from gradle.properties |
+| `./gradlew install` | Full initial install (DB schema + WAR) |
 | `./gradlew smartbuild` | Compile + deploy after any change |
 | `./gradlew update.database` | Apply model changes to DB |
-| `./gradlew export.database -Dmodule=X` | Export AD changes to XML after SQL |
+| `./gradlew export.database -Dmodule=X` | Export AD changes to XML |
 | `./gradlew generate.entities` | Regenerate Java entities after column changes |
 | `./gradlew resources.up` | Start Docker services |
 | `./gradlew resources.down` | Stop Docker services |
 | `./gradlew expandCore` | Expand core source (source mode) |
 
-**Orden correcto para deploy completo:**
+**Correct order for full deploy:**
 ```
 resources.down -> export.database -> resources.up -> (wait 15s) -> generate.entities -> smartbuild
 ```
 
-**export.database requiere Tomcat DOWN.** generate.entities y smartbuild requieren Tomcat UP (DB up).
+**export.database requires Tomcat DOWN.** generate.entities and smartbuild require Tomcat UP (DB up).
 
 ---
 
@@ -180,38 +186,43 @@ v_table_id TEXT := REPLACE(gen_random_uuid()::text, '-', '');
 
 ---
 
-## 9. Ejecutar SQL en Docker
+## 9. Executing SQL in Docker
 
-**NUNCA usar heredoc** (`docker exec ... << 'EOF'`) -- cuelga indefinidamente.
+**NEVER use heredoc** (`docker exec ... << 'EOF'`) — it hangs indefinitely.
 
-**Patron correcto: escribir a /tmp + docker cp + psql -f**:
+**Correct pattern: write to /tmp + docker cp + psql -f**:
 ```bash
-# 1. Escribir el SQL a un archivo local
-cat > /tmp/mi_script.sql << 'EOF'
+# 1. Write SQL to a local file
+cat > /tmp/my_script.sql << 'EOF'
 SELECT 1;
 EOF
 
-# 2. Copiar al container y ejecutar
-docker cp /tmp/mi_script.sql etendo-db-1:/tmp/mi_script.sql
-docker exec etendo-db-1 psql -U tad -d etendo -f /tmp/mi_script.sql
+# 2. Copy to the container and execute
+docker cp /tmp/my_script.sql etendo-db-1:/tmp/my_script.sql
+docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -f /tmp/my_script.sql
+```
+
+For short, single-line queries, `docker exec -c` is acceptable:
+```bash
+docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -t -c "SELECT 1;"
 ```
 
 ---
 
-## 10. Webhooks para operaciones AD
+## 10. Webhooks for AD Operations
 
-**Preferir siempre los webhooks sobre SQL manual** para operaciones de Application Dictionary.
-Los webhooks del modulo `com.etendoerp.copilot.devassistant` automatizan:
-- Crear/registrar tablas -> `CreateAndRegisterTable`
-- Agregar columnas -> `CreateColumn`
-- Crear ventanas + menu -> `RegisterWindow`
-- Crear tabs -> `RegisterTab`
-- Registrar fields -> `RegisterFields`
-- Registrar background processes -> `RegisterBGProcessWebHook`
+**Always prefer webhooks over manual SQL** for Application Dictionary operations.
+The webhooks from the `com.etendoerp.copilot.devassistant` module automate:
+- Create/register tables -> `CreateAndRegisterTable`
+- Add columns -> `CreateColumn`
+- Create windows + menu -> `RegisterWindow`
+- Create tabs -> `RegisterTab`
+- Register fields -> `RegisterFields`
+- Register background processes -> `RegisterBGProcessWebHook`
 
-Ver `skills/etendo-_webhooks/SKILL.md` para el patron de invocacion completo.
+See `skills/etendo-_webhooks/SKILL.md` for the full invocation pattern.
 
-**Prerequisito**: Tomcat UP + API key configurada en `.etendo/context.json`.
+**Prerequisite**: Tomcat UP + API key configured in `.etendo/context.json`.
 
 ---
 

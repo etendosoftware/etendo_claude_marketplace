@@ -1,5 +1,4 @@
 ---
-name: "etendo:headless"
 description: "/etendo:headless — Configure EtendoRX headless API endpoints"
 argument-hint: "[list | create name | alter name | test name]"
 ---
@@ -124,8 +123,8 @@ If Tomcat is not running, fall back to SQL:
 ```sql
 DO $$
 DECLARE
-  v_req_id        TEXT := REPLACE(gen_random_uuid()::text, '-', '');
-  v_oapi_tab_id   TEXT := REPLACE(gen_random_uuid()::text, '-', '');
+  v_req_id        TEXT := get_uuid();
+  v_oapi_tab_id   TEXT := get_uuid();
   v_module_id     TEXT := '{AD_MODULE_ID}';
   v_tab_id        TEXT := '{AD_TAB_ID}';
 BEGIN

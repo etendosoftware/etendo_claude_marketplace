@@ -1,5 +1,4 @@
 ---
-name: "etendo:context"
 description: "/etendo:context — Detect and manage development context"
 argument-hint: "[set module=com.x.y | reset | blank=show]"
 ---

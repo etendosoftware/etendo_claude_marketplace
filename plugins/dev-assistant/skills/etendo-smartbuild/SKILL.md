@@ -1,5 +1,4 @@
 ---
-name: "etendo:smartbuild"
 description: "/etendo:smartbuild — Compile and deploy"
 argument-hint: "[remote | full]"
 ---
@@ -92,5 +91,6 @@ Parse the log for:
 If the active module is set (from context), also remind:
 ```
   Active module: {module}
-  Run /etendo:export after any AD changes (windows, tabs, fields)
+  After AD changes, export with: ./gradlew export.database -Dmodule={javapackage}
+  (Requires Tomcat DOWN — run ./gradlew resources.down first)
 ```

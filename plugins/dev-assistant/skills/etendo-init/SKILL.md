@@ -1,5 +1,4 @@
 ---
-name: "etendo:init"
 description: "/etendo:init — Bootstrap a new Etendo project"
 argument-hint: "[target directory path]"
 ---

@@ -8,6 +8,8 @@ allowed-tools:
   - Glob
 ---
 
+First, read `skills/etendo-_context/SKILL.md` to resolve the active module and DB connection.
+
 You are an expert in the Etendo headless API (EtendoRX). The user wants to create a new flow. Your task is to guide them step by step and execute the necessary SQL queries.
 
 ## Argument context
@@ -40,7 +42,7 @@ Auto-generated docs: `GET /etendo/ws/com.etendoerp.openapi.openAPIController?tag
 We need to know which `ad_tab` from the ERP we want to expose. Search by name:
 
 ```bash
-docker exec -i etendo_setup-db-1 psql -U tad -d etendo -c \
+docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -c \
   "SELECT t.ad_tab_id, t.name, tb.tablename
    FROM ad_tab t JOIN ad_table tb ON t.ad_table_id = tb.ad_table_id
    WHERE lower(t.name) LIKE lower('%$ARGUMENTS%')
@@ -55,7 +57,7 @@ If the user already knows the tab ID, continue directly.
 ## Step 2 — Identify available fields
 
 ```bash
-docker exec -i etendo_setup-db-1 psql -U tad -d etendo -c \
+docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -c \
   "SELECT f.ad_field_id, f.name, c.columnname, c.ad_reference_id
    FROM ad_field f
    JOIN ad_column c ON f.ad_column_id = c.ad_column_id
@@ -70,7 +72,7 @@ Ask the user which fields they want to expose, or suggest the most common ones (
 ## Step 3 — Check if an etrx_openapi_tab already exists
 
 ```bash
-docker exec -i etendo_setup-db-1 psql -U tad -d etendo -c \
+docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -c \
   "SELECT * FROM etrx_openapi_tab WHERE ad_tab_id = '<TAB_ID>';"
 ```
 
@@ -81,7 +83,7 @@ If it already exists, use that `etrx_openapi_tab_id`. If not, create it in Step 
 ## Step 4 — Create the etrx_openapi_tab (if it doesn't exist)
 
 ```bash
-docker exec -i etendo_setup-db-1 psql -U tad -d etendo -c \
+docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -c \
   "INSERT INTO etrx_openapi_tab (
      etrx_openapi_tab_id, ad_client_id, ad_org_id, isactive,
      created, createdby, updated, updatedby,
@@ -100,7 +102,7 @@ docker exec -i etendo_setup-db-1 psql -U tad -d etendo -c \
 For each field the user wants to expose:
 
 ```bash
-docker exec -i etendo_setup-db-1 psql -U tad -d etendo -c \
+docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -c \
   "INSERT INTO etrx_openapi_field (
      etrx_openapi_field_id, ad_client_id, ad_org_id, isactive,
      created, createdby, updated, updatedby,
@@ -124,7 +126,7 @@ Repeat for each field. The minimum recommended fields are:
 ## Step 6 — Create the endpoint (etapi_openapi_req)
 
 ```bash
-docker exec -i etendo_setup-db-1 psql -U tad -d etendo -c \
+docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -c \
   "INSERT INTO etapi_openapi_req (
      etapi_openapi_req_id, ad_client_id, ad_org_id, isactive,
      created, createdby, updated, updatedby,
@@ -143,7 +145,7 @@ docker exec -i etendo_setup-db-1 psql -U tad -d etendo -c \
 ## Step 7 — Create the Flow
 
 ```bash
-docker exec -i etendo_setup-db-1 psql -U tad -d etendo -c \
+docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -c \
   "INSERT INTO etapi_openapi_flow (
      etapi_openapi_flow_id, ad_client_id, ad_org_id, isactive,
      created, createdby, updated, updatedby,
@@ -160,7 +162,7 @@ docker exec -i etendo_setup-db-1 psql -U tad -d etendo -c \
 ## Step 8 — Link endpoint to the Flow (etapi_openapi_flowpoint)
 
 ```bash
-docker exec -i etendo_setup-db-1 psql -U tad -d etendo -c \
+docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -c \
   "INSERT INTO etapi_openapi_flowpoint (
      etapi_openapi_flowpoint_id, ad_client_id, ad_org_id, isactive,
      created, createdby, updated, updatedby,
@@ -219,13 +221,17 @@ curl -s "http://localhost:8080/etendo/sws/com.etendoerp.etendorx.datasource/<End
 
 ---
 
-## Reference IDs (F&B Spain - Demo)
+## Reference IDs
 
-```
-CLIENT:   23C59575B9CF467C9620760EB255B389
-ORG:      E443A31992CB4635AFCAEABE7183CE85
-ROLE:     42D0EEB1C66F497A90DD526DC597E6F0
-CREATEDBY (admin): 100
+The IDs for client, org, role, and user depend on the Etendo instance. Query them from the DB:
+```sql
+-- Get system admin user ID
+SELECT ad_user_id FROM ad_user WHERE username = 'admin';
+-- Get available roles
+SELECT ad_role_id, name FROM ad_role WHERE isactive = 'Y' ORDER BY name;
+-- Get client/org
+SELECT ad_client_id, name FROM ad_client WHERE isactive = 'Y';
+SELECT ad_org_id, name FROM ad_org WHERE isactive = 'Y' AND ad_client_id != '0';
 ```
 
 ---

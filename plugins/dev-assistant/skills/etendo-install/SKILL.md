@@ -1,5 +1,4 @@
 ---
-name: "etendo:install"
 description: "/etendo:install — Install Etendo on an existing project"
 argument-hint: "[fresh]"
 ---

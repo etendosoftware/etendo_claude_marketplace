@@ -1,5 +1,4 @@
 ---
-name: "etendo:module"
 description: "/etendo:module — Create or configure an Etendo module"
 argument-hint: "[create | info | module java package]"
 ---

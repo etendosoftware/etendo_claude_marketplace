@@ -1,5 +1,4 @@
 ---
-name: "etendo:update"
 description: "/etendo:update — Synchronize database with the model"
 argument-hint: "[full | threads=N]"
 ---

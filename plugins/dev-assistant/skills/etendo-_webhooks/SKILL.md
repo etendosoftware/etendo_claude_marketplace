@@ -1,54 +1,55 @@
 ---
-name: "etendo:_webhooks"
-description: "Etendo Webhooks — Shared Helper"
+description: "Etendo Webhooks — Shared Helper. Internal reference read by all /etendo:* skills to invoke AD operations via HTTP webhooks instead of manual SQL."
 ---
 
 # Etendo Webhooks — Shared Helper
 
-Este archivo NO es un command de usuario. Lo leen los commands `/etendo:*` para invocar las operaciones de AD via webhooks HTTP en lugar de SQL manual.
+This file is NOT a user-facing command. It is read by `/etendo:*` skills to invoke AD operations via HTTP webhooks instead of manual SQL.
+
+For known bugs and workarounds, see `references/known-bugs-*.md`.
 
 ---
 
-## Cuando usar webhooks vs SQL
+## When to use webhooks vs SQL
 
-| Tarea | Usar |
+| Task | Use |
 |---|---|
-| Crear modulo (AD_MODULE + prefix + package) | Webhook `CreateModule` |
-| Crear template (AD_MODULE tipo T, sin prefix) | SQL directo (CreateModule falla para templates -- ver nota) |
-| Agregar dependencia entre modulos | Webhook `AddModuleDependency` |
-| Crear tabla + registrarla en AD | Webhook `CreateAndRegisterTable` |
-| Crear vista de BD y registrarla en AD | Webhook `CreateView` |
-| Agregar columna a tabla propia o estandar | Webhook `CreateColumn` |
-| Crear referencia de lista (dropdown) | Webhook `CreateReference` |
-| Asignar referenceValueID a columna ya creada | SQL: `UPDATE ad_column SET ad_reference_value_id=... WHERE ...` |
-| Crear ventana + menu | Webhook `RegisterWindow` |
-| Crear tab | Webhook `RegisterTab` |
-| Registrar fields de un tab | Webhook `RegisterFields` |
-| Registrar background process | Webhook `RegisterBGProcessWebHook` |
-| Registrar Action Process (lanzable desde menu) | Webhook `ProcessDefinitionButton` |
-| Registrar Jasper report | Webhook `ProcessDefinitionJasper` |
-| Registrar endpoint headless EtendoRX | Webhook `RegisterHeadlessEndpoint` |
-| Registrar columnas fisicas en AD_COLUMN | Webhook `RegisterColumns` |
-| Registrar nuevo webhook en BD | Webhook `RegisterNewWebHook` |
-| Filtro de tab (Where Clause) | Webhook `SetTabFilter` |
-| Columna computada (SQL expression) | Webhook `CreateComputedColumn` |
-| Agregar FK fisico en PostgreSQL | SQL: `ALTER TABLE ... ADD CONSTRAINT ... FOREIGN KEY ...` |
-| Agregar campo a Field Group existente | SQL directo (no hay webhook) |
-| Renombrar ventana/tab/menu | SQL: `UPDATE ad_window/ad_tab/ad_menu SET name=...` |
+| Create module (AD_MODULE + prefix + package) | Webhook `CreateModule` |
+| Create template (AD_MODULE type T, no prefix) | Direct SQL (CreateModule fails for templates — see note) |
+| Add dependency between modules | Webhook `AddModuleDependency` |
+| Create table + register in AD | Webhook `CreateAndRegisterTable` |
+| Create DB view and register in AD | Webhook `CreateView` |
+| Add column to own or standard table | Webhook `CreateColumn` |
+| Create list reference (dropdown) | Webhook `CreateReference` |
+| Assign referenceValueID to existing column | SQL: `UPDATE ad_column SET ad_reference_value_id=... WHERE ...` |
+| Create window + menu | Webhook `RegisterWindow` |
+| Create tab | Webhook `RegisterTab` |
+| Register fields for a tab | Webhook `RegisterFields` |
+| Register background process | Webhook `RegisterBGProcessWebHook` |
+| Register Action Process (launchable from menu) | Webhook `ProcessDefinitionButton` |
+| Register Jasper report | Webhook `ProcessDefinitionJasper` |
+| Register headless EtendoRX endpoint | Webhook `RegisterHeadlessEndpoint` |
+| Register physical columns in AD_COLUMN | Webhook `RegisterColumns` |
+| Register new webhook in DB | Webhook `RegisterNewWebHook` |
+| Tab filter (Where Clause) | Webhook `SetTabFilter` |
+| Computed column (SQL expression) | Webhook `CreateComputedColumn` |
+| Add physical FK in PostgreSQL | SQL: `ALTER TABLE ... ADD CONSTRAINT ... FOREIGN KEY ...` |
+| Add field to existing Field Group | Direct SQL (no webhook available) |
+| Rename window/tab/menu | SQL: `UPDATE ad_window/ad_tab/ad_menu SET name=...` |
 
 ---
 
-## Prerequisito: API Key
+## Prerequisite: API Key
 
-Los webhooks requieren autenticacion por API key. Antes de cualquier call, asegurate de tener una key disponible:
+Webhooks require API key authentication. Before any call, ensure you have a key available:
 
-### Verificar / crear API key
+### Verify / create API key
 
 ```bash
-# Verificar si ya existe en context.json
+# Check if it already exists in context.json
 cat .etendo/context.json 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('apikey',''))" 2>/dev/null
 
-# Si no existe, crear token Y dar acceso a todos los webhooks en un solo bloque:
+# If it doesn't exist, create a token AND grant access to all webhooks in one block:
 NEW_KEY=$(docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -t -c "
   INSERT INTO smfwhe_definedwebhook_token
     (smfwhe_definedwebhook_token_id, ad_client_id, ad_org_id, isactive, created, createdby, updated, updatedby, ad_user_roles_id, name, apikey)
@@ -60,9 +61,9 @@ NEW_KEY=$(docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -t -c "
 " | tr -d ' ')
 echo "KEY: $NEW_KEY"
 
-# CRITICO: el acceso se controla por smfwhe_definedwebhook_ACC (token+webhook), NO por role.
-# La tabla smfwhe_definedwebhook_role NO es suficiente -- se necesita smfwhe_definedwebhook_acc.
-# Despues de crear el token, dar acceso a todos los webhooks:
+# CRITICAL: Access is controlled by smfwhe_definedwebhook_ACC (token+webhook), NOT by role.
+# The table smfwhe_definedwebhook_role is NOT sufficient — smfwhe_definedwebhook_acc is needed.
+# After creating the token, grant access to all webhooks:
 TOKEN_ID=$(docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -t -c "
   SELECT smfwhe_definedwebhook_token_id FROM smfwhe_definedwebhook_token WHERE name='claude-agent';
 " | tr -d ' ')
@@ -80,7 +81,7 @@ docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -t -c "
 "
 ```
 
-Guardar la key en `.etendo/context.json`:
+Save the key in `.etendo/context.json`:
 ```json
 {
   "module": "...",
@@ -88,27 +89,27 @@ Guardar la key en `.etendo/context.json`:
 }
 ```
 
-> **Nota:** Si despues se registra un nuevo webhook via `RegisterNewWebHook`, ese webhook nuevo
-> no tendra entrada en `smfwhe_definedwebhook_acc`. Repetir el INSERT con `WHERE NOT EXISTS`.
+> **Note:** If a new webhook is later registered via `RegisterNewWebHook`, that new webhook
+> won't have an entry in `smfwhe_definedwebhook_acc`. Repeat the INSERT with `WHERE NOT EXISTS`.
 
 ---
 
-## Patron de invocacion
+## Invocation pattern
 
-**SIEMPRE usar POST con JSON body.** El webhook usa `?name=` para routing, y todos los parametros van en el body JSON.
+**ALWAYS use POST with JSON body.** The webhook uses `?name=` for routing, and all parameters go in the JSON body.
 
 ```bash
 ETENDO_URL="http://localhost:8080/etendo"
-API_KEY="{apikey desde context.json}"
+API_KEY="{apikey from context.json}"
 
 curl -s -X POST "${ETENDO_URL}/webhooks/?name={WebhookName}&apikey=${API_KEY}" \
   -H "Content-Type: application/json" \
   -d '{"Param1":"Value1","Param2":"Value2"}'
 ```
 
-La respuesta es JSON: `{"message":"..."}` en exito, `{"error":"..."}` en fallo.
+The response is JSON: `{"message":"..."}` on success, `{"error":"..."}` on failure.
 
-**Verificar exito:**
+**Verify success:**
 ```bash
 RESP=$(curl -s ...)
 echo $RESP | python3 -c "import sys,json; r=json.load(sys.stdin); print(r.get('message') or r.get('error','?'))"
@@ -116,13 +117,13 @@ echo $RESP | python3 -c "import sys,json; r=json.load(sys.stdin); print(r.get('m
 
 ---
 
-## Webhooks disponibles y sus parametros
+## Available webhooks and their parameters
 
 ### `CreateModule`
-Crea AD_MODULE + AD_MODULE_DBPREFIX + AD_PACKAGE en una sola llamada.
+Creates AD_MODULE + AD_MODULE_DBPREFIX + AD_PACKAGE in a single call.
 
-> **Templates (Type=T) no pueden tener DB prefix** -- el trigger `ad_module_dbprefix_trg` lo bloquea.
-> Usar SQL directo para templates (ver seccion abajo).
+> **Templates (Type=T) cannot have a DB prefix** — the trigger `ad_module_dbprefix_trg` blocks it.
+> Use direct SQL for templates (see section below).
 
 ```bash
 RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/?name=CreateModule&apikey=${API_KEY}" \
@@ -138,12 +139,12 @@ MODULE_ID=$(echo $RESP | python3 -c "import sys,json,re; r=json.load(sys.stdin);
 echo "Module ID: $MODULE_ID"
 ```
 
-**Parametros requeridos:** `Name`, `JavaPackage`, `DBPrefix`
-**Opcionales:** `Description` (default=Name), `Version` (default=1.0.0), `Author`, `Type` (M/T/P, default=M)
+**Required parameters:** `Name`, `JavaPackage`, `DBPrefix`
+**Optional:** `Description` (default=Name), `Version` (default=1.0.0), `Author`, `Type` (M/T/P, default=M)
 
-Respuesta: `{"message": "Module created successfully with ID: <32-char-hex>"}`
+Response: `{"message": "Module created successfully with ID: <32-char-hex>"}`
 
-#### Crear template via SQL (porque CreateModule falla para Type=T con DBPrefix)
+#### Create template via SQL (because CreateModule fails for Type=T with DBPrefix)
 
 ```bash
 cat > /tmp/create_template.sql << 'EOF'
@@ -151,7 +152,7 @@ DO $$
 DECLARE
   v_module_id TEXT := get_uuid();
   v_dep_id TEXT := get_uuid();
-  v_tutorial_id TEXT := '{MODULE_ID_DEL_MODULO_BASE}';
+  v_tutorial_id TEXT := '{MODULE_ID_OF_BASE_MODULE}';
 BEGIN
   INSERT INTO AD_MODULE (AD_MODULE_ID, AD_CLIENT_ID, AD_ORG_ID, ISACTIVE, CREATED, CREATEDBY, UPDATED, UPDATEDBY,
                          NAME, VERSION, DESCRIPTION, JAVAPACKAGE, TYPE, ISINDEVELOPMENT,
@@ -161,7 +162,7 @@ BEGIN
           '{Template Name}', '1.0.0', '{description}', '{com.smf.tutorial.template}', 'T', 'Y',
           'N', 'N', 'N', 'N', 'ETENDO');
 
-  -- Dependencia con ISINCLUDED=Y (modulo incluido en el template)
+  -- Dependency with ISINCLUDED=Y (module included in the template)
   INSERT INTO AD_MODULE_DEPENDENCY (AD_MODULE_DEPENDENCY_ID, AD_CLIENT_ID, AD_ORG_ID, ISACTIVE,
                                      CREATED, CREATEDBY, UPDATED, UPDATEDBY,
                                      AD_MODULE_ID, AD_DEPENDENT_MODULE_ID, DEPENDANT_MODULE_NAME,
@@ -173,16 +174,16 @@ BEGIN
 END $$;
 EOF
 docker cp /tmp/create_template.sql etendo-db-1:/tmp/create_template.sql
-docker exec etendo-db-1 psql -U tad -d etendo -f /tmp/create_template.sql
+docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -f /tmp/create_template.sql
 ```
 
-> **Columnas reales de AD_MODULE_DEPENDENCY**: `startversion` (NOT NULL), `dependency_enforcement` (con underscore), `isincluded`.
-> No existe `dependencyenforcement` como palabra junta -- usar `dependency_enforcement`.
+> **Actual columns of AD_MODULE_DEPENDENCY**: `startversion` (NOT NULL), `dependency_enforcement` (with underscore), `isincluded`.
+> There is no `dependencyenforcement` as one word — use `dependency_enforcement`.
 
 ---
 
 ### `AddModuleDependency`
-Agrega una dependencia entre dos modulos.
+Adds a dependency between two modules.
 
 ```bash
 curl -s -X POST "${ETENDO_URL}/webhooks/?name=AddModuleDependency&apikey=${API_KEY}" \
@@ -194,56 +195,56 @@ curl -s -X POST "${ETENDO_URL}/webhooks/?name=AddModuleDependency&apikey=${API_K
   }'
 ```
 
-**Parametros requeridos:** `ModuleID`, y uno de: `DependsOnModuleID` | `DependsOnJavaPackage`
-**Opcionales:** `FirstVersion`, `LastVersion`, `IsIncluded` ("true"/"false"), `Enforcement` ("MAJOR"/"MINOR"/"NONE")
+**Required parameters:** `ModuleID`, and one of: `DependsOnModuleID` | `DependsOnJavaPackage`
+**Optional:** `FirstVersion`, `LastVersion`, `IsIncluded` ("true"/"false"), `Enforcement` ("MAJOR"/"MINOR"/"NONE")
 
-> `DependsOnModuleID="0"` -> core (org.openbravo, el modulo base de Etendo)
+> `DependsOnModuleID="0"` → core (org.openbravo, the Etendo base module)
 
 ---
 
 ### `CreateAndRegisterTable`
-Crea la tabla fisica en PostgreSQL Y la registra en AD_TABLE con columnas base (id, client, org, active, created, updated).
+Creates the physical table in PostgreSQL AND registers it in AD_TABLE with base columns (id, client, org, active, created, updated).
 
 ```bash
 RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/?name=CreateAndRegisterTable&apikey=${API_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
-    "Name": "Asignatura",
-    "DBTableName": "SMFT_Asignatura",
+    "Name": "Subject",
+    "DBTableName": "SMFT_Subject",
     "ModuleID": "'${MODULE_ID}'",
     "DataAccessLevel": "3",
-    "Description": "Tabla de asignaturas",
-    "Help": "Tabla de asignaturas",
-    "JavaClass": "com.smf.tutorial.data.Asignatura"
+    "Description": "Subjects table",
+    "Help": "Subjects table",
+    "JavaClass": "com.smf.tutorial.data.Subject"
   }')
 TABLE_ID=$(echo $RESP | python3 -c "import sys,json,re; r=json.load(sys.stdin); m=re.search(r\"ID: '([A-F0-9a-f]{32})'\",r.get('message','')); print(m.group(1) if m else r.get('error','FAIL'))")
 ```
 
-**Parametros requeridos:** `Name`, `DBTableName`, `ModuleID`, `DataAccessLevel`, `Description`, `Help`, `JavaClass`
+**Required parameters:** `Name`, `DBTableName`, `ModuleID`, `DataAccessLevel`, `Description`, `Help`, `JavaClass`
 **DataAccessLevel:** `3`=System/Org, `4`=Client/Org, `1`=Org
 
-Respuesta: `{"message": "Table registered successfully in Etendo with the ID: '<id>'."}`
-El ID viene entre comillas simples.
+Response: `{"message": "Table registered successfully in Etendo with the ID: '<id>'."}`
+The ID comes wrapped in single quotes.
 
 ---
 
 ### `CreateColumn`
-Agrega una columna a una tabla existente (fisica en PostgreSQL + registro en AD_COLUMN).
+Adds a column to an existing table (physical in PostgreSQL + registration in AD_COLUMN).
 
-> **Parametros en camelCase** -- NO mayusculas como otros webhooks.
-> **`canBeNull`** acepta `"true"`/`"false"` (no `"Y"`/`"N"`).
-> **Columnas en tablas core** (M_Product, C_BPartner, etc.) reciben prefijo `EM_{PREFIX}_` automaticamente.
->   Pasar el nombre SIN el prefijo del modulo: `"columnNameDB": "Is_Course"` -> se crea como `EM_SMFT_Is_Course`.
-> **`referenceValueID` no esta soportado** -- para columnas de lista, crear con `referenceID=10` y actualizar
->   `ad_reference_value_id` via SQL despues.
+> **Parameters in camelCase** — NOT uppercase like other webhooks.
+> **`canBeNull`** accepts `"true"`/`"false"` (not `"Y"`/`"N"`).
+> **Columns on core tables** (M_Product, C_BPartner, etc.) get the `EM_{PREFIX}_` prefix automatically.
+>   Pass the name WITHOUT the module prefix: `"columnNameDB": "Is_Course"` → creates `EM_SMFT_Is_Course`.
+> **`referenceValueID` is not supported** — for list columns, create with `referenceID=10` and update
+>   `ad_reference_value_id` via SQL afterwards.
 
 ```bash
 curl -s -X POST "${ETENDO_URL}/webhooks/?name=CreateColumn&apikey=${API_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
     "tableID": "'${TABLE_ID}'",
-    "columnNameDB": "nombre_columna",
-    "name": "Nombre Visible",
+    "columnNameDB": "column_name",
+    "name": "Visible Name",
     "referenceID": "10",
     "moduleID": "'${MODULE_ID}'",
     "canBeNull": "true",
@@ -251,23 +252,23 @@ curl -s -X POST "${ETENDO_URL}/webhooks/?name=CreateColumn&apikey=${API_KEY}" \
   }'
 ```
 
-**Parametros requeridos:** `tableID`, `columnNameDB`, `name`, `referenceID`, `moduleID`, `canBeNull`
-**Opcionales:** `defaultValue`
+**Required parameters:** `tableID`, `columnNameDB`, `name`, `referenceID`, `moduleID`, `canBeNull`
+**Optional:** `defaultValue`
 
-**Reference IDs mas comunes:**
-| ID | Tipo | SQL type |
+**Most common Reference IDs:**
+| ID | Type | SQL type |
 |---|---|---|
-| `10` | String (varchar 60) | VARCHAR(200) |
+| `10` | String | VARCHAR(60) default, webhook creates VARCHAR(200) |
 | `14` | Text (long) | TEXT |
 | `11` | Integer | NUMERIC(10,0) |
 | `22` | Amount/Number | NUMERIC(19,2) |
 | `15` | Date | TIMESTAMP |
 | `20` | Yes/No (boolean) | CHAR(1) |
-| `17` | List (ref cerrada) | VARCHAR(60) |
-| `19` | TableDir (FK auto por nombre) | VARCHAR(32) |
-| `30` | Search (FK general) | VARCHAR(32) |
+| `17` | List (closed reference) | VARCHAR(60) |
+| `19` | TableDir (auto FK by name) | VARCHAR(32) |
+| `30` | Search (general FK) | VARCHAR(32) |
 
-#### Actualizar referenceValueID via SQL (para columnas List):
+#### Update referenceValueID via SQL (for List columns):
 ```bash
 cat > /tmp/fix_ref.sql << 'EOF'
 UPDATE ad_column
@@ -276,101 +277,101 @@ SET ad_reference_id = '17',
 WHERE ad_table_id = '{TABLE_ID}' AND LOWER(columnname) = 'type';
 EOF
 docker cp /tmp/fix_ref.sql etendo-db-1:/tmp/fix_ref.sql
-docker exec etendo-db-1 psql -U tad -d etendo -f /tmp/fix_ref.sql
+docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -f /tmp/fix_ref.sql
 ```
 
-#### Agregar FKs fisicas via SQL:
-Las FKs en la BD NO se crean automaticamente -- el webhook solo crea la columna.
-Los nombres de columna en la BD son **lowercase** (PostgreSQL normaliza).
+#### Add physical FKs via SQL:
+Physical FKs in the DB are NOT created automatically — the webhook only creates the column.
+Column names in the DB are **lowercase** (PostgreSQL normalizes).
 
 ```bash
 cat > /tmp/add_fks.sql << 'EOF'
-ALTER TABLE smft_asignatura ADD CONSTRAINT smft_asig_teacher_fk
+ALTER TABLE smft_subject ADD CONSTRAINT smft_subj_teacher_fk
   FOREIGN KEY (teacher) REFERENCES ad_user(ad_user_id);
 ALTER TABLE smft_enrollment ADD CONSTRAINT smft_enroll_edition_fk
   FOREIGN KEY (courseedition) REFERENCES smft_course_edition(smft_course_edition_id);
 -- etc.
 EOF
 docker cp /tmp/add_fks.sql etendo-db-1:/tmp/add_fks.sql
-docker exec etendo-db-1 psql -U tad -d etendo -f /tmp/add_fks.sql
+docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -f /tmp/add_fks.sql
 ```
 
 ---
 
 ### `CreateReference`
-Crea una referencia de tipo Lista (dropdown) con sus items.
+Creates a List type reference (dropdown) with its items.
 
 ```bash
 curl -s -X POST "${ETENDO_URL}/webhooks/?name=CreateReference&apikey=${API_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
-    "NameReference": "SMFT_TipoDictado",
+    "NameReference": "SMFT_TeachingType",
     "Prefix": "SMFT",
-    "ReferenceList": "Anual,1er Cuatrimestre,2do Cuatrimestre",
-    "Description": "Tipo de dictado de la asignatura",
-    "Help": "Tipo de dictado"
+    "ReferenceList": "Annual,First Semester,Second Semester",
+    "Description": "Teaching type for the subject",
+    "Help": "Teaching type"
   }'
 ```
 
-**Parametros requeridos:** `NameReference`, `Prefix`, `ReferenceList` (CSV de nombres), `Description`, `Help`
+**Required parameters:** `NameReference`, `Prefix`, `ReferenceList` (CSV of names), `Description`, `Help`
 
-> `ReferenceList` es una lista separada por comas de **nombres** (no `value:name`).
-> El search key se auto-genera con los primeros 2 caracteres de cada nombre (mayusculas).
-> Para search keys personalizadas, actualizar `ad_ref_list` via SQL.
+> `ReferenceList` is a comma-separated list of **names** (not `value:name`).
+> The search key is auto-generated from the first 2 characters of each name (uppercase).
+> For custom search keys, update `ad_ref_list` via SQL.
 
 ---
 
 ### `RegisterWindow`
-Crea AD_WINDOW + entrada en AD_MENU.
+Creates AD_WINDOW + AD_MENU entry.
 
 ```bash
 RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterWindow&apikey=${API_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
     "DBPrefix": "SMFT",
-    "Name": "Curso",
-    "Description": "Gestion de cursos",
-    "HelpComment": "Gestion de cursos"
+    "Name": "Course",
+    "Description": "Course management",
+    "HelpComment": "Course management"
   }')
 WINDOW_ID=$(echo $RESP | python3 -c "import sys,json,re; r=json.load(sys.stdin); m=re.search(r'ID:\s*([A-F0-9a-f]{32})',r.get('message','')); print(m.group(1) if m else r.get('error','FAIL'))")
 echo "Window ID: $WINDOW_ID"
 ```
 
-**Parametros requeridos:** `DBPrefix`, `Name`, `Description`, `HelpComment`
+**Required parameters:** `DBPrefix`, `Name`, `Description`, `HelpComment`
 
 ---
 
 ### `RegisterTab`
-Crea un AD_TAB dentro de una ventana.
+Creates an AD_TAB inside a window.
 
-> La jerarquia de tabs se determina por `TabLevel` + `SequenceNumber`:
-> un tab de nivel N es hijo del ultimo tab de nivel N-1 antes de el (por secuencia).
-> El ID en el response viene entre comillas simples: `ID: 'XXXX'`.
+> Tab hierarchy is determined by `TabLevel` + `SequenceNumber`:
+> a tab at level N is a child of the last tab at level N-1 before it (by sequence).
+> The ID in the response comes wrapped in single quotes: `ID: 'XXXX'`.
 
 ```bash
 RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterTab&apikey=${API_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
     "WindowID": "'${WINDOW_ID}'",
-    "TableName": "SMFT_Asignatura",
+    "TableName": "SMFT_Subject",
     "DBPrefix": "SMFT",
     "TabLevel": "0",
     "SequenceNumber": "10",
-    "Name": "Asignatura",
-    "Description": "Tab de asignaturas",
-    "HelpComment": "Tab de asignaturas"
+    "Name": "Subject",
+    "Description": "Subjects tab",
+    "HelpComment": "Subjects tab"
   }')
 TAB_ID=$(echo $RESP | python3 -c "import sys,json,re; r=json.load(sys.stdin); m=re.search(r\"ID: '([A-F0-9a-f]{32})'\",r.get('message','')); print(m.group(1) if m else r.get('error','FAIL'))")
 echo "Tab ID: $TAB_ID"
 ```
 
-**Parametros requeridos:** `WindowID`, `TableName`, `DBPrefix`, `TabLevel`, `SequenceNumber`, `Description`, `HelpComment`
-**Opcionales:** `Name` (default=TableName), `IsReadOnly` ("true"/"false")
+**Required parameters:** `WindowID`, `TableName`, `DBPrefix`, `TabLevel`, `SequenceNumber`, `Description`, `HelpComment`
+**Optional:** `Name` (default=TableName), `IsReadOnly` ("true"/"false")
 
 ---
 
 ### `SetTabFilter`
-Establece un filtro SQL/HQL en un tab existente.
+Sets a SQL/HQL filter on an existing tab.
 
 ```bash
 curl -s -X POST "${ETENDO_URL}/webhooks/?name=SetTabFilter&apikey=${API_KEY}" \
@@ -383,15 +384,15 @@ curl -s -X POST "${ETENDO_URL}/webhooks/?name=SetTabFilter&apikey=${API_KEY}" \
   }'
 ```
 
-**Parametros requeridos:** `TabID`, `WhereClause`
-**Opcionales:** `HQLWhereClause`, `OrderByClause`
+**Required parameters:** `TabID`, `WhereClause`
+**Optional:** `HQLWhereClause`, `OrderByClause`
 
 ---
 
 ### `RegisterFields`
-Auto-crea AD_FIELD para todas las columnas de un tab.
+Auto-creates AD_FIELD for all columns of a tab.
 
-> `Description` y `HelpComment` son obligatorios.
+> `Description` and `HelpComment` are mandatory.
 
 ```bash
 curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterFields&apikey=${API_KEY}" \
@@ -399,15 +400,15 @@ curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterFields&apikey=${API_KEY}" 
   -d '{
     "WindowTabID": "'${TAB_ID}'",
     "DBPrefix": "SMFT",
-    "Description": "Descripcion del tab",
-    "HelpComment": "Descripcion del tab"
+    "Description": "Tab description",
+    "HelpComment": "Tab description"
   }'
 ```
 
 ---
 
 ### `RegisterBGProcessWebHook`
-Registra un Background Process en AD_PROCESS.
+Registers a Background Process in AD_PROCESS.
 
 ```bash
 curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterBGProcessWebHook&apikey=${API_KEY}" \
@@ -424,7 +425,7 @@ curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterBGProcessWebHook&apikey=${
 ---
 
 ### `ProcessDefinitionButton`
-Registra un Action Process (lanzable desde menu o boton) en AD_PROCESS.
+Registers an Action Process (launchable from menu or button) in AD_PROCESS.
 
 ```bash
 curl -s -X POST "${ETENDO_URL}/webhooks/?name=ProcessDefinitionButton&apikey=${API_KEY}" \
@@ -440,31 +441,31 @@ curl -s -X POST "${ETENDO_URL}/webhooks/?name=ProcessDefinitionButton&apikey=${A
   }'
 ```
 
-**Parametros `Parameters`:** JSON array, cada item: `BD_NAME`, `NAME`, `LENGTH`, `SEQNO`, `REFERENCE`
+**`Parameters` field:** JSON array, each item: `BD_NAME`, `NAME`, `LENGTH`, `SEQNO`, `REFERENCE`
 
 ---
 
 ### `ProcessDefinitionJasper`
-Registra un reporte Jasper en AD_PROCESS.
+Registers a Jasper report in AD_PROCESS.
 
 ```bash
 curl -s -X POST "${ETENDO_URL}/webhooks/?name=ProcessDefinitionJasper&apikey=${API_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
     "Prefix": "SMFT",
-    "SearchKey": "SMFT_EvaluacionReport",
-    "ProcessName": "Evaluacion Report",
+    "SearchKey": "SMFT_EvaluationReport",
+    "ProcessName": "Evaluation Report",
     "Description": "Prints evaluation with questions and answers",
     "HelpComment": "Prints evaluation with questions and answers",
     "JavaPackage": "com.smf.tutorial",
-    "JasperFile": "@basedesign/com/smf/tutorial/reports/EvaluacionReport.jrxml"
+    "JasperFile": "@basedesign/com/smf/tutorial/reports/EvaluationReport.jrxml"
   }'
 ```
 
 ---
 
 ### `CreateComputedColumn`
-Crea una columna calculada (virtual/transient) en AD_COLUMN con una expresion SQL.
+Creates a computed (virtual/transient) column in AD_COLUMN with a SQL expression.
 
 ```bash
 curl -s -X POST "${ETENDO_URL}/webhooks/?name=CreateComputedColumn&apikey=${API_KEY}" \
@@ -478,13 +479,13 @@ curl -s -X POST "${ETENDO_URL}/webhooks/?name=CreateComputedColumn&apikey=${API_
   }'
 ```
 
-**Parametros requeridos:** `ColumnName`, `Name`, `SQLLogic`, `ModuleID`, y uno de: `TableID` | `TableName`
-**Opcionales:** `ReferenceID` (default="10"=String), `Description`
+**Required parameters:** `ColumnName`, `Name`, `SQLLogic`, `ModuleID`, and one of: `TableID` | `TableName`
+**Optional:** `ReferenceID` (default="10"=String), `Description`
 
 ---
 
 ### `RegisterHeadlessEndpoint`
-Registra un endpoint EtendoRX headless para exponer un Tab via REST.
+Registers an EtendoRX headless endpoint to expose a Tab via REST.
 
 ```bash
 curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterHeadlessEndpoint&apikey=${API_KEY}" \
@@ -497,13 +498,13 @@ curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterHeadlessEndpoint&apikey=${
   }'
 ```
 
-**Parametros requeridos:** `RequestName`, `ModuleID`, y uno de: `TabID` | `TableName`
-**Opcionales:** `Description`, `Type` (default=R)
+**Required parameters:** `RequestName`, `ModuleID`, and one of: `TabID` | `TableName`
+**Optional:** `Description`, `Type` (default=R)
 
 ---
 
 ### `RegisterNewWebHook`
-Registra un nuevo webhook (clase Java) en BD. Usar despues de crear el archivo `.java`.
+Registers a new webhook (Java class) in the DB. Use after creating the `.java` file.
 
 ```bash
 curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterNewWebHook&apikey=${API_KEY}" \
@@ -516,18 +517,18 @@ curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterNewWebHook&apikey=${API_KE
   }'
 ```
 
-> Despues de registrar, dar acceso al token actual:
+> After registering, grant access to the current token:
 > ```bash
-> NEW_WH_ID=$(docker exec etendo-db-1 psql -U tad -d etendo -t -c \
+> NEW_WH_ID=$(docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -t -c \
 >   "SELECT smfwhe_definedwebhook_id FROM smfwhe_definedwebhook WHERE name='MyWebhook';" | tr -d ' ')
-> docker exec etendo-db-1 psql -U tad -d etendo -c \
+> docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -c \
 >   "INSERT INTO smfwhe_definedwebhook_acc (smfwhe_definedwebhook_acc_id,ad_client_id,ad_org_id,isactive,created,createdby,updated,updatedby,smfwhe_definedwebhook_id,smfwhe_definedwebhook_token_id) VALUES (get_uuid(),'0','0','Y',now(),'0',now(),'0','${NEW_WH_ID}','${TOKEN_ID}');"
 > ```
 
 ---
 
 ### `RegisterColumns`
-Sincroniza columnas fisicas de una tabla con AD_COLUMN (equivale al boton "Create Columns from DB" en el AD).
+Syncs physical columns of a table with AD_COLUMN (equivalent to the "Create Columns from DB" button in the AD).
 
 ```bash
 curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterColumns&apikey=${API_KEY}" \
@@ -538,83 +539,41 @@ curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterColumns&apikey=${API_KEY}"
 ---
 
 ### `GetWindowTabOrTableInfo`
-Consulta IDs de ventanas, tabs o tablas existentes sin SQL.
+Queries IDs of existing windows, tabs, or tables without SQL.
 
 ```bash
 curl -s -X POST "${ETENDO_URL}/webhooks/?name=GetWindowTabOrTableInfo&apikey=${API_KEY}" \
   -H "Content-Type: application/json" \
-  -d '{"TableName": "SMFT_Asignatura"}'
+  -d '{"TableName": "SMFT_Subject"}'
 ```
 
 ---
 
-## Flujo completo: modulo nuevo desde cero
+## Complete flow: new module from scratch
 
 ```
 0. CreateModule              -> module_id
-1. AddModuleDependency       -> dep en core 3.0
-2. CreateAndRegisterTable xN -> table_id por tabla
-3. CreateColumn xN           -> columnas por tabla
-4. CreateReference           -> listas dropdown (si hay)
-5. SQL: UPDATE ad_column     -> asignar referenceValueID a cols de lista
-6. SQL: ALTER TABLE ADD FK   -> FKs fisicas (el webhook no las crea)
+1. AddModuleDependency       -> dependency on core 3.0
+2. CreateAndRegisterTable xN -> table_id per table
+3. CreateColumn xN           -> columns per table
+4. CreateReference           -> dropdown lists (if any)
+5. SQL: UPDATE ad_column     -> assign referenceValueID to list columns
+6. SQL: ALTER TABLE ADD FK   -> physical FKs (the webhook doesn't create them)
 7. RegisterWindow            -> window_id
-8. RegisterTab xN            -> tab_id por tab (orden: TabLevel 0->1->2)
-9. RegisterFields xN         -> fields por tab
-10. SetTabFilter             -> filtro WHERE en tabs que lo necesiten
-11. smartbuild               -> compilar y deployar
+8. RegisterTab xN            -> tab_id per tab (order: TabLevel 0->1->2)
+9. RegisterFields xN         -> fields per tab
+10. SetTabFilter             -> WHERE filter on tabs that need it
+11. smartbuild               -> compile and deploy
 ```
 
 ---
 
-## Extraer IDs del response
+## Extract IDs from response
 
 ```bash
-# ID sin comillas (CreateModule, RegisterWindow):
+# ID without quotes (CreateModule, RegisterWindow):
 ID=$(echo $RESP | python3 -c "import sys,json,re; r=json.load(sys.stdin); m=re.search(r'ID:\s*([A-F0-9a-f]{32})',r.get('message','')); print(m.group(1) if m else r.get('error','FAIL'))")
 
-# ID entre comillas simples (RegisterTab, CreateAndRegisterTable):
+# ID wrapped in single quotes (RegisterTab, CreateAndRegisterTable):
 ID=$(echo $RESP | python3 -c "import sys,json,re; r=json.load(sys.stdin); m=re.search(r\"ID: '([A-F0-9a-f]{32})'\",r.get('message','')); print(m.group(1) if m else r.get('error','FAIL'))")
 ```
-
----
-
-## Bugs conocidos y workarounds
-
-### Bug 1: RegisterFields NullPointerException en tablas estandar de core
-**Sintoma:** `RegisterFields` falla con NPE al intentar registrar fields de un tab cuya tabla es del core (M_Product, C_BPartner, etc.).
-**Causa:** Las columnas de extension (EM_SMFT_*) no tienen AD_ELEMENT asociado.
-**Workaround:**
-```sql
-INSERT INTO ad_element (ad_element_id, ad_client_id, ad_org_id, isactive, created, createdby, updated, updatedby, columnname, name, printname)
-SELECT get_uuid(), '0', '0', 'Y', now(), '0', now(), '0', c.columnname, c.name, c.name
-FROM ad_column c
-WHERE c.ad_table_id = '{TABLE_ID}'
-  AND c.columnname ILIKE 'EM_%'
-  AND NOT EXISTS (SELECT 1 FROM ad_element e WHERE LOWER(e.columnname) = LOWER(c.columnname));
-
-UPDATE ad_column c SET ad_element_id = (
-  SELECT ad_element_id FROM ad_element e WHERE LOWER(e.columnname) = LOWER(c.columnname) LIMIT 1
-)
-WHERE c.ad_table_id = '{TABLE_ID}' AND c.columnname ILIKE 'EM_%' AND c.ad_element_id IS NULL;
-```
-
-### Bug 2: CreateColumn canBeNull no acepta "Y"/"N"
-**Sintoma:** Columna se crea como NOT NULL aunque se pase `canBeNull: "Y"`.
-**Causa:** El webhook usa `StringUtils.equalsIgnoreCase(canBeNull, "true")` -- solo reconoce `"true"`/`"false"`.
-**Workaround:** Pasar `"canBeNull": "true"` (no `"Y"`).
-
-### Bug 3: CreateColumn en tablas core duplica el prefijo
-**Sintoma:** Pasando `"columnNameDB": "SMFT_Is_Course"` en M_Product -> crea `EM_SMFT_SMFT_Is_Course`.
-**Causa:** El webhook agrega automaticamente `EM_{PREFIX}_` al nombre cuando la tabla es del core.
-**Workaround:** Pasar el nombre SIN el prefijo del modulo: `"columnNameDB": "Is_Course"` -> crea `EM_SMFT_Is_Course`.
-
-### Bug 4: Templates no pueden tener DBPrefix
-**Sintoma:** `CreateModule` con `Type=T` + `DBPrefix` falla con trigger `@DBPrefixNotAllowedInTemplate@`.
-**Causa:** El trigger `ad_module_dbprefix_trg` bloquea la insercion de prefijos para Type=T.
-**Workaround:** Crear template via SQL sin insertar en AD_MODULE_DBPREFIX.
-
-### Bug 5: AddModuleDependency usa setter incorrecto
-**Sintoma:** Compile error: `cannot find symbol: method setIsIncluded(boolean)`.
-**Causa:** El metodo en la entidad generada es `setIncluded(Boolean)`, no `setIsIncluded`.
-**Fix:** Cambiar `dep.setIsIncluded(isIncluded)` -> `dep.setIncluded(isIncluded)` en `AddModuleDependency.java`.
