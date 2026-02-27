@@ -4,45 +4,92 @@
 
 ---
 
-## System Architecture
+## Data Model (creation order matters)
 
 ```
-etapi_openapi_flow          (Flow / OpenAPI tag)
-    │ 1:N
-    ├── etapi_openapi_flowpoint  (Endpoint in the flow + HTTP flags)
-    │       │ N:1
-    │       └── etapi_openapi_req    (Endpoint definition: name, type, description)
-    │                   │ 1:1
-    │                   └── etrx_openapi_tab     (Etendo Tab that resolves the endpoint)
-    │                               │ 1:N
-    │                               └── etrx_openapi_field   (Exposed fields + docs per field)
-    │                                           │ N:1
-    │                                           └── ad_field (Actual field of the tab in Etendo ERP)
+etapi_openapi_flow          → Tag/group name for the OpenAPI docs
+  etapi_openapi_flowpoint   → Links flow ↔ req + HTTP method flags
+    etapi_openapi_req       → Endpoint definition (name = URL segment, type = ETRX_Tab | SMFWHE_WBHK)
+      etrx_openapi_tab      → Links req ↔ ad_tab (1:1, FK lives here)
+        etrx_openapi_field  → Each field to expose from the tab
 ```
 
 **Endpoint URL:**
 ```
-/sws/com.etendoerp.etendorx.datasource/{etapi_openapi_req.name}
+CRUD:    /etendo/sws/com.etendoerp.etendorx.datasource/{req.name}
+Webhook: /etendo/sws/com.etendoerp.etendorx.datasource/{req.name}?param1=val1
+Docs:    /etendo/ws/com.etendoerp.openapi.openAPIController?tag={flow.name}
 ```
 
-**Auto-generated Docs:**
-```
-GET /etendo/ws/com.etendoerp.openapi.openAPIController?tag={flow_name}
-```
+---
+
+## Creation Order
+
+1. **`etapi_openapi_req`** first — the endpoint. `name` becomes the URL segment. `type` is NOT NULL.
+2. **`etrx_openapi_tab`** — links the req to an `ad_tab`. The FK `etapi_openapi_req_id` is on this table (unique constraint).
+3. **`etrx_openapi_field`** — one per exposed field. References `etrx_openapi_tab_id` + `ad_field_id`. No `name` column — the API name comes from the `ad_field`.
+4. **`etapi_openapi_flow`** — the grouping tag.
+5. **`etapi_openapi_flowpoint`** — links flow to each req with HTTP flags.
+
+---
+
+## Schema Gotchas
+
+| Expected (from old docs) | Actual (in DB) |
+|---|---|
+| `etrx_openapi_tab.name` | **Does NOT exist** |
+| `etrx_openapi_field.name` | **Does NOT exist** — name comes from `ad_field` |
+| `etapi_openapi_req.etrx_openapi_tab_id` | **Reversed** — FK is on `etrx_openapi_tab.etapi_openapi_req_id` |
+| `isget`, `ispost`, `isput`, `isgetbyid` | Actual columns: **`get`**, **`post`**, **`put`**, **`getbyid`** |
+| `createdby/updatedby = '100'` | Use **`'0'`** for system-level records |
 
 ---
 
 ## Key Tables and Fields
 
+### `etapi_openapi_req` — Endpoint Definition
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `etapi_openapi_req_id` | varchar(32) | PK | UUID via `get_uuid()` |
+| `name` | varchar(255) | | URL segment: `/sws/.../datasource/{name}` |
+| `type` | varchar(60) | **NOT NULL** | `ETRX_Tab` / `SMFWHE_WBHK` / `DEF` |
+| `description` | text | | General description for docs + AI agents |
+| `get_description` | text | | Description for GET (list) operation |
+| `getbyid_description` | text | | Description for GET /{id} operation |
+| `post_description` | text | | Description for POST (create) — include examples |
+| `put_description` | text | | Description for PUT (update) operation |
+| `ad_module_id` | varchar(32) | | **Required for export** |
+
+### `etrx_openapi_tab` — ERP Tab linked to Endpoint
+
+| Field | Type | Description |
+|---|---|---|
+| `etrx_openapi_tab_id` | varchar(32) | PK |
+| `etapi_openapi_req_id` | varchar(32) | FK → endpoint (**UNIQUE**, FK lives here, not on req) |
+| `ad_tab_id` | varchar(32) | FK → ad_tab (ERP tab) |
+| `ad_module_id` | varchar(32) | **Required for export** |
+
+### `etrx_openapi_field` — Exposed fields
+
+| Field | Type | Description |
+|---|---|---|
+| `etrx_openapi_field_id` | varchar(32) | PK |
+| `etrx_openapi_tab_id` | varchar(32) | FK → etrx_openapi_tab |
+| `ad_field_id` | varchar(32) | FK → ad_field (**no `name` column** — API name comes from ad_field) |
+| `description` | text | Hint for AI / doc of the field |
+| `seqno` | numeric | Order in the documentation |
+| `ad_module_id` | varchar(32) | **Required for export** |
+
 ### `etapi_openapi_flow` — the Flow (tag)
 
 | Field | Type | Description |
 |---|---|---|
-| `etapi_openapi_flow_id` | varchar(32) | PK (UUID without dashes) |
+| `etapi_openapi_flow_id` | varchar(32) | PK |
 | `name` | varchar(255) | Flow name = tag in OpenAPI docs |
-| `description` | text | Flow description (appears in the doc) |
-| `open_swagger` | char(1) | `Y`/`N` — whether it is exposed in public Swagger |
-| `ad_client_id` / `ad_org_id` | varchar(32) | `'0'` for system level |
+| `description` | text | Flow description |
+| `open_swagger` | char(1) | `Y`/`N` — exposed in public Swagger |
+| `ad_module_id` | varchar(32) | **Required for export** |
 
 ### `etapi_openapi_flowpoint` — Endpoint in the Flow
 
@@ -55,57 +102,82 @@ GET /etendo/ws/com.etendoerp.openapi.openAPIController?tag={flow_name}
 | `post` | char(1) | `Y`/`N` — enables POST (create) |
 | `put` | char(1) | `Y`/`N` — enables PUT (update) |
 | `getbyid` | char(1) | `Y`/`N` — enables GET /{id} |
-
-### `etapi_openapi_req` — Endpoint Definition
-
-| Field | Type | Description |
-|---|---|---|
-| `etapi_openapi_req_id` | varchar(32) | PK |
-| `name` | varchar(255) | URL segment: `/sws/.../datasource/{name}` |
-| `description` | text | Description for doc + AI agents |
-| `type` | varchar(60) | `ETRX_Tab` (tab-backed) / `SMFWHE_WBHK` (webhook) / `DEF` (custom) |
-| `classname` | varchar(200) | Only for `DEF` — null for `ETRX_Tab` |
-
-### `etrx_openapi_tab` — ERP Tab associated with the Endpoint
-
-| Field | Type | Description |
-|---|---|---|
-| `etrx_openapi_tab_id` | varchar(32) | PK |
-| `etapi_openapi_req_id` | varchar(32) | FK → endpoint (UNIQUE) |
-| `ad_tab_id` | varchar(32) | FK → ad_tab (ERP tabId) |
-
-### `etrx_openapi_field` — Exposed fields with documentation
-
-| Field | Type | Description |
-|---|---|---|
-| `etrx_openapi_field_id` | varchar(32) | PK |
-| `etrx_openapi_tab_id` | varchar(32) | FK → etrx_openapi_tab |
-| `ad_field_id` | varchar(32) | FK → ad_field (actual field of the tab) |
-| `description` | text | Hint for AI / doc of the field |
-| `seqno` | numeric | Order in the documentation |
+| `ad_module_id` | varchar(32) | **Required for export** |
 
 ---
 
-## Endpoint types (`etapi_openapi_req.type`)
+## Req Types
 
-| Type | Use | classname |
+| `type` value | Meaning | Linked via |
 |---|---|---|
-| `ETRX_Tab` | Tab-backed CRUD (standard) | null |
-| `SMFWHE_WBHK` | Webhook (SimSearch, LocationWebhook, etc.) | null |
-| `DEF` | Custom servlet | classname required |
+| `ETRX_Tab` | CRUD endpoint backed by an AD tab | `etrx_openapi_tab` |
+| `SMFWHE_WBHK` | Webhook endpoint (custom Java logic) | `smfwhe_openapi_webhk` |
+| `DEF` | Custom servlet | `classname` field on req |
 
-**Always use `ETRX_Tab`** for standard datasource endpoints.
+### Webhook Endpoints (type = SMFWHE_WBHK)
+
+Require **3 records** instead of `etrx_openapi_tab`:
+
+1. `smfwhe_definedwebhook` — Java class + name
+2. `smfwhe_definedwebhook_param` — parameters (with `isrequired` flag)
+3. `smfwhe_openapi_webhk` — links webhook ↔ req (unique on `etapi_openapi_req_id`)
+
+Plus `smfwhe_definedwebhook_role` for role-based access.
+
+**All 4 tables need `ad_module_id` set for export.**
+
+---
+
+## Required Columns (all tables)
+
+Every record needs: `ad_client_id='0'`, `ad_org_id='0'`, `isactive='Y'`, `created/updated=NOW()`, `createdby/updatedby='0'`, **`ad_module_id`**.
+
+If `ad_module_id` is NULL, `export.database` will silently skip the record.
+
+---
+
+## IDs
+
+Always use `get_uuid()` — **never** `gen_random_uuid()`.
+
+---
+
+## Tab Selection
+
+When the same table backs multiple windows (e.g., `C_Order` is used by both "Sales Order" and "Sales Quotation"), use the **specific window's tab**, not just any tab for that table. The `ad_tab_id` determines which window's callouts and defaults apply.
+
+```sql
+-- Find tabs for a table across different windows:
+SELECT t.ad_tab_id, t.name, w.name as window_name, tbl.tablename
+FROM ad_tab t
+JOIN ad_table tbl ON t.ad_table_id = tbl.ad_table_id
+JOIN ad_window w ON t.ad_window_id = w.ad_window_id
+WHERE tbl.tablename = 'C_Order'
+ORDER BY w.name, t.seqno;
+```
+
+---
+
+## Field Selection Guidelines
+
+Only expose fields that:
+- **Are required for creation** (e.g., `businessPartner`, `product`)
+- **Are user-provided** — not auto-completed by callouts (skip `priceList`, `paymentTerms`, `warehouse`, `partnerAddress`, `currency`, `UOM`, `tax`)
+- **Are not calculated** (skip `lineNetAmount`, `grandTotal`, `docStatus`)
+- **The user might want to override** (e.g., `netUnitPrice` which auto-fills from price list but can be overridden)
+
+Always include `SimSearch` in the flow so agents can search by name instead of IDs.
 
 ---
 
 ## Resolving `ad_field_id` for fields
 
 ```sql
--- Search for fields of a specific tab
-SELECT f.ad_field_id, f.name, c.columnname
+SELECT f.ad_field_id, f.name, c.columnname, c.ad_reference_id
 FROM ad_field f
 JOIN ad_column c ON c.ad_column_id = f.ad_column_id
-WHERE f.ad_tab_id = '186'   -- tabId of the endpoint
+WHERE f.ad_tab_id = '<TAB_ID>'
+  AND f.isactive = 'Y'
 ORDER BY f.seqno;
 ```
 
@@ -116,88 +188,169 @@ ORDER BY f.seqno;
 ```sql
 DO $$
 DECLARE
-  flow_id    VARCHAR(32);
-  req_id_1   VARCHAR(32);
-  tab_id_1   VARCHAR(32);
-  req_id_2   VARCHAR(32);
-  tab_id_2   VARCHAR(32);
+  v_module_id  TEXT := '<AD_MODULE_ID>';
+  v_flow_id    TEXT := get_uuid();
+  v_req_id     TEXT := get_uuid();
+  v_oapi_tab   TEXT := get_uuid();
 BEGIN
 
-  -- ── 1. Flow ────────────────────────────────────────────────────────
-  flow_id := replace(gen_random_uuid()::text, '-', '');
-  INSERT INTO etapi_openapi_flow
-    (etapi_openapi_flow_id, ad_client_id, ad_org_id, isactive,
-     created, createdby, updated, updatedby,
-     name, description, open_swagger)
-  VALUES (flow_id, '0', '0', 'Y', now(), '0', now(), '0',
-    'MyFlow',
-    'This API allows to manage X in Etendo ERP.',
-    'N');
+  -- 1. Endpoint (req)
+  INSERT INTO etapi_openapi_req (
+    etapi_openapi_req_id, ad_client_id, ad_org_id, isactive,
+    created, createdby, updated, updatedby,
+    name, type, ad_module_id,
+    description, post_description, put_description
+  ) VALUES (
+    v_req_id, '0', '0', 'Y', NOW(), '0', NOW(), '0',
+    'MyEntity', 'ETRX_Tab', v_module_id,
+    'Creates or modifies a MyEntity record.',
+    'Creates a MyEntity. Required: businessPartner.',
+    'Modifies an existing MyEntity. Only send fields to update.'
+  );
 
-  -- ── 2. Endpoint A (header) ─────────────────────────────────────────
-  req_id_1 := replace(gen_random_uuid()::text, '-', '');
-  tab_id_1 := replace(gen_random_uuid()::text, '-', '');
+  -- 2. Tab mapping (FK lives here, not on req)
+  INSERT INTO etrx_openapi_tab (
+    etrx_openapi_tab_id, ad_client_id, ad_org_id, isactive,
+    created, createdby, updated, updatedby,
+    ad_tab_id, etapi_openapi_req_id, ad_module_id
+  ) VALUES (
+    v_oapi_tab, '0', '0', 'Y', NOW(), '0', NOW(), '0',
+    '<AD_TAB_ID>', v_req_id, v_module_id
+  );
 
-  INSERT INTO etapi_openapi_req
-    (etapi_openapi_req_id, ad_client_id, ad_org_id, isactive,
-     created, createdby, updated, updatedby,
-     name, description, type)
-  VALUES (req_id_1, '0', '0', 'Y', now(), '0', now(), '0',
-    'MyEntity',
-    'Creates/modifies a MyEntity record in the system.',
-    'ETRX_Tab');
+  -- 3. Fields (no 'name' column — API name comes from ad_field)
+  INSERT INTO etrx_openapi_field (
+    etrx_openapi_field_id, ad_client_id, ad_org_id, isactive,
+    created, createdby, updated, updatedby,
+    etrx_openapi_tab_id, ad_field_id, ad_module_id,
+    description, seqno
+  ) VALUES
+    (get_uuid(), '0', '0', 'Y', NOW(), '0', NOW(), '0',
+     v_oapi_tab, '<FIELD_ID_1>', v_module_id,
+     'ID of the Business Partner. Required.', 10),
+    (get_uuid(), '0', '0', 'Y', NOW(), '0', NOW(), '0',
+     v_oapi_tab, '<FIELD_ID_2>', v_module_id,
+     'ID of the Organization.', 20);
 
-  INSERT INTO etrx_openapi_tab
-    (etrx_openapi_tab_id, ad_client_id, ad_org_id, isactive,
-     created, createdby, updated, updatedby,
-     ad_tab_id, etapi_openapi_req_id)
-  VALUES (tab_id_1, '0', '0', 'Y', now(), '0', now(), '0',
-    '186',   -- ERP ad_tab_id
-    req_id_1);
+  -- 4. Flow
+  INSERT INTO etapi_openapi_flow (
+    etapi_openapi_flow_id, ad_client_id, ad_org_id, isactive,
+    created, createdby, updated, updatedby,
+    name, description, ad_module_id
+  ) VALUES (
+    v_flow_id, '0', '0', 'Y', NOW(), '0', NOW(), '0',
+    'MyEntityFlow', 'CRUD for MyEntity.', v_module_id
+  );
 
-  -- Flowpoint: enable POST and PUT (typical for header)
-  INSERT INTO etapi_openapi_flowpoint
-    (etapi_openapi_flowpoint_id, ad_client_id, ad_org_id, isactive,
-     created, createdby, updated, updatedby,
-     etapi_openapi_flow_id, etapi_openapi_req_id,
-     get, post, put, getbyid)
-  VALUES (replace(gen_random_uuid()::text, '-', ''), '0', '0', 'Y', now(), '0', now(), '0',
-    flow_id, req_id_1,
-    'N', 'Y', 'Y', 'N');
-
-  -- ── 3. Endpoint A fields with documentation ─────────────────────
-  -- Search for ad_field_id with: SELECT ad_field_id, name FROM ad_field WHERE ad_tab_id='186'
-  INSERT INTO etrx_openapi_field
-    (etrx_openapi_field_id, ad_client_id, ad_org_id, isactive,
-     created, createdby, updated, updatedby,
-     etrx_openapi_tab_id, ad_field_id, ad_module_id, description, seqno)
-  VALUES
-    (replace(gen_random_uuid()::text, '-', ''), '0', '0', 'Y', now(), '0', now(), '0',
-     tab_id_1, '1573',  -- businessPartner field
-     '0',
-     'ID of the Business Partner (customer or vendor).', 10),
-
-    (replace(gen_random_uuid()::text, '-', ''), '0', '0', 'Y', now(), '0', now(), '0',
-     tab_id_1, '2052',  -- organization field
-     '0',
-     'ID of the Organization. If not specified, auto-selected.', 20);
-
-  -- ── 4. Endpoint B (lines) ──────────────────────────────────────────
-  -- (repeat pattern for lines with ad_tab_id='187')
+  -- 5. Flowpoint (columns are 'get', 'post', 'put', 'getbyid' — NOT 'isget')
+  INSERT INTO etapi_openapi_flowpoint (
+    etapi_openapi_flowpoint_id, ad_client_id, ad_org_id, isactive,
+    created, createdby, updated, updatedby,
+    etapi_openapi_flow_id, etapi_openapi_req_id, ad_module_id,
+    get, post, put, getbyid
+  ) VALUES (
+    get_uuid(), '0', '0', 'Y', NOW(), '0', NOW(), '0',
+    v_flow_id, v_req_id, v_module_id,
+    'N', 'Y', 'Y', 'N'
+  );
 
 END $$;
 ```
 
 ---
 
-## Endpoints currently used by Etendo Lite
+## Adding a Webhook endpoint to a flow
 
-| Flow | Endpoint | Tab | Table | GET | POST | PUT |
-|---|---|---|---|---|---|---|
-| BusinessPartner | `BPCustomer` | 223 | C_BPartner | ✓ | ✓ | ✓ |
-| BusinessPartner | `BPAddress` | 222 | C_BPartner_Location | ✓ | ✓ | ✓ |
-| Sales Order Flow | `SalesOrder` | 186 | C_Order | — | ✓ | ✓ |
-| Sales Order Flow | `SalesOrderLines` | 187 | C_OrderLine | — | ✓ | ✓ |
+Webhooks use `type = 'SMFWHE_WBHK'` and require linking through `smfwhe_openapi_webhk`:
+
+```sql
+DO $$
+DECLARE
+  v_module_id   TEXT := '<AD_MODULE_ID>';
+  v_flow_id     TEXT; -- existing flow
+  v_webhook_id  TEXT := get_uuid();
+  v_wh_req_id   TEXT := get_uuid();
+BEGIN
+  SELECT etapi_openapi_flow_id INTO v_flow_id
+    FROM etapi_openapi_flow WHERE name = '<FlowName>';
+
+  -- 1. Webhook definition
+  INSERT INTO smfwhe_definedwebhook (
+    smfwhe_definedwebhook_id, ad_client_id, ad_org_id, isactive,
+    created, createdby, updated, updatedby,
+    name, java_class, ad_module_id
+  ) VALUES (
+    v_webhook_id, '0', '0', 'Y', NOW(), '0', NOW(), '0',
+    'MyWebhook', 'com.example.webhooks.MyWebhook', v_module_id
+  );
+
+  -- 2. Webhook parameters
+  INSERT INTO smfwhe_definedwebhook_param (
+    smfwhe_definedwebhook_param_id, ad_client_id, ad_org_id, isactive,
+    created, createdby, updated, updatedby,
+    smfwhe_definedwebhook_id, name, isrequired, ad_module_id
+  ) VALUES (
+    get_uuid(), '0', '0', 'Y', NOW(), '0', NOW(), '0',
+    v_webhook_id, 'record_id', 'Y', v_module_id
+  );
+
+  -- 3. Webhook role access
+  INSERT INTO smfwhe_definedwebhook_role (
+    smfwhe_definedwebhook_role_id, ad_client_id, ad_org_id, isactive,
+    created, createdby, updated, updatedby,
+    smfwhe_definedwebhook_id, ad_role_id, ad_module_id
+  ) VALUES (
+    get_uuid(), '0', '0', 'Y', NOW(), '0', NOW(), '0',
+    v_webhook_id, '0', v_module_id  -- System Administrator
+  );
+
+  -- 4. OpenAPI req (type = SMFWHE_WBHK)
+  INSERT INTO etapi_openapi_req (
+    etapi_openapi_req_id, ad_client_id, ad_org_id, isactive,
+    created, createdby, updated, updatedby,
+    name, type, ad_module_id,
+    description, post_description
+  ) VALUES (
+    v_wh_req_id, '0', '0', 'Y', NOW(), '0', NOW(), '0',
+    'MyWebhook', 'SMFWHE_WBHK', v_module_id,
+    'Executes MyWebhook process.',
+    'Requires record_id parameter.'
+  );
+
+  -- 5. Link webhook ↔ req
+  INSERT INTO smfwhe_openapi_webhk (
+    smfwhe_openapi_webhk_id, ad_client_id, ad_org_id, isactive,
+    created, createdby, updated, updatedby,
+    smfwhe_definedwebhook_id, etapi_openapi_req_id, ad_module_id
+  ) VALUES (
+    get_uuid(), '0', '0', 'Y', NOW(), '0', NOW(), '0',
+    v_webhook_id, v_wh_req_id, v_module_id
+  );
+
+  -- 6. Flowpoint
+  INSERT INTO etapi_openapi_flowpoint (
+    etapi_openapi_flowpoint_id, ad_client_id, ad_org_id, isactive,
+    created, createdby, updated, updatedby,
+    etapi_openapi_flow_id, etapi_openapi_req_id, ad_module_id,
+    get, post, put, getbyid
+  ) VALUES (
+    get_uuid(), '0', '0', 'Y', NOW(), '0', NOW(), '0',
+    v_flow_id, v_wh_req_id, v_module_id,
+    'N', 'Y', 'N', 'N'
+  );
+END $$;
+```
+
+---
+
+## Descriptions
+
+`etapi_openapi_req` supports per-method descriptions that feed directly into the auto-generated OpenAPI/Swagger docs:
+- `description` — general endpoint description
+- `get_description` — for GET (list)
+- `getbyid_description` — for GET /{id}
+- `post_description` — for POST (create) — **include JSON examples**
+- `put_description` — for PUT (update)
 
 ---
 
@@ -205,7 +358,7 @@ END $$;
 
 ```bash
 # By flow (tag):
-curl -s 'http://localhost:8080/etendo/ws/com.etendoerp.openapi.openAPIController?tag=BusinessPartner' \
+curl -s 'http://localhost:8080/etendo/ws/com.etendoerp.openapi.openAPIController?tag=MyFlow' \
   -H 'Authorization: Basic YWRtaW46YWRtaW4=' | python3 -m json.tool
 
 # All flows:
@@ -218,14 +371,44 @@ The `/sws/` URL requires JWT Bearer token.
 
 ---
 
+## Common troubleshooting
+
+| Error | Cause | Fix |
+|---|---|---|
+| `404` on endpoint | `name` in `etapi_openapi_req` doesn't match URL | Verify name spelling |
+| Record not exported | `ad_module_id` is NULL | Set it on ALL records |
+| `type` NOT NULL violation | Missing `type` on `etapi_openapi_req` INSERT | Add `type = 'ETRX_Tab'` or `'SMFWHE_WBHK'` |
+| `AccessTableNoView` | Role `0` (System Admin) doesn't have access to business data | Use a business role in the JWT |
+| `ActionNotAllowed` on PUT | Tab doesn't support update via headless | Check tab configuration in ERP |
+| Missing fields in response | Field not added in `etrx_openapi_field` | Add the missing field |
+| POST returns 200 but doesn't persist | Silent rollback due to callout error | Check Tomcat logs |
+| Webhook not in flow | Missing `etapi_openapi_req` + `smfwhe_openapi_webhk` link | Create req (type=SMFWHE_WBHK) + link record |
+
+---
+
 ## Reference of existing flows
 
 | Flow | Main Endpoints |
 |---|---|
 | BusinessPartner | BusinessPartner, BPCustomer, BPVendor, BPAddress, BPCategory |
 | Sales Order Flow | SalesOrder, SalesOrderLines, SimSearch |
+| Sales Quotation Flow | SalesQuotation, SalesQuotationLines, SimSearch, OrderProcess |
 | Sales Invoice Flow | SalesInvoice, SalesInvoiceLine, BPAddress, TaxRate |
 | Purchase Order Flow | PurchaseOrder, PurchaseOrderLines |
 | Purchase Invoice Flow | PurchaseInvoice, PurchaseInvoiceLine |
 | Product | Product, ProductCategory, ProductPrice |
 | Inventory | Inventory, InventoryLines |
+
+---
+
+## Summary query
+
+```sql
+-- View all configured flows
+SELECT f.name as flow, r.name as endpoint, r.type,
+       fp.get, fp.post, fp.put, fp.getbyid
+FROM etapi_openapi_flow f
+JOIN etapi_openapi_flowpoint fp ON f.etapi_openapi_flow_id = fp.etapi_openapi_flow_id
+JOIN etapi_openapi_req r ON fp.etapi_openapi_req_id = r.etapi_openapi_req_id
+ORDER BY f.name, r.name;
+```
