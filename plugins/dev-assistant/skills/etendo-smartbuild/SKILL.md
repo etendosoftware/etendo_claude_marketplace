@@ -9,7 +9,7 @@ argument-hint: "[remote | full]"
 
 ---
 
-First, read `skills/etendo-_context/SKILL.md`.
+First, read `skills/etendo-_guidelines/SKILL.md` and `skills/etendo-_context/SKILL.md`.
 
 ## Step 1: Verify resources are up
 
@@ -37,15 +37,18 @@ Wait for containers to be healthy before proceeding.
 
 > Redirect all gradle output to `/tmp`. Read only on failure.
 
+Detect JAVA_HOME first (see `_context` skill section 6):
 ```bash
+JAVA_HOME=$(/usr/libexec/java_home -v 17 2>/dev/null || echo "$JAVA_HOME")
+
 # Standard (local changes):
-./gradlew smartbuild > /tmp/etendo-smartbuild.log 2>&1
+JAVA_HOME=${JAVA_HOME} ./gradlew smartbuild > /tmp/etendo-smartbuild.log 2>&1
 
 # Remote/VCS-pulled changes ($ARGUMENTS contains 'remote'):
-./gradlew smartbuild -Plocal=no > /tmp/etendo-smartbuild.log 2>&1
+JAVA_HOME=${JAVA_HOME} ./gradlew smartbuild -Plocal=no > /tmp/etendo-smartbuild.log 2>&1
 
 # Full recompile ($ARGUMENTS contains 'full'):
-./gradlew compile.complete > /tmp/etendo-smartbuild.log 2>&1
+JAVA_HOME=${JAVA_HOME} ./gradlew compile.complete > /tmp/etendo-smartbuild.log 2>&1
 ```
 
 Check result:
@@ -85,7 +88,7 @@ Parse the log for:
 
 ```
 + smartbuild completed in {duration}
-  Etendo is running at http://localhost:{port}/{context.name}
+  Etendo is running at {etendoUrl from context.json, default: http://localhost:8080/etendo}
 ```
 
 If the active module is set (from context), also remind:

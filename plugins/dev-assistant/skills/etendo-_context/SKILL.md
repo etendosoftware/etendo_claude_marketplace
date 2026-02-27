@@ -111,7 +111,7 @@ The active module determines:
   "module": "com.mycompany.mymodule",
   "modulePath": "modules/com.mycompany.mymodule",
   "dbPrefix": "MYMOD",
-  "etendoUrl": "http://localhost:8080",
+  "etendoUrl": "http://localhost:8080/etendo",
   "apikey": "claude-etendo-key-XXXXXXXX"
 }
 ```
@@ -120,7 +120,7 @@ Fields:
 - `module` — Java package name (used to resolve AD_MODULE_ID via SQL)
 - `modulePath` — relative path to the module directory
 - `dbPrefix` — DB prefix for table/column naming
-- `etendoUrl` — base URL of the Etendo instance (with context name)
+- `etendoUrl` — base URL of the Etendo instance **including the context path** (e.g. `http://localhost:8080/etendo`). The context name comes from `context.name` in `gradle.properties`. Default port is `8080`.
 - `apikey` — webhook API key (set by `_webhooks` skill)
 
 > **Note:** `AD_MODULE_ID` is NOT stored in context.json. Resolve it at runtime:

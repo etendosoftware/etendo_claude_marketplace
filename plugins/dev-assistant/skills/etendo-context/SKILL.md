@@ -9,7 +9,7 @@ argument-hint: "[set module=com.x.y | reset | blank=show]"
 
 ---
 
-First, read `skills/etendo-_context/SKILL.md` to understand how context resolution works.
+First, read `skills/etendo-_guidelines/SKILL.md` and `skills/etendo-_context/SKILL.md` to understand how context resolution works.
 
 Then perform the following steps:
 
@@ -56,7 +56,7 @@ Present a clear, structured summary:
    User:          {bbdd.user}
    Database:      {bbdd.sid}
    Port:          {bbdd.port}
-   Etendo URL:    http://localhost:{tomcat.port}/{context.name}
+   Etendo URL:    http://localhost:8080/{context.name}
 
  Active module:   [com.x.y.z | ! Not set]
  DB prefix:       [PREFIX | -]

@@ -9,7 +9,7 @@ argument-hint: "<description, e.g. 'sales order report with customer and totals'
 
 ---
 
-First, read `skills/etendo-_context/SKILL.md` and `skills/etendo-_webhooks/SKILL.md`.
+First, read `skills/etendo-_guidelines/SKILL.md`, `skills/etendo-_context/SKILL.md`, and `skills/etendo-_webhooks/SKILL.md`.
 
 A **Jasper Report** in Etendo is a JRXML file (JasperReports 6.0.0) that produces PDF/HTML output. Reports can be launched from a menu entry or from a button in a window.
 
@@ -163,11 +163,13 @@ API_KEY=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.loa
 curl -s -X POST "${ETENDO_URL}/webhooks/?name=ProcessDefinitionJasper&apikey=${API_KEY}" \
   -H "Content-Type: application/json" \
   -d '{
-    "Javapackage": "{javapackage}",
-    "Name": "{Report Visible Name}",
+    "Prefix": "{PREFIX}",
+    "ProcessName": "{Report Visible Name}",
     "SearchKey": "{PREFIX_ReportName}",
     "Description": "{description}",
-    "ReportFilename": "{ReportName}.jrxml"
+    "HelpComment": "{description}",
+    "JavaPackage": "{javapackage}",
+    "JasperFile": "@basedesign/{java/package/path}/reports/{ReportName}.jrxml"
   }'
 ```
 

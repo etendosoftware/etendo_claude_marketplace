@@ -9,7 +9,7 @@ argument-hint: "<description, e.g. 'create table SMFT_customer with name and ema
 
 ---
 
-First, read `skills/etendo-_context/SKILL.md` and `skills/etendo-_webhooks/SKILL.md`.
+First, read `skills/etendo-_guidelines/SKILL.md`, `skills/etendo-_context/SKILL.md`, and `skills/etendo-_webhooks/SKILL.md`.
 
 ## Headless REST endpoints (complement to webhooks)
 
@@ -32,7 +32,9 @@ After creating or modifying any table, column, or view, you **must** run this se
 
 1. **`CheckTablesColumnHook`** (TableChecker) — Detects column changes and runs column registration procedures
 2. **`SyncTerms`** — Synchronizes terms/translations across the system
-3. **`ElementsHandler`** — Reads and corrects elements if required
+3. **`ElementsHandler`** — Reads elements and auto-corrects missing descriptions/help
+
+> **`TABLE_ID` is required** for `CheckTablesColumnHook`. For new tables, use the ID returned by `CreateAndRegisterTable`. For adding columns to existing tables, look up the table ID first via `GetWindowTabOrTableInfo` or headless `Table` endpoint.
 
 ```bash
 # Run after every table/column/view creation:
@@ -44,7 +46,8 @@ curl -s -X POST "${ETENDO_URL}/webhooks/?name=SyncTerms&apikey=${API_KEY}" \
   -H "Content-Type: application/json" -d '{}'
 
 curl -s -X POST "${ETENDO_URL}/webhooks/?name=ElementsHandler&apikey=${API_KEY}" \
-  -H "Content-Type: application/json" -d '{}'
+  -H "Content-Type: application/json" \
+  -d "{\"TableID\": \"${TABLE_ID}\"}"
 ```
 
 Never skip or reorder these steps. They ensure the Application Dictionary stays consistent.
@@ -271,9 +274,10 @@ curl -s -X POST "${ETENDO_URL}/webhooks/?name=CheckTablesColumnHook&apikey=${API
 curl -s -X POST "${ETENDO_URL}/webhooks/?name=SyncTerms&apikey=${API_KEY}" \
   -H "Content-Type: application/json" -d '{}'
 
-# 3. ElementsHandler — correct elements
+# 3. ElementsHandler — auto-correct elements for this table
 curl -s -X POST "${ETENDO_URL}/webhooks/?name=ElementsHandler&apikey=${API_KEY}" \
-  -H "Content-Type: application/json" -d '{}'
+  -H "Content-Type: application/json" \
+  -d "{\"TableID\": \"${TABLE_ID}\"}"
 ```
 
 This sequence is **mandatory** — skipping it leads to inconsistencies in the Application Dictionary (missing element translations, unregistered columns, etc.).
@@ -282,12 +286,12 @@ This sequence is **mandatory** — skipping it leads to inconsistencies in the A
 
 With Tomcat DOWN (important — export.database requires Tomcat stopped):
 ```bash
-./gradlew resources.down
-JAVA_HOME={java_home} \
-  ./gradlew export.database -Dmodule={javapackage} > /tmp/etendo-export.log 2>&1
+JAVA_HOME=$(/usr/libexec/java_home -v 17 2>/dev/null || echo "$JAVA_HOME")
+JAVA_HOME=${JAVA_HOME} ./gradlew resources.down
+JAVA_HOME=${JAVA_HOME} ./gradlew export.database -Dmodule={javapackage} > /tmp/etendo-export.log 2>&1
 tail -5 /tmp/etendo-export.log
 # IMPORTANT: bring services back up after export
-./gradlew resources.up
+JAVA_HOME=${JAVA_HOME} ./gradlew resources.up
 ```
 Wait for containers to be healthy before running smartbuild or other webhook-dependent operations.
 

@@ -9,7 +9,7 @@ argument-hint: "[create | alter WindowName | description]"
 
 ---
 
-First, read `skills/etendo-_context/SKILL.md` and `skills/etendo-_webhooks/SKILL.md`.
+First, read `skills/etendo-_guidelines/SKILL.md`, `skills/etendo-_context/SKILL.md`, and `skills/etendo-_webhooks/SKILL.md`.
 
 A **Window** in Etendo is the UI entry point. It contains Tabs (level 0 = header, 1 = detail, etc.), each Tab maps to a table.
 
@@ -86,9 +86,10 @@ Confirm everything together before executing.
 Run SyncTerms before creating the window to ensure all existing terms are up to date:
 
 ```bash
-ETENDO_URL="http://localhost:8080/etendo"
-API_KEY="{apikey}"
-DB_PREFIX="{dbprefix}"
+# Read from context.json:
+ETENDO_URL=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('etendoUrl','http://localhost:8080/etendo'))")
+API_KEY=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('apikey',''))")
+DB_PREFIX=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('dbPrefix',''))")
 
 curl -s -X POST "${ETENDO_URL}/webhooks/?name=SyncTerms&apikey=${API_KEY}" \
   -H "Content-Type: application/json" \
@@ -170,12 +171,16 @@ Repeat for each tab in the tree.
 After registering all fields, check and fill missing element descriptions. This is important because elements without descriptions appear incomplete in the AD.
 
 ```bash
+# Get TABLE_ID for each table used in the tabs (from Step 1 GetWindowTabOrTableInfo, or from alter-db):
+# TABLE_ID is the AD_TABLE_ID of the table behind the tab.
+
 # 1. Read elements to find which are missing descriptions:
 RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/?name=ElementsHandler&apikey=${API_KEY}" \
   -H "Content-Type: application/json" \
   -d "{\"TableID\": \"${TABLE_ID}\", \"Mode\": \"READ_ELEMENTS\"}")
 echo $RESP
-# Parse the response to find columns missing Description or HelpComment
+# Parse the response — it returns a list of columns with their current Description and HelpComment.
+# Columns where Description or HelpComment is empty/null need to be filled.
 
 # 2. For each element missing descriptions, write them:
 curl -s -X POST "${ETENDO_URL}/webhooks/?name=ElementsHandler&apikey=${API_KEY}" \
@@ -213,12 +218,12 @@ curl -s -X POST "${ETENDO_URL}/webhooks/?name=SetTabFilter&apikey=${API_KEY}" \
 
 With Tomcat DOWN (important — export.database requires Tomcat stopped):
 ```bash
-./gradlew resources.down
-JAVA_HOME={java_home} \
-  ./gradlew export.database -Dmodule={javapackage} > /tmp/etendo-export.log 2>&1
+JAVA_HOME=$(/usr/libexec/java_home -v 17 2>/dev/null || echo "$JAVA_HOME")
+JAVA_HOME=${JAVA_HOME} ./gradlew resources.down
+JAVA_HOME=${JAVA_HOME} ./gradlew export.database -Dmodule={javapackage} > /tmp/etendo-export.log 2>&1
 tail -5 /tmp/etendo-export.log
 # IMPORTANT: bring services back up after export
-./gradlew resources.up
+JAVA_HOME=${JAVA_HOME} ./gradlew resources.up
 ```
 Wait for containers to be healthy before proceeding.
 

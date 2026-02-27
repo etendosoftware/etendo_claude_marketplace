@@ -9,7 +9,7 @@ argument-hint: "<class to test, e.g. 'MyEventHandler' or path>"
 
 ---
 
-First, read `skills/etendo-_context/SKILL.md`.
+First, read `skills/etendo-_guidelines/SKILL.md` and `skills/etendo-_context/SKILL.md`.
 
 ## Step 1: Identify the source file
 
@@ -119,6 +119,73 @@ test<MethodName>_<Scenario>
 ```
 Examples: `testOnUpdate_NullMember`, `testExecute_EmptyList`, `testCalculateTotal_NegativeAmount`
 
+## OBBaseTest and WeldBaseTest examples
+
+### OBBaseTest (for tests that need real DAL access)
+
+```java
+package {same.package.as.source};
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openbravo.dal.core.OBContext;
+import org.openbravo.test.base.OBBaseTest;
+import org.openbravo.test.base.TestConstants;
+
+import static org.junit.Assert.*;
+
+public class {ClassName}Test extends OBBaseTest {
+
+  @Before
+  public void setUp() {
+    super.setUp();
+    OBContext.setOBContext(TestConstants.Users.ADMIN,
+        TestConstants.Roles.FB_GRP_ADMIN,
+        TestConstants.Clients.FB_GRP,
+        TestConstants.Orgs.ESP_NORTE);
+  }
+
+  @After
+  public void tearDown() {
+    OBContext.restorePreviousMode();
+    super.tearDown();
+  }
+
+  @Test
+  public void testSomething() {
+    // Real DAL access is available here
+  }
+}
+```
+
+### WeldBaseTest (for CDI/Inject-based classes)
+
+```java
+package {same.package.as.source};
+
+import javax.inject.Inject;
+import org.jboss.arquillian.junit.Arquillian;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.openbravo.base.weld.test.WeldBaseTest;
+
+import static org.junit.Assert.*;
+
+@RunWith(Arquillian.class)
+public class {ClassName}Test extends WeldBaseTest {
+
+  @Inject
+  private {ClassName} classUnderTest;
+
+  @Test
+  public void testInjectedService() {
+    // CDI beans are injected and ready to use
+    assertNotNull(classUnderTest);
+  }
+}
+```
+
 ## Etendo-specific mocking patterns
 
 ### OBDal + OBCriteria
@@ -149,6 +216,11 @@ public void tearDown() {
 ### Monetary/BigDecimal assertions
 
 ```java
+// Import Hamcrest matchers:
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.comparesEqualTo;
+import java.math.RoundingMode;
+
 // Never use assertEquals for BigDecimal — use comparesEqualTo:
 assertThat("Amount should match",
     actual.setScale(2, RoundingMode.HALF_UP),

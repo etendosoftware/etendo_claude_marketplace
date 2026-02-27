@@ -94,6 +94,30 @@ Save the key in `.etendo/context.json`:
 
 ---
 
+## Prerequisite: Bearer Token (for headless endpoints)
+
+Headless endpoints (`/sws/com.etendoerp.etendorx.datasource/*`) use JWT Bearer tokens instead of API keys. For 99% of cases, log in as **System Administrator** (role `"0"`):
+
+```bash
+ETENDO_TOKEN=$(curl -s -X POST "${ETENDO_URL}/sws/login" \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin","role":"0"}' \
+  | python3 -c "import sys,json; print(json.load(sys.stdin).get('token',''))")
+```
+
+Use this token for all headless calls:
+```bash
+curl -s -H "Authorization: Bearer ${ETENDO_TOKEN}" \
+  "${ETENDO_URL}/sws/com.etendoerp.etendorx.datasource/{Endpoint}"
+```
+
+> **Two auth mechanisms in Etendo:**
+> - **API Key** (`?apikey=...`) → for webhooks (`/webhooks/`)
+> - **Bearer Token** (`Authorization: Bearer`) → for headless endpoints (`/sws/`)
+> Both require Tomcat to be running.
+
+---
+
 ## Invocation pattern
 
 **ALWAYS use POST with JSON body.** The webhook uses `?name=` for routing, and all parameters go in the JSON body.

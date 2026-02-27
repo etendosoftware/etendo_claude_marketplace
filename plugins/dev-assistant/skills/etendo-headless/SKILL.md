@@ -9,7 +9,7 @@ argument-hint: "[list | create name | alter name | test name]"
 
 ---
 
-First, read `skills/etendo-_context/SKILL.md`.
+First, read `skills/etendo-_guidelines/SKILL.md` and `skills/etendo-_context/SKILL.md`.
 Also read `docs/etendo-headless.md` for the full EtendoRX API reference.
 
 This command creates or modifies EtendoRX headless endpoints -- REST API endpoints that expose Etendo data without CSRF, using JWT Bearer or Basic Auth.
@@ -149,23 +149,31 @@ END $$;
 Execute the SQL. Then test the endpoint immediately:
 
 ```bash
-# Get a JWT first (requires SWS access configured for the user)
-TOKEN=$(curl -s -X POST http://localhost:8080/{context.name}/sws/login \
-  -H 'Content-Type: application/json' \
-  -d '{"username":"admin","password":"admin","role":"{swsLoginRole}"}' | jq -r '.token')
+# Get a JWT — use System Administrator (role "0") for admin operations
+ETENDO_TOKEN=$(curl -s -X POST "${ETENDO_URL}/sws/login" \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin","role":"0"}' \
+  | python3 -c "import sys,json; print(json.load(sys.stdin).get('token',''))")
 
 # Test GET
-curl -s -H "Authorization: Bearer $TOKEN" \
-  "http://localhost:8080/{context.name}/sws/com.etendoerp.etendorx.datasource/{EndpointName}?_startRow=0&_endRow=5" \
-  | jq '.response.data[0]'
+curl -s -H "Authorization: Bearer ${ETENDO_TOKEN}" \
+  "${ETENDO_URL}/sws/com.etendoerp.etendorx.datasource/{EndpointName}?_startRow=0&_endRow=5" \
+  | python3 -m json.tool
 ```
 
 If the test returns 401/403: explain SWS access configuration requirement (must create `etrx_rx_services_access` record linking user -> auth service). See `docs/headless-setup.sql`.
 
 ## Step 6: Export and summarize
 
+**Important:** `export.database` requires Tomcat to be stopped first.
+
 ```bash
-./gradlew export.database -Dmodule={javapackage}
+JAVA_HOME=$(/usr/libexec/java_home -v 17 2>/dev/null || echo "$JAVA_HOME")
+JAVA_HOME=${JAVA_HOME} ./gradlew resources.down
+JAVA_HOME=${JAVA_HOME} ./gradlew export.database -Dmodule={javapackage} > /tmp/etendo-export.log 2>&1
+tail -5 /tmp/etendo-export.log
+# Bring services back up after export:
+JAVA_HOME=${JAVA_HOME} ./gradlew resources.up
 ```
 
 ```

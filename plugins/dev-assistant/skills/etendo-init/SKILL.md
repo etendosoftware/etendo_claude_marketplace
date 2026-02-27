@@ -9,7 +9,7 @@ argument-hint: "[target directory path]"
 
 ---
 
-First, read `skills/etendo-_context/SKILL.md`.
+First, read `skills/etendo-_guidelines/SKILL.md` and `skills/etendo-_context/SKILL.md`.
 
 This command performs a full bootstrap of a new Etendo development environment. It is designed for a developer setting up Etendo for the first time.
 
@@ -93,24 +93,27 @@ Show current `build.gradle` and explain the difference if needed.
 
 > **Convention:** All `./gradlew` calls redirect output to `/tmp/etendo-{task}.log`. Read that file only if the task fails.
 
-Execute in this exact order:
+Detect JAVA_HOME first (see `_context` skill section 6), then execute in this exact order:
 
 ```bash
+# Detect JAVA_HOME (must be Java 17):
+JAVA_HOME=$(/usr/libexec/java_home -v 17 2>/dev/null || echo "$JAVA_HOME")
+
 # 6a. ALWAYS first -- initializes config/Openbravo.properties from gradle.properties
-./gradlew setup > /tmp/etendo-setup.log 2>&1
+JAVA_HOME=${JAVA_HOME} ./gradlew setup > /tmp/etendo-setup.log 2>&1
 
 # 6b. Source mode only: expand core source
-./gradlew expandCore > /tmp/etendo-expandcore.log 2>&1
+JAVA_HOME=${JAVA_HOME} ./gradlew expandCore > /tmp/etendo-expandcore.log 2>&1
 
 # 6c. Docker mode: start containers (setup must run first to generate correct .env with paths)
-./gradlew resources.up > /tmp/etendo-resources-up.log 2>&1
+JAVA_HOME=${JAVA_HOME} ./gradlew resources.up > /tmp/etendo-resources-up.log 2>&1
 docker ps --filter name=etendo --format "{{.Names}} {{.Status}}"
 
 # 6d. Create DB schema and deploy WAR
-./gradlew install > /tmp/etendo-install.log 2>&1
+JAVA_HOME=${JAVA_HOME} ./gradlew install > /tmp/etendo-install.log 2>&1
 
 # 6e. Compile and deploy
-./gradlew smartbuild > /tmp/etendo-smartbuild.log 2>&1
+JAVA_HOME=${JAVA_HOME} ./gradlew smartbuild > /tmp/etendo-smartbuild.log 2>&1
 ```
 
 On failure, diagnose:

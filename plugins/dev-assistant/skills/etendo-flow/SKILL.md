@@ -8,7 +8,7 @@ allowed-tools:
   - Glob
 ---
 
-First, read `skills/etendo-_context/SKILL.md` to resolve the active module and DB connection.
+First, read `skills/etendo-_guidelines/SKILL.md` and `skills/etendo-_context/SKILL.md` to resolve the active module and DB connection.
 
 You are an expert in the Etendo headless API (EtendoRX). The user wants to create a new flow. Your task is to guide them step by step and execute the necessary SQL queries.
 
@@ -186,24 +186,24 @@ Adjust the HTTP flags based on what the flow needs:
 
 ## Step 9 — Verify
 
-1. Get JWT:
+1. Get JWT — use System Administrator (role `"0"`) for admin operations:
 ```bash
-curl -s -X POST http://localhost:8080/etendo/sws/login \
+ETENDO_TOKEN=$(curl -s -X POST "${ETENDO_URL}/sws/login" \
   -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"admin","role":"42D0EEB1C66F497A90DD526DC597E6F0"}' \
-  | jq -r '.token'
+  -d '{"username":"admin","password":"admin","role":"0"}' \
+  | python3 -c "import sys,json; print(json.load(sys.stdin).get('token',''))")
 ```
 
 2. Verify generated docs:
 ```bash
-curl -s "http://localhost:8080/etendo/ws/com.etendoerp.openapi.openAPIController?tag=<FlowName>" \
-  -H "Authorization: Bearer <TOKEN>" | jq '.paths | keys'
+curl -s "${ETENDO_URL}/ws/com.etendoerp.openapi.openAPIController?tag=<FlowName>" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" | python3 -m json.tool
 ```
 
 3. Test GET:
 ```bash
-curl -s "http://localhost:8080/etendo/sws/com.etendoerp.etendorx.datasource/<EndpointName>" \
-  -H "Authorization: Bearer <TOKEN>" | jq '.response.data[0]'
+curl -s "${ETENDO_URL}/sws/com.etendoerp.etendorx.datasource/<EndpointName>" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" | python3 -m json.tool
 ```
 
 ---

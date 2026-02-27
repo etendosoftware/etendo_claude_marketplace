@@ -9,7 +9,7 @@ argument-hint: "[fresh]"
 
 ---
 
-First, read `skills/etendo-_context/SKILL.md`.
+First, read `skills/etendo-_guidelines/SKILL.md` and `skills/etendo-_context/SKILL.md`.
 
 This command installs Etendo on an already-cloned project (runs `setup.web` or `install`). Use it when:
 - `gradle.properties` is already configured
@@ -51,20 +51,23 @@ Wait 10 seconds and re-check.
 > **Convention:** All `./gradlew` calls redirect output to `/tmp/etendo-{task}.log`. Read only on error.
 
 ```bash
+# Detect JAVA_HOME (must be Java 17):
+JAVA_HOME=$(/usr/libexec/java_home -v 17 2>/dev/null || echo "$JAVA_HOME")
+
 # Always first -- initializes config/Openbravo.properties from gradle.properties
-./gradlew setup > /tmp/etendo-setup.log 2>&1
+JAVA_HOME=${JAVA_HOME} ./gradlew setup > /tmp/etendo-setup.log 2>&1
 
 # Source mode only: expand core source
-./gradlew expandCore > /tmp/etendo-expandcore.log 2>&1
+JAVA_HOME=${JAVA_HOME} ./gradlew expandCore > /tmp/etendo-expandcore.log 2>&1
 
 # Docker mode: start containers (setup must have run first to generate correct .env)
-./gradlew resources.up > /tmp/etendo-resources-up.log 2>&1
+JAVA_HOME=${JAVA_HOME} ./gradlew resources.up > /tmp/etendo-resources-up.log 2>&1
 
 # Install DB schema and deploy WAR
-./gradlew install > /tmp/etendo-install.log 2>&1
+JAVA_HOME=${JAVA_HOME} ./gradlew install > /tmp/etendo-install.log 2>&1
 
 # Compile and deploy
-./gradlew smartbuild > /tmp/etendo-smartbuild.log 2>&1
+JAVA_HOME=${JAVA_HOME} ./gradlew smartbuild > /tmp/etendo-smartbuild.log 2>&1
 ```
 
 On failure:
@@ -82,7 +85,7 @@ Common errors:
 ## Step 4: Verify
 
 ```bash
-curl -s -o /dev/null -w "%{http_code}" http://localhost:{tomcat.port}/{context.name}/security/Login
+curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/{context.name}/security/Login
 ```
 
 Show result:

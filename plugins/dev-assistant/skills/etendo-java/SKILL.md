@@ -9,21 +9,25 @@ argument-hint: "<description, e.g. 'eventhandler for SMFT_Enrollment'>"
 
 ---
 
-First, read `skills/etendo-_context/SKILL.md` and `skills/etendo-_webhooks/SKILL.md`.
+First, read `skills/etendo-_guidelines/SKILL.md`, `skills/etendo-_context/SKILL.md`, and `skills/etendo-_webhooks/SKILL.md`.
 
 ## Step 1: Context
 
-Resolve the active module and detect the type of component to create:
+Resolve the active module and detect the type of component to create.
 
-| Type | When |
-|---|---|
-| **EventHandler** | "when X is saved/created/modified/deleted, do Y" |
-| **Background Process** | "process that runs daily / periodically" |
-| **Action Process (Button)** | "process launchable from a button in a window tab" |
-| **Webhook** | "expose an operation as an HTTP endpoint callable by Copilot or external systems" |
-| **Message** | "create an AD message for use in Java code" |
-| **Computed Column** | "calculated field in an existing window" |
-| **Callout** | "logic when changing a field in the UI" |
+**Decision tree** — match the user's description to the right component type:
+
+| Type | When to use | Trigger keywords |
+|---|---|---|
+| **EventHandler** | Logic runs automatically when a record is saved/created/modified/deleted | "when saved", "on create", "validate before save", "auto-set field" |
+| **Background Process** | Process runs asynchronously (batch, scheduled, periodic) | "run daily", "batch", "scheduled", "periodic", "cron" |
+| **Action Process (Button)** | User clicks a button in a window to trigger logic | "button", "action", "from the window", "user launches" |
+| **Webhook** | Expose an HTTP endpoint for external callers | "API endpoint", "webhook", "callable from Copilot", "HTTP" |
+| **Message** | Create a reusable AD message for validation errors or info | "error message", "validation message", "AD message" |
+| **Computed Column** | Virtual column calculated from a SQL expression | "calculated field", "derived column", "computed" |
+| **Callout** | Logic triggered when a specific field changes in the UI | "when field changes", "on change", "callout" |
+
+If the description matches multiple types, ask the user to clarify.
 
 ## Step 2: Understand what is needed
 
@@ -73,6 +77,8 @@ Each Java component type has a specific subdirectory:
 Where `{java/package/path}` is the javapackage with dots replaced by slashes (e.g., `com/etendoerp/mymodule`).
 
 ## Step 4: Write the Java code
+
+In all templates below, `{generatedPackage}` refers to the actual package where Etendo generated the entity class. You MUST discover this in Step 3 using `find ... -name "{EntityName}.java"`. The result is used in the `import` statement. For example, if the find command returns `build/etendo/src-gen/com/smf/tutorial/com/smf/tutorial/ad/SMFTEnrollment.java`, then `{generatedPackage}` = `com.smf.tutorial.com.smf.tutorial.ad`.
 
 ### EventHandler
 

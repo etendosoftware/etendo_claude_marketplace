@@ -9,7 +9,7 @@ argument-hint: "[full | threads=N]"
 
 ---
 
-First, read `skills/etendo-_context/SKILL.md`.
+First, read `skills/etendo-_guidelines/SKILL.md` and `skills/etendo-_context/SKILL.md`.
 
 `update.database` applies changes from the Application Dictionary (XML sourcedata) and module definitions into the live PostgreSQL database. Run this after:
 - Adding a new module dependency
@@ -35,11 +35,14 @@ If DB is not reachable:
 > Redirect output to `/tmp`. Read only on failure.
 
 ```bash
+# Detect JAVA_HOME (must be Java 17):
+JAVA_HOME=$(/usr/libexec/java_home -v 17 2>/dev/null || echo "$JAVA_HOME")
+
 # Standard
-./gradlew update.database > /tmp/etendo-update-database.log 2>&1
+JAVA_HOME=${JAVA_HOME} ./gradlew update.database > /tmp/etendo-update-database.log 2>&1
 
 # With parallelism (faster for large schemas)
-./gradlew update.database -Dmax.threads={N} > /tmp/etendo-update-database.log 2>&1
+JAVA_HOME=${JAVA_HOME} ./gradlew update.database -Dmax.threads={N} > /tmp/etendo-update-database.log 2>&1
 ```
 
 Check result:
