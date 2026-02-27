@@ -19,9 +19,16 @@ All skills that call webhooks or headless endpoints need these variables. Read t
 
 ```bash
 ETENDO_URL=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('etendoUrl','http://localhost:8080/etendo'))")
-API_KEY=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('apikey',''))")
 DB_PREFIX=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('dbPrefix',''))")
 MODULE_JP=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('module',''))")
+```
+
+Then obtain a Bearer token (required for both webhooks and headless endpoints):
+```bash
+ETENDO_TOKEN=$(curl -s -X POST "${ETENDO_URL}/sws/login" \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin","role":"0"}' \
+  | python3 -c "import sys,json; print(json.load(sys.stdin).get('token',''))")
 ```
 
 **MODULE_ID is NOT stored in context.json** — resolve it at runtime:
@@ -210,31 +217,56 @@ After creating or modifying tables, columns, or views, run this mandatory sequen
 
 ```bash
 # 1. TableChecker — detect column changes
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=CheckTablesColumnHook&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CheckTablesColumnHook" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{\"TableID\": \"${TABLE_ID}\"}"
 
 # 2. SyncTerms — synchronize terms
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=SyncTerms&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=SyncTerms" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" -d '{}'
 
 # 3. ElementsHandler — auto-correct elements
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=ElementsHandler&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=ElementsHandler" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{\"TableID\": \"${TABLE_ID}\"}"
 ```
 
 Never skip or reorder these steps. See `alter-db` and `window` skills for full details.
 
+If the `com.etendoerp.copilot.devassistant` module is not installed, these webhooks won't be available. In that case, ask the user to perform these steps manually from the Etendo UI (Application Dictionary → Synchronize Terminology, etc.).
+
 ---
 
-## 13. Headless REST endpoints & authentication
+## 13. Webhooks vs headless endpoints
 
-Headless (EtendoRX) endpoints use the `/sws/` path for all operations — both data entities and webhook management.
+Both webhooks and headless endpoints are provided by the `com.etendoerp.copilot.devassistant` module. Both use the `/sws/` path and **Bearer token** authentication. The difference is conceptual:
 
-### Authentication: obtain a Bearer token
+### Headless endpoints — automatic CRUD
 
-For 99% of operations (webhooks, headless CRUD, admin tasks), log in as **System Administrator** (role `"0"`):
+Headless endpoints are **automatically generated** from the EtendoRX configuration (flows, flowpoints, tabs, fields). There is no custom Java code behind them — they simply perform CRUD operations on the tab they're mapped to.
+
+```
+{ETENDO_URL}/sws/com.etendoerp.etendorx.datasource/{EndpointName}
+```
+
+Use them to: query data, check if records exist, create/update individual records.
+
+### Webhooks — custom Java processes
+
+Webhooks are **custom Java classes** written by a developer. They can do simple or complex things in a single call (e.g., `CreateAndRegisterTable` creates the physical table + registers in AD_TABLE + adds base columns, all at once).
+
+```
+{ETENDO_URL}/sws/webhooks/?name={WebhookName}
+```
+
+Use them for: complex operations that involve multiple steps, validations, or side effects.
+
+### Authentication — always Bearer token
+
+**All calls** (both webhooks and headless) use the same Bearer token:
 
 ```bash
 ETENDO_TOKEN=$(curl -s -X POST "${ETENDO_URL}/sws/login" \
@@ -243,20 +275,14 @@ ETENDO_TOKEN=$(curl -s -X POST "${ETENDO_URL}/sws/login" \
   | python3 -c "import sys,json; print(json.load(sys.stdin).get('token',''))")
 ```
 
-The token is a JWT. Use it as `Authorization: Bearer` header for all headless calls.
+Use `Authorization: Bearer ${ETENDO_TOKEN}` for every call. Do NOT use `?apikey=...`.
 
 > For business data that requires a specific org/role context, use a non-system role. Query available roles:
 > ```sql
 > SELECT ad_role_id, name FROM ad_role WHERE isactive = 'Y' ORDER BY name;
 > ```
 
-### Base URL pattern
-
-```
-{ETENDO_URL}/sws/com.etendoerp.etendorx.datasource/{EndpointName}
-```
-
-### CRUD operations
+### Headless CRUD operations
 
 ```bash
 # GET list (with optional q filter)
@@ -282,8 +308,6 @@ curl -s -X PUT -H "Authorization: Bearer ${ETENDO_TOKEN}" \
 
 ### Query filter syntax (`q` parameter)
 
-The `q` parameter supports RSQL-like operators:
-
 | Operator | Meaning | Example |
 |---|---|---|
 | `==` | Equals | `q=name==MyWebhook` |
@@ -291,32 +315,89 @@ The `q` parameter supports RSQL-like operators:
 | `=sw=` | Starts with | `q=name=sw=Sales` |
 | `=ge=` / `=le=` | Greater/less than or equal | `q=created=ge=2024-01-01` |
 
-### Webhook management via headless API
-
-Webhooks can also be managed (CRUD) through headless endpoints, not just via the `RegisterNewWebHook` webhook:
-
-- `Webhook` — header entity (name, javaclass, module)
-- `WebhookParam` — parameters for a webhook
-
-```bash
-# List all registered webhooks
-curl -s -H "Authorization: Bearer ${ETENDO_TOKEN}" \
-  "${ETENDO_URL}/sws/com.etendoerp.etendorx.datasource/Webhook"
-
-# Get a specific webhook by name
-curl -s -H "Authorization: Bearer ${ETENDO_TOKEN}" \
-  "${ETENDO_URL}/sws/com.etendoerp.etendorx.datasource/Webhook?q=name==MyWebhook"
-
-# Get params of a webhook
-curl -s -H "Authorization: Bearer ${ETENDO_TOKEN}" \
-  "${ETENDO_URL}/sws/com.etendoerp.etendorx.datasource/WebhookParam?q=webhook==WEBHOOK_ID"
-```
-
-### Other useful headless endpoints
+### Useful headless endpoints
 
 - `moduleHeader` — list installed modules
 - `moduleDBPrefix` — list module DB prefixes
+- `Webhook` / `WebhookParam` — manage webhooks via CRUD
+- `Table` / `Column` — inspect AD metadata
 
-### Strategy
+---
 
-Use **webhooks** (via `?name=...&apikey=...`) as the primary creation method — they handle triggers, validation, and ID generation. Use **headless endpoints** (via Bearer token) for pre-creation checks, queries, CRUD on entities, and operations with no webhook equivalent.
+## 14. Fallback strategy
+
+Skills must be resilient. The `com.etendoerp.copilot.devassistant` module may not be installed, or Tomcat may be down. Follow this priority order:
+
+| Priority | Method | When to use |
+|---|---|---|
+| **1. Webhooks** | `POST /sws/webhooks/?name=...` | Preferred — handles validations, triggers, and multi-step logic in one call |
+| **2. Headless CRUD** | `GET/POST/PUT /sws/com.etendoerp.etendorx.datasource/...` | When no webhook exists for the operation, or for queries/checks |
+| **3. SQL manual** | Direct `INSERT/UPDATE` in PostgreSQL | When devassistant module is not installed or Tomcat is down |
+| **4. Ask the user** | Request manual action in the Etendo UI | For operations that can't be replicated via SQL (e.g., Synchronize Terminology, run triggers) |
+| **5. Edit XML directly** | Modify `src-db/database/sourcedata/*.xml` | **Last resort, only with explicit user authorization** |
+
+### Detecting availability
+
+```bash
+# Check if devassistant module is installed
+docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -t -c \
+  "SELECT javapackage FROM ad_module WHERE javapackage = 'com.etendoerp.copilot.devassistant' AND isactive = 'Y';"
+
+# Check if Tomcat is responding
+curl -s -o /dev/null -w "%{http_code}" "${ETENDO_URL}/sws/login" 2>/dev/null
+```
+
+If webhooks/headless are not available, inform the user and proceed with SQL. After SQL inserts, remind the user to perform any manual steps that the webhook would have handled automatically (e.g., Synchronize Terminology, Create Columns from DB).
+
+---
+
+## 15. XML editing — last resort
+
+Editing XML files in `src-db/database/sourcedata/` directly is **dangerous** and should only be done with explicit user authorization. The risk:
+
+- If there are **unexported changes in the DB** → `export.database` will overwrite your XML edits
+- If there are **XML edits not yet applied** → `update.database` will overwrite DB changes that weren't exported
+
+XML editing requires `update.database` afterwards (XML → DB direction), which is the reverse of the normal workflow (DB → XML via `export.database`).
+
+**Before editing XML:** Always ask the user: "The webhooks and DB are not available. I can edit the XML files directly, but this is risky if there are unexported DB changes. Should I proceed?"
+
+---
+
+## 16. Webhook feedback collection
+
+When you encounter a **bug**, **limitation**, or **improvement opportunity** in the webhooks from `com.etendoerp.copilot.devassistant`, document it in `.etendo/webhook-issues.md` in the user's project directory. This file helps the user report issues upstream.
+
+**When to write:**
+- A webhook returns an unexpected error or silently fails
+- A workaround is needed (e.g., SQL after webhook because a parameter is not supported)
+- A webhook is missing for a common operation (you had to use SQL instead)
+- A webhook could be improved (e.g., accept an extra parameter, return a better response)
+
+**Format:**
+
+```markdown
+# Webhook Issues & Suggestions for com.etendoerp.copilot.devassistant
+
+## Bugs
+
+### B1: {WebhookName} — {short description}
+- **Symptom:** {what happened}
+- **Expected:** {what should have happened}
+- **Workaround:** {how we worked around it}
+- **Date:** {YYYY-MM-DD}
+
+## Improvements
+
+### I1: {WebhookName or "New webhook"} — {short description}
+- **Current behavior:** {what happens now}
+- **Suggestion:** {what would be better}
+- **Use case:** {why this matters}
+- **Date:** {YYYY-MM-DD}
+```
+
+**Rules:**
+- Use sequential numbering (B1, B2... / I1, I2...)
+- Check if the issue is already documented before adding a duplicate
+- Create the file on first occurrence — don't create it empty
+- Inform the user when you add an entry: "I documented a webhook issue in `.etendo/webhook-issues.md` — you can report it at the `com.etendoerp.copilot.devassistant` repo."

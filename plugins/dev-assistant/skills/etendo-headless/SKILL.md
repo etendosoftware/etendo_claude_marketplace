@@ -10,7 +10,7 @@ argument-hint: "[list | create name | alter name | test name]"
 ---
 
 First, read `skills/etendo-_guidelines/SKILL.md` and `skills/etendo-_context/SKILL.md`.
-Also read `docs/etendo-headless.md` for the full EtendoRX API reference.
+For the full EtendoRX API reference (entities, endpoints, CSRF handling), read `references/etendo-headless.md`. For the classic DataSource API and FormInit, read `references/etendo-api-guide.md`.
 
 This command creates or modifies EtendoRX headless endpoints -- REST API endpoints that expose Etendo data without CSRF, using JWT Bearer or Basic Auth.
 
@@ -94,7 +94,6 @@ Use the `RegisterHeadlessEndpoint` webhook (requires Tomcat running + API key):
 
 ```bash
 ETENDO_URL=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('etendoUrl','http://localhost:8080/etendo'))")
-API_KEY=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('apikey',''))")
 
 # moduleId is NOT stored in context.json — resolve it from the module's javapackage:
 MODULE_JP=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('module',''))")
@@ -102,7 +101,8 @@ MODULE_ID=$(docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -t -c \
   "SELECT ad_module_id FROM ad_module WHERE javapackage = '${MODULE_JP}';" | tr -d ' ')
 
 # Register by table name (auto-resolves to first header tab):
-RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterHeadlessEndpoint&apikey=${API_KEY}" \
+RESP=$(curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterHeadlessEndpoint" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{
     \"RequestName\": \"{EndpointName}\",
@@ -113,7 +113,8 @@ RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterHeadlessEndpoint&ap
 echo $RESP
 
 # Or register by explicit TabID:
-RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterHeadlessEndpoint&apikey=${API_KEY}" \
+RESP=$(curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterHeadlessEndpoint" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{
     \"RequestName\": \"{EndpointName}\",

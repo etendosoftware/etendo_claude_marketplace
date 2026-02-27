@@ -11,6 +11,8 @@ argument-hint: "<description, e.g. 'create table SMFT_customer with name and ema
 
 First, read `skills/etendo-_guidelines/SKILL.md`, `skills/etendo-_context/SKILL.md`, and `skills/etendo-_webhooks/SKILL.md`.
 
+For AD XML structure details, read `references/application-dictionary.md`. For display logic, references, sequences, and data access levels, read `references/advanced-ad.md`.
+
 ## Headless REST endpoints (complement to webhooks)
 
 These EtendoRX headless endpoints provide read/query capabilities for inspecting existing tables and columns. Base URL: `{ETENDO_URL}/sws/com.etendoerp.etendorx.datasource/`.
@@ -38,14 +40,17 @@ After creating or modifying any table, column, or view, you **must** run this se
 
 ```bash
 # Run after every table/column/view creation:
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=CheckTablesColumnHook&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CheckTablesColumnHook" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{\"TableID\": \"${TABLE_ID}\"}"
 
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=SyncTerms&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=SyncTerms" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" -d '{}'
 
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=ElementsHandler&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=ElementsHandler" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{\"TableID\": \"${TABLE_ID}\"}"
 ```
@@ -57,7 +62,7 @@ Never skip or reorder these steps. They ensure the Application Dictionary stays 
 Resolve:
 - Active module (javapackage, DB prefix, AD_MODULE_ID)
 - DB connection (Docker or local)
-- API key available (see `_webhooks` skill — section "Prerequisite: API Key")
+- Bearer token available (see `_webhooks` skill — section "Prerequisite: Bearer Token")
 - Tomcat running (webhooks require Tomcat UP → `./gradlew resources.up` if it's down)
 
 ## Step 2: Understand the change
@@ -81,7 +86,8 @@ For **inspect**: use the `GetWindowTabOrTableInfo` webhook or headless `Table`/`
 **Inspect existing structures:**
 ```bash
 # Via webhook (returns detailed AD info):
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=GetWindowTabOrTableInfo&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=GetWindowTabOrTableInfo" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{\"TableName\": \"{PREFIX_TableName}\"}"
 
@@ -96,14 +102,16 @@ Display a summary of what will be created. Ask for confirmation before executing
 
 ## Step 4: Create table (if applicable)
 
+**Important:** In Etendo, a physical PostgreSQL table is invisible to the system unless it has an `AD_TABLE` record. Similarly, physical columns need `AD_COLUMN` records with metadata (type, reference, nullable, etc.) to be usable in forms and entities.
+
 Use the `CreateAndRegisterTable` webhook. This creates the physical table in PostgreSQL AND registers it in AD_TABLE in a single call:
 
 ```bash
 ETENDO_URL="http://localhost:8080/etendo"  # or the port from context.json
-API_KEY="{apikey}"
 MODULE_ID="{ad_module_id}"
 
-RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/?name=CreateAndRegisterTable&apikey=${API_KEY}" \
+RESP=$(curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CreateAndRegisterTable" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
     "Name": "{LogicalName}",
@@ -127,7 +135,8 @@ echo "Table ID: $TABLE_ID"
 For each column, use `CreateColumn`:
 
 ```bash
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=CreateColumn&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CreateColumn" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
     "tableID": "'${TABLE_ID}'",
@@ -160,7 +169,8 @@ curl -s -X POST "${ETENDO_URL}/webhooks/?name=CreateColumn&apikey=${API_KEY}" \
 Use the `CreateView` webhook for database views:
 
 ```bash
-RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/?name=CreateView&apikey=${API_KEY}" \
+RESP=$(curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CreateView" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
     "Name": "{LogicalName}",
@@ -266,16 +276,19 @@ After creating tables, columns, or views, run the mandatory post-creation hooks:
 
 ```bash
 # 1. TableChecker — detect and register column changes
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=CheckTablesColumnHook&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CheckTablesColumnHook" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{\"TableID\": \"${TABLE_ID}\"}"
 
 # 2. SyncTerms — synchronize terms/translations
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=SyncTerms&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=SyncTerms" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" -d '{}'
 
 # 3. ElementsHandler — auto-correct elements for this table
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=ElementsHandler&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=ElementsHandler" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{\"TableID\": \"${TABLE_ID}\"}"
 ```

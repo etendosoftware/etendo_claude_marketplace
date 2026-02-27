@@ -11,6 +11,8 @@ argument-hint: "[fresh]"
 
 First, read `skills/etendo-_guidelines/SKILL.md` and `skills/etendo-_context/SKILL.md`.
 
+For infrastructure modes (Source vs JAR, Docker flags), read `references/infrastructure-modes.md`. For Gradle task details, read `references/gradle-tasks-reference.md`.
+
 This command installs Etendo on an already-cloned project (runs `setup.web` or `install`). Use it when:
 - `gradle.properties` is already configured
 - You want to reinstall after a failed setup

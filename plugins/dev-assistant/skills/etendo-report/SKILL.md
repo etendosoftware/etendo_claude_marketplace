@@ -158,9 +158,9 @@ Use the `ProcessDefinitionJasper` webhook to register the report and optionally 
 
 ```bash
 ETENDO_URL=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('etendoUrl','http://localhost:8080/etendo'))")
-API_KEY=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('apikey',''))")
 
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=ProcessDefinitionJasper&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=ProcessDefinitionJasper" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
     "Prefix": "{PREFIX}",

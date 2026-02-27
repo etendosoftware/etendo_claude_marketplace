@@ -11,6 +11,8 @@ argument-hint: "<class to test, e.g. 'MyEventHandler' or path>"
 
 First, read `skills/etendo-_guidelines/SKILL.md` and `skills/etendo-_context/SKILL.md`.
 
+For DAL patterns, entity class structure, and module file layout, read `references/java-development.md`.
+
 ## Step 1: Identify the source file
 
 Find the Java file to test:

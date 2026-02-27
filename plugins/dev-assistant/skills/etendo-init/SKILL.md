@@ -11,6 +11,8 @@ argument-hint: "[target directory path]"
 
 First, read `skills/etendo-_guidelines/SKILL.md` and `skills/etendo-_context/SKILL.md`.
 
+For infrastructure modes (Source vs JAR, Docker flags), read `references/infrastructure-modes.md`. For Gradle task details, read `references/gradle-tasks-reference.md`.
+
 This command performs a full bootstrap of a new Etendo development environment. It is designed for a developer setting up Etendo for the first time.
 
 ## Step 1: Determine target directory

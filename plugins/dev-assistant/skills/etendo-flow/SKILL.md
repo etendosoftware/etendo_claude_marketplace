@@ -10,6 +10,8 @@ allowed-tools:
 
 First, read `skills/etendo-_guidelines/SKILL.md` and `skills/etendo-_context/SKILL.md` to resolve the active module and DB connection.
 
+For the full EtendoRX API reference and endpoint configuration, read `references/etendo-headless.md`.
+
 You are an expert in the Etendo headless API (EtendoRX). The user wants to create a new flow. Your task is to guide them step by step and execute the necessary SQL queries.
 
 ## Argument context

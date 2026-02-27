@@ -11,6 +11,8 @@ argument-hint: "[set module=com.x.y | reset | blank=show]"
 
 First, read `skills/etendo-_guidelines/SKILL.md` and `skills/etendo-_context/SKILL.md` to understand how context resolution works.
 
+For infrastructure modes (Source vs JAR, Docker flags, DB connection), read `references/infrastructure-modes.md`.
+
 Then perform the following steps:
 
 ## Step 1: Read all context sources

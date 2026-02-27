@@ -10,7 +10,7 @@ argument-hint: "[create | info | module java package]"
 ---
 
 First, read `skills/etendo-_guidelines/SKILL.md` and `skills/etendo-_context/SKILL.md`.
-Also read `docs/application-dictionary.md` for the XML structure reference.
+For AD XML structure (AD_MODULE, AD_MODULE_DBPREFIX), read `references/application-dictionary.md`. For publishing to Nexus, read `references/module-publishing.md`.
 
 A **module** in Etendo is the unit of deployment. All custom tables, windows, Java code, and configurations belong to a module. Modules are identified by a Java package name (e.g. `com.mycompany.mymodule`) and a DB prefix (e.g. `MYMOD`).
 
@@ -168,9 +168,9 @@ Use the `CreateModule` webhook (requires Tomcat running + API key):
 
 ```bash
 ETENDO_URL=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('etendoUrl','http://localhost:8080/etendo'))")
-API_KEY=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('apikey',''))")
 
-RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/?name=CreateModule&apikey=${API_KEY}" \
+RESP=$(curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CreateModule" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{
     \"Name\": \"{name}\",
@@ -213,7 +213,8 @@ Every module needs at least a dependency on core (`DependsOnModuleID="0"`). Use 
 
 ```bash
 # Dependency on Etendo core (almost always required):
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=AddModuleDependency&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=AddModuleDependency" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{
     \"ModuleID\": \"${MODULE_ID}\",
@@ -223,7 +224,8 @@ curl -s -X POST "${ETENDO_URL}/webhooks/?name=AddModuleDependency&apikey=${API_K
   }"
 
 # Dependency on another module (e.g., com.etendoerp.etendorx):
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=AddModuleDependency&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=AddModuleDependency" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{
     \"ModuleID\": \"${MODULE_ID}\",
@@ -266,8 +268,7 @@ Write to `.etendo/context.json` (see `_context` skill for field definitions):
   "module": "{javapackage}",
   "modulePath": "modules/{javapackage}",
   "dbPrefix": "{PREFIX}",
-  "etendoUrl": "http://localhost:{port}/{context.name}",
-  "apikey": "{existing apikey if available}"
+  "etendoUrl": "http://localhost:{port}/{context.name}"
 }
 ```
 

@@ -11,6 +11,8 @@ argument-hint: "[full | threads=N]"
 
 First, read `skills/etendo-_guidelines/SKILL.md` and `skills/etendo-_context/SKILL.md`.
 
+For Gradle task details, flags, and dependency chains, read `references/gradle-tasks-reference.md`.
+
 `update.database` applies changes from the Application Dictionary (XML sourcedata) and module definitions into the live PostgreSQL database. Run this after:
 - Adding a new module dependency
 - Changing column definitions in XML

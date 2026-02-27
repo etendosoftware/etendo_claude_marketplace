@@ -111,8 +111,7 @@ The active module determines:
   "module": "com.mycompany.mymodule",
   "modulePath": "modules/com.mycompany.mymodule",
   "dbPrefix": "MYMOD",
-  "etendoUrl": "http://localhost:8080/etendo",
-  "apikey": "claude-etendo-key-XXXXXXXX"
+  "etendoUrl": "http://localhost:8080/etendo"
 }
 ```
 
@@ -121,7 +120,6 @@ Fields:
 - `modulePath` — relative path to the module directory
 - `dbPrefix` — DB prefix for table/column naming
 - `etendoUrl` — base URL of the Etendo instance **including the context path** (e.g. `http://localhost:8080/etendo`). The context name comes from `context.name` in `gradle.properties`. Default port is `8080`.
-- `apikey` — webhook API key (set by `_webhooks` skill)
 
 > **Note:** `AD_MODULE_ID` is NOT stored in context.json. Resolve it at runtime:
 > ```bash
@@ -236,7 +234,7 @@ The webhooks from the `com.etendoerp.copilot.devassistant` module automate:
 
 See `skills/etendo-_webhooks/SKILL.md` for the full invocation pattern.
 
-**Prerequisite**: Tomcat UP + API key configured in `.etendo/context.json`.
+**Prerequisite**: Tomcat UP + Bearer token (obtained via `/sws/login`). See `_guidelines` section 13.
 
 ---
 

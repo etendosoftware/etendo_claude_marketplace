@@ -7,7 +7,32 @@
 
 ## Overview
 
-The Application Dictionary (AD) is Etendo's metadata layer. Everything visible in the UI — windows, tabs, fields, menus — is defined as records in the DB and exported to XML files in `src-db/database/sourcedata/`. This is how the ERP is configured without touching Java code.
+The Application Dictionary (AD) is Etendo's metadata layer. It is the bridge between the physical database and the application.
+
+**Key concept: every physical PostgreSQL table and column must be declared (registered) in the AD for Etendo to know it exists.** A table that exists in PostgreSQL but has no `AD_TABLE` record is completely invisible to the system — it won't generate Java entity classes, can't be used in windows/tabs, and the DAL (ORM) won't touch it.
+
+The flow works like this:
+
+```
+Physical DB table (PostgreSQL)
+  ↓ registered via
+AD_TABLE record (declares the table to Etendo)
+  ↓ columns registered via
+AD_COLUMN records (declares each column + metadata: type, nullable, reference, etc.)
+  ↓ generates
+Java entity class (DAL/ORM — via generate.entities)
+  ↓ exposed in UI via
+AD_WINDOW → AD_TAB → AD_FIELD (windows, tabs, fields)
+```
+
+Everything visible in the UI — windows, tabs, fields, menus — is defined as records in the DB and exported to XML files in `src-db/database/sourcedata/`. This is how the ERP is configured without touching Java code.
+
+### Bidirectional sync
+
+- **`export.database`** — reads AD records from the DB and writes them as XML files (DB → XML). Use after creating/modifying AD objects.
+- **`update.database`** — reads XML files and applies them to the DB (XML → DB). Use when deploying to another environment or pulling changes.
+
+The DB is the source of truth at **design time**. The XML is the source of truth for **distribution**.
 
 ---
 
@@ -157,7 +182,13 @@ Window types: `M` (Maintain), `T` (Transaction), `Q` (Query Only)
 
 ---
 
-## AD_TABLE (for custom tables)
+## AD_TABLE — Declaring a physical table
+
+`AD_TABLE` registers a physical PostgreSQL table so Etendo can manage it. Without this record, the table is invisible to the ORM, entity generation, and UI.
+
+- `NAME` — the Java entity class name (PascalCase, e.g. `MYMOD_MyTable`)
+- `TABLENAME` — the actual DB table name (lowercase, e.g. `mymod_mytable`)
+- `ACCESSLEVEL` — controls which client/org can see data (see `advanced-ad.md`)
 
 ```xml
 <AD_TABLE>
@@ -165,8 +196,8 @@ Window types: `M` (Maintain), `T` (Transaction), `Q` (Query Only)
   <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
   <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
   <ISACTIVE><![CDATA[Y]]></ISACTIVE>
-  <NAME><![CDATA[MYMOD_MyTable]]></NAME>   <!-- Java entity class name -->
-  <TABLENAME><![CDATA[MYMOD_mytable]]></TABLENAME>   <!-- Actual DB table name (lowercase) -->
+  <NAME><![CDATA[MYMOD_MyTable]]></NAME>
+  <TABLENAME><![CDATA[mymod_mytable]]></TABLENAME>
   <AD_PACKAGE_ID><![CDATA[{package_UUID}]]></AD_PACKAGE_ID>
   <CLASSNAME><![CDATA[com.mycompany.mymodule.ClassName]]></CLASSNAME>
   <ISVIEW><![CDATA[N]]></ISVIEW>
@@ -176,6 +207,55 @@ Window types: `M` (Maintain), `T` (Transaction), `Q` (Query Only)
   <ISFULLYQUALIFIEDQUERY><![CDATA[N]]></ISFULLYQUALIFIEDQUERY>
 </AD_TABLE>
 ```
+
+---
+
+## AD_COLUMN — Declaring a physical column with metadata
+
+`AD_COLUMN` registers a physical column of a table and adds metadata that the physical DB doesn't have: the UI widget type (Reference), whether it's mandatory, default values, validations, etc.
+
+A column that exists in PostgreSQL but has no `AD_COLUMN` record is invisible to Etendo — it won't appear in the generated entity class and can't be used in forms.
+
+- `COLUMNNAME` — must match the physical column name exactly (lowercase)
+- `AD_REFERENCE_ID` — the data type / UI widget (see Reference IDs below)
+- `ISFIELDONLY` — `Y` if the column has no physical DB column (virtual/property field)
+
+```xml
+<AD_COLUMN>
+  <AD_COLUMN_ID><![CDATA[{UUID}]]></AD_COLUMN_ID>
+  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+  <NAME><![CDATA[My Column Name]]></NAME>          <!-- Display name -->
+  <COLUMNNAME><![CDATA[mymod_mycolumn]]></COLUMNNAME> <!-- Physical DB column -->
+  <AD_TABLE_ID><![CDATA[{table_UUID}]]></AD_TABLE_ID>
+  <AD_REFERENCE_ID><![CDATA[10]]></AD_REFERENCE_ID>  <!-- 10=String, 20=Integer, etc. -->
+  <FIELDLENGTH><![CDATA[255]]></FIELDLENGTH>
+  <ISKEY><![CDATA[N]]></ISKEY>
+  <ISMANDATORY><![CDATA[N]]></ISMANDATORY>
+  <ISUPDATEABLE><![CDATA[Y]]></ISUPDATEABLE>
+  <ISIDENTIFIER><![CDATA[N]]></ISIDENTIFIER>
+  <SEQNO><![CDATA[10]]></SEQNO>
+  <AD_MODULE_ID><![CDATA[{module_UUID}]]></AD_MODULE_ID>
+</AD_COLUMN>
+```
+
+### Common Reference IDs (AD_REFERENCE_ID)
+
+| ID | Type | DB column type | UI widget |
+|---|---|---|---|
+| `10` | String | `VARCHAR(n)` | Text input |
+| `14` | Text | `TEXT` | Textarea |
+| `11` | Integer | `NUMERIC` | Number input |
+| `12` | Amount | `NUMERIC` | Number with currency format |
+| `22` | Number | `NUMERIC` | Decimal number |
+| `15` | Date | `TIMESTAMP` | Date picker |
+| `16` | DateTime | `TIMESTAMP` | Date + time picker |
+| `20` | Yes/No | `CHAR(1)` | Checkbox (Y/N) |
+| `17` | List | `VARCHAR(60)` | Dropdown from fixed values |
+| `19` | TableDir | `VARCHAR(32)` | FK dropdown (auto-resolved by column name) |
+| `30` | Search | `VARCHAR(32)` | FK with search popup |
+| `28` | Button | `CHAR(1)` | Action button (linked to a Process) |
 
 ---
 
@@ -246,4 +326,4 @@ For creating headless API endpoints, the relevant tables are:
 | `ETRX_ENTITY_FIELD` | Specifies which fields are exposed |
 | `ETRX_PROJECTION` | Groups related endpoints (optional, for organization) |
 
-See `docs/etendo-headless.md` for the full headless API reference.
+See `references/etendo-headless.md` for the full headless API reference.

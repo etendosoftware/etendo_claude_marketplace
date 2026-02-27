@@ -11,6 +11,8 @@ argument-hint: "[remote | full]"
 
 First, read `skills/etendo-_guidelines/SKILL.md` and `skills/etendo-_context/SKILL.md`.
 
+For Gradle task details, flags, and dependency chains, read `references/gradle-tasks-reference.md`.
+
 ## Step 1: Verify resources are up
 
 Check that required services are running before compiling:

@@ -11,6 +11,8 @@ argument-hint: "<description, e.g. 'eventhandler for SMFT_Enrollment'>"
 
 First, read `skills/etendo-_guidelines/SKILL.md`, `skills/etendo-_context/SKILL.md`, and `skills/etendo-_webhooks/SKILL.md`.
 
+For DAL patterns, EventHandlers, Background Processes, Callouts, and module file structure, read `references/java-development.md`. For Jobs, Actions, and CloneRecordHook, read `references/jobs-and-actions.md`.
+
 ## Step 1: Context
 
 Resolve the active module and detect the type of component to create.
@@ -166,7 +168,8 @@ public class {Name}Process extends DalBaseProcess {
 
 **Register in AD** via webhook (Tomcat must be UP). The webhook sets: Background check = Y, Data access level = All, UI Pattern = Manual:
 ```bash
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterBGProcessWebHook&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterBGProcessWebHook" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
     "Javapackage": "{javapackage}",
@@ -226,7 +229,8 @@ public class {Name}Process extends BaseProcessActionHandler {
 
 **Register in AD** via webhook (Tomcat must be UP):
 ```bash
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=ProcessDefinitionButton&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=ProcessDefinitionButton" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
     "Javapackage": "{javapackage}",
@@ -308,7 +312,8 @@ public class {Name} extends BaseWebhookService {
 **After creating the file**, register in DB via webhook (Tomcat must be UP):
 
 ```bash
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterNewWebHook&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterNewWebHook" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
     "Javaclass": "{javapackage}.webhooks.{Name}",
@@ -331,7 +336,8 @@ Create Application Dictionary messages for use in Java code (validation errors, 
 
 **Register via webhook:**
 ```bash
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=CreateMessage&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CreateMessage" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
     "SearchKey": "{PREFIX_DescriptiveName}",

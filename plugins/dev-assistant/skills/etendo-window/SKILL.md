@@ -11,6 +11,8 @@ argument-hint: "[create | alter WindowName | description]"
 
 First, read `skills/etendo-_guidelines/SKILL.md`, `skills/etendo-_context/SKILL.md`, and `skills/etendo-_webhooks/SKILL.md`.
 
+For AD XML structure and window/tab/field patterns, read `references/application-dictionary.md`. For display logic, references, and field-level configuration, read `references/advanced-ad.md`.
+
 A **Window** in Etendo is the UI entry point. It contains Tabs (level 0 = header, 1 = detail, etc.), each Tab maps to a table.
 
 ## Headless REST endpoints (complement to webhooks)
@@ -39,7 +41,7 @@ The correct order for creating a window with tabs is:
 
 Resolve:
 - Active module (javapackage, DB prefix, AD_MODULE_ID)
-- API key available (see `_webhooks` skill)
+- Bearer token available (see `_webhooks` skill)
 - Tomcat running (required for webhooks)
 
 ## Step 2: Determine operation
@@ -51,7 +53,8 @@ Resolve:
 **Look up existing elements with `GetWindowTabOrTableInfo`:**
 ```bash
 # Search by keyword (WINDOW, TAB, TABLE, or COLUMN) + name:
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=GetWindowTabOrTableInfo&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=GetWindowTabOrTableInfo" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{\"Keyword\": \"WINDOW\", \"Name\": \"{WindowName}\"}"
 ```
@@ -88,10 +91,10 @@ Run SyncTerms before creating the window to ensure all existing terms are up to 
 ```bash
 # Read from context.json:
 ETENDO_URL=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('etendoUrl','http://localhost:8080/etendo'))")
-API_KEY=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('apikey',''))")
 DB_PREFIX=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('dbPrefix',''))")
 
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=SyncTerms&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=SyncTerms" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"CleanTerms": "true"}'
 ```
@@ -100,7 +103,8 @@ curl -s -X POST "${ETENDO_URL}/webhooks/?name=SyncTerms&apikey=${API_KEY}" \
 
 ```bash
 # 1. Create window + menu
-RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterWindow&apikey=${API_KEY}" \
+RESP=$(curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterWindow" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
     "DBPrefix": "'${DB_PREFIX}'",
@@ -126,7 +130,8 @@ You can have multiple tabs at level 0 — each one becomes an independent header
 
 ```bash
 # Create tab
-RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterTab&apikey=${API_KEY}" \
+RESP=$(curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterTab" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
     "WindowID": "'${WINDOW_ID}'",
@@ -143,7 +148,8 @@ TAB_ID=$(echo $RESP | python3 -c "import sys,json,re; r=json.load(sys.stdin); m=
 echo "Tab ID: $TAB_ID"
 
 # Auto-register all fields for the tab
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=RegisterFields&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterFields" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
     "WindowTabID": "'${TAB_ID}'",
@@ -175,7 +181,8 @@ After registering all fields, check and fill missing element descriptions. This 
 # TABLE_ID is the AD_TABLE_ID of the table behind the tab.
 
 # 1. Read elements to find which are missing descriptions:
-RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/?name=ElementsHandler&apikey=${API_KEY}" \
+RESP=$(curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=ElementsHandler" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{\"TableID\": \"${TABLE_ID}\", \"Mode\": \"READ_ELEMENTS\"}")
 echo $RESP
@@ -183,7 +190,8 @@ echo $RESP
 # Columns where Description or HelpComment is empty/null need to be filled.
 
 # 2. For each element missing descriptions, write them:
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=ElementsHandler&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=ElementsHandler" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{
     \"Mode\": \"WRITE_ELEMENTS\",
@@ -193,7 +201,8 @@ curl -s -X POST "${ETENDO_URL}/webhooks/?name=ElementsHandler&apikey=${API_KEY}"
   }"
 
 # 3. Final SyncTerms to apply element changes:
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=SyncTerms&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=SyncTerms" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"CleanTerms": "true"}'
 ```
@@ -206,7 +215,8 @@ curl -s -X POST "${ETENDO_URL}/webhooks/?name=SyncTerms&apikey=${API_KEY}" \
 If a tab needs a filter (e.g., only show products that are courses), use the `SetTabFilter` webhook:
 
 ```bash
-curl -s -X POST "${ETENDO_URL}/webhooks/?name=SetTabFilter&apikey=${API_KEY}" \
+curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=SetTabFilter" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
     "TabID": "'${TAB_ID}'",
