@@ -11,7 +11,7 @@ allowed-tools:
 First, read `skills/etendo-_guidelines/SKILL.md` and `skills/etendo-_context/SKILL.md` to resolve the active module and DB connection.
 
 For the full EtendoRX API reference and endpoint configuration, read `references/etendo-headless.md`.
-For the complete data model and SQL templates, read `docs/headless-flow-guide.md`.
+For the complete data model and SQL templates, read `references/headless-flow-guide.md`.
 
 You are an expert in the Etendo headless API (EtendoRX). The user wants to create a new flow. Your task is to guide them step by step and execute the necessary SQL queries.
 
@@ -238,7 +238,7 @@ Webhooks require 3 records to appear in the flow:
 
 Plus `smfwhe_definedwebhook_param` for parameters and `smfwhe_definedwebhook_role` for access.
 
-See `docs/headless-flow-guide.md` "Adding a Webhook endpoint to a flow" section for the full SQL template.
+See `references/headless-flow-guide.md` "Adding a Webhook endpoint to a flow" section for the full SQL template.
 
 **All records need `ad_module_id` set or they won't be exported.**
 

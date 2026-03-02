@@ -162,7 +162,7 @@ curl -s -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   | python3 -m json.tool
 ```
 
-If the test returns 401/403: explain SWS access configuration requirement (must create `etrx_rx_services_access` record linking user -> auth service). See `docs/headless-setup.sql`.
+If the test returns 401/403: explain SWS access configuration requirement (must create `etrx_rx_services_access` record linking user -> auth service). See `references/headless-setup.sql`.
 
 ## Step 6: Export and summarize
 
