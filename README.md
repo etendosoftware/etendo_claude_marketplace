@@ -16,14 +16,14 @@ A set of Claude Code plugins that help developers work with [Etendo ERP](https:/
 1. Add this repository as a marketplace in Claude Code:
 
 ```
-/plugin marketplace add etendosoftware/etendo_devassistant_claude_plugin
+/plugin marketplace add etendosoftware/etendo_claude_marketplace
 ```
 
 2. Install the plugins you need:
 
 ```
-/plugin install dev-assistant@etendo-marketplace
-/plugin install etendo-workflow-manager@etendo-marketplace
+/plugin install dev-assistant@etendo_claude_marketplace
+/plugin install etendo-workflow-manager@etendo_claude_marketplace
 ```
 
 You can also browse and install from the interactive plugin manager:
@@ -33,6 +33,14 @@ You can also browse and install from the interactive plugin manager:
 ```
 
 Then go to the **Discover** tab to see available plugins.
+
+### Updating plugins
+
+To pull the latest changes from the marketplace:
+
+```
+/plugin marketplace update etendo_claude_marketplace
+```
 
 ### From a local clone
 
@@ -46,7 +54,7 @@ claude --plugin-dir ./plugins/etendo-workflow-manager
 Or add the local directory as a marketplace:
 
 ```
-/plugin marketplace add ./path/to/etendo_devassistant_claude_plugin
+/plugin marketplace add ./path/to/etendo_claude_marketplace
 ```
 
 ### Installation scope
@@ -54,7 +62,7 @@ Or add the local directory as a marketplace:
 By default plugins are installed at user level (available in all projects). To install for a specific project only:
 
 ```
-/plugin install dev-assistant@etendo-marketplace --scope project
+/plugin install dev-assistant@etendo_claude_marketplace --scope project
 ```
 
 | Scope | Settings file | Shared via git |
