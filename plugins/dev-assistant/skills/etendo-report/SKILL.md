@@ -173,6 +173,81 @@ curl -s -X POST "${ETENDO_URL}/webhooks/ProcessDefinitionJasper" \
   }'
 ```
 
+If Tomcat is not running, fall back to direct SQL to register the report:
+
+```bash
+cat > /tmp/register_jasper.sql << 'EOF'
+DO $$
+DECLARE
+  v_process_id    TEXT := get_uuid();
+  v_report_id     TEXT := get_uuid();
+  v_menu_id       TEXT := get_uuid();
+  v_module_id     TEXT := '{AD_MODULE_ID}';
+  v_prefix        TEXT := '{PREFIX}';
+BEGIN
+  -- 1. Create the Process Definition (OBUIAPP_Process) for Jasper
+  INSERT INTO OBUIAPP_PROCESS (
+    OBUIAPP_PROCESS_ID, AD_CLIENT_ID, AD_ORG_ID, ISACTIVE, CREATED, CREATEDBY, UPDATED, UPDATEDBY,
+    VALUE, NAME, DESCRIPTION, HELP, JAVACLASSNAME, UI_PATTERN, AD_MODULE_ID, ISENABLENOTIFICATIONS
+  ) VALUES (
+    v_process_id, '0', '0', 'Y', now(), '0', now(), '0',
+    '{PREFIX_SearchKey}',
+    '{Report Visible Name}',
+    '{description}',
+    '{description}',
+    'org.openbravo.client.application.report.BaseReportActionHandler',
+    'OBUIAPP_Report',
+    v_module_id,
+    'N'
+  );
+
+  -- 2. Create the Report Definition (links the process to the JRXML file)
+  INSERT INTO OBUIAPP_REPORT (
+    OBUIAPP_REPORT_ID, AD_CLIENT_ID, AD_ORG_ID, ISACTIVE, CREATED, CREATEDBY, UPDATED, UPDATEDBY,
+    OBUIAPP_PROCESS_ID, FILENAME
+  ) VALUES (
+    v_report_id, '0', '0', 'Y', now(), '0', now(), '0',
+    v_process_id,
+    '@basedesign/{java/package/path}/reports/{ReportName}.jrxml'
+  );
+
+  -- 3. Add parameters (repeat for each parameter):
+  INSERT INTO OBUIAPP_PROCESS_PARA (
+    OBUIAPP_PROCESS_PARA_ID, AD_CLIENT_ID, AD_ORG_ID, ISACTIVE, CREATED, CREATEDBY, UPDATED, UPDATEDBY,
+    OBUIAPP_PROCESS_ID, COLUMNNAME, NAME, SEQNO, AD_REFERENCE_ID, ISREQUIRED, AD_MODULE_ID
+  ) VALUES (
+    get_uuid(), '0', '0', 'Y', now(), '0', now(), '0',
+    v_process_id,
+    'p_document_id',         -- DB parameter name
+    'Document',              -- Display name
+    10,                      -- Sequence
+    '10',                    -- Reference ID (10=String, 15=Date, 20=YesNo, etc.)
+    'Y',                     -- Required
+    v_module_id
+  );
+
+  -- 4. Create Menu entry
+  INSERT INTO AD_MENU (
+    AD_MENU_ID, AD_CLIENT_ID, AD_ORG_ID, ISACTIVE, CREATED, CREATEDBY, UPDATED, UPDATEDBY,
+    NAME, DESCRIPTION, URL, ISSUMMARY, ACTION, AD_MODULE_ID, OBUIAPP_PROCESS_ID
+  ) VALUES (
+    v_menu_id, '0', '0', 'Y', now(), '0', now(), '0',
+    '{Report Visible Name}',
+    '{description}',
+    NULL, 'N', 'X',          -- Action 'X' = Process Definition
+    v_module_id,
+    v_process_id
+  );
+
+  RAISE NOTICE 'Process ID: %', v_process_id;
+END $$;
+EOF
+docker cp /tmp/register_jasper.sql etendo-db-1:/tmp/register_jasper.sql
+docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -f /tmp/register_jasper.sql
+```
+
+> After registering via SQL, run `export.database` to save the new records to XML.
+
 ## Step 6: Compile and deploy
 
 ```bash

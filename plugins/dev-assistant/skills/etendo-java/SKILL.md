@@ -234,15 +234,18 @@ curl -s -X POST "${ETENDO_URL}/webhooks/ProcessDefinitionButton" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
-    "Javapackage": "{javapackage}",
-    "Name": "{VisibleName}",
+    "Prefix": "{PREFIX}",
     "SearchKey": "{PREFIX_SearchKey}",
+    "ProcessName": "{VisibleName}",
     "Description": "{description}",
-    "WindowID": "{window_id}",
-    "TabID": "{tab_id}",
-    "UIPattern": "Standard"
+    "HelpComment": "{description}",
+    "JavaPackage": "{javapackage}",
+    "Parameters": "[{\"BD_NAME\":\"p_param1\",\"NAME\":\"Param 1\",\"LENGTH\":\"32\",\"SEQNO\":\"10\",\"REFERENCE\":\"Search\"}]"
   }'
 ```
+
+> **Note:** The Java class name is auto-built as `{javapackage}.actionHandler.{ProcessName}ActionHandler` — the `JavaPackage` and `ProcessName` must match the actual class created above.
+> `Parameters` is a JSON array. Each item needs: `BD_NAME` (DB column name), `NAME` (display name), `LENGTH`, `SEQNO`, `REFERENCE` (type name, e.g. "Search", "Date", "String").
 
 ### Webhook
 
@@ -331,6 +334,59 @@ curl -s -X POST "${ETENDO_URL}/webhooks/RegisterNewWebHook" \
 > `src-db/database/sourcedata/SMFWHE_DEFINEDWEBHOOK.xml` and `SMFWHE_DEFINEDWEBHOOK_PARAM.xml`
 > following the pattern of existing webhooks in the module.
 
+### Callout
+
+A Callout is a server-side handler triggered when a specific field changes in the Etendo classic UI. It reads field values, performs calculations, and returns updated values for other fields.
+
+**File:** `modules/{javapackage}/src/{path}/callouts/{Entity}{FieldName}Callout.java`
+
+```java
+package {javapackage}.callouts;
+
+import javax.servlet.ServletException;
+import org.openbravo.erpCommon.ad_callouts.SimpleCallout;
+
+public class {Entity}{FieldName}Callout extends SimpleCallout {
+
+  @Override
+  protected void execute(CalloutInfo info) throws ServletException {
+    // Read the changed field value:
+    String changedFieldValue = info.getStringParameter("{COLUMNNAME}", null);
+
+    // Read other field values from the form:
+    String otherField = info.getStringParameter("{OTHER_COLUMN}", null);
+
+    // Perform logic and set output fields:
+    // info.addResult("inp{ColumnName}", computedValue);
+    // info.addResult("inpDescription", "auto-filled description");
+
+    // Show a message (optional):
+    // info.showMessage(OBMessageUtils.messageBD("PREFIX_SomeMessage"));
+  }
+}
+```
+
+> `{COLUMNNAME}` is the DB column name in uppercase (e.g., `EM_SMFT_ISCOURSE`).
+> `inp{ColumnName}` in `addResult` follows the pattern: `inp` + column name in camelCase with first letter uppercase (e.g., `inpEmSmftIscourse`).
+
+**Register in AD** — there is no webhook for callout registration. Use direct SQL:
+
+```bash
+cat > /tmp/register_callout.sql << 'EOF'
+-- Get the column ID first:
+-- SELECT ad_column_id FROM ad_column WHERE ad_table_id = '{TABLE_ID}' AND LOWER(columnname) = '{columnname}';
+
+UPDATE ad_column
+SET callout = '{javapackage}.callouts.{Entity}{FieldName}Callout'
+WHERE ad_column_id = '{COLUMN_ID}';
+EOF
+docker cp /tmp/register_callout.sql etendo-db-1:/tmp/register_callout.sql
+docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -f /tmp/register_callout.sql
+```
+
+> Then export with `export.database` so the callout registration is saved in the XML.
+> See `references/java-development.md` for advanced callout patterns (e.g., querying the DB inside execute, cascading to multiple fields).
+
 ### Message (AD_MESSAGE)
 
 Create Application Dictionary messages for use in Java code (validation errors, info messages, etc.).
@@ -361,12 +417,23 @@ String msg = OBMessageUtils.messageBD("PREFIX_DescriptiveName");
 String msg = String.format(OBMessageUtils.messageBD("PREFIX_DescriptiveName"), param1, param2);
 ```
 
-## Step 5: Register in AD (if webhook was not used)
+## Step 5: Code quality check
+
+After writing any Java code, check it against Etendo's Sonar rules. Read `references/java-sonar-rules.md` and verify the generated code does not violate BLOCKER or CRITICAL rules. Key patterns to always check:
+
+- No `System.out.println` — use `LOG.debug/info/error` (BLOCKER)
+- No raw `catch (Exception e) {}` with empty body — at minimum log the error (CRITICAL)
+- No `OBDal.getInstance().getSession().createQuery()` with string concatenation — use parameters (CRITICAL SQL injection)
+- `OBContext.setAdminMode(true)` must always have a matching `OBContext.restorePreviousMode()` in a `finally` block (CRITICAL)
+- No unused imports or variables (MAJOR)
+- `OBDal.getInstance().flush()` should only be called when necessary — not inside loops (MAJOR performance)
+
+## Step 6: Register in AD (if webhook was not used)
 
 For Action Process and Jasper, use direct SQL only if no equivalent webhook exists.
 Always prefer the `RegisterBGProcessWebHook`, `ProcessDefinitionButton`, and `ProcessDefinitionJasper` webhooks.
 
-## Step 6: Compile
+## Step 7: Compile
 
 ```bash
 JAVA_HOME=... ./gradlew smartbuild > /tmp/smartbuild.log 2>&1
@@ -379,7 +446,7 @@ If there are compilation errors:
 2. Verify PROPERTY_ names and getters (copy from the generated .java)
 3. Verify that the entities exist (generate.entities ran successfully)
 
-## Step 7: Result
+## Step 8: Result
 
 ```
 + {Type} {Name} created and compiled

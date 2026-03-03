@@ -337,6 +337,27 @@ curl -s -X PUT -H "Authorization: Bearer ${ETENDO_TOKEN}" \
 
 ---
 
+## 13b. `/etendo:headless` vs `/etendo:flow` — when to use each
+
+Both skills configure EtendoRX headless API endpoints, but they operate differently:
+
+| Aspect | `/etendo:headless` | `/etendo:flow` |
+|---|---|---|
+| **Primary method** | Webhook `RegisterHeadlessEndpoint` | Direct SQL |
+| **Complexity** | Simple — 1 webhook call | Full control — 5 SQL INSERTs |
+| **Fields** | Not exposed automatically (webhook limitation) | You choose exactly which fields to expose |
+| **Flow + Flowpoint** | Not created automatically | Created as part of the flow |
+| **Best for** | Quick endpoint for a standard tab | Full OpenAPI configuration, multiple tabs, custom field sets |
+| **Fallback when Tomcat down** | Full SQL block in skill (5 tables) | Always uses SQL — no webhook dependency |
+
+**Decision rule:**
+- Use **`/etendo:headless`** when: you want a simple endpoint for a single tab, you don't need fine-grained field control, and Tomcat is running.
+- Use **`/etendo:flow`** when: you need to expose specific fields only, configure multiple endpoints in a group, or Tomcat is not available.
+
+> `/etendo:headless` uses `RegisterHeadlessEndpoint` which creates `ETAPI_OPENAPI_REQ` + `ETRX_OPENAPI_TAB` but does NOT add fields or a flow. The endpoint works for basic GET/POST/PUT but won't appear in the OpenAPI docs until a flow and flowpoint are added. If you need the full configuration, use `/etendo:flow` instead.
+
+---
+
 ## 14. Fallback strategy
 
 Skills must be resilient. The `com.etendoerp.copilot.devassistant` module may not be installed, or Tomcat may be down. Follow this priority order:

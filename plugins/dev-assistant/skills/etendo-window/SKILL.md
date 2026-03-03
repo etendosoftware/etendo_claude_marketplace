@@ -162,15 +162,49 @@ curl -s -X POST "${ETENDO_URL}/webhooks/RegisterFields" \
 Repeat for each tab in the tree.
 
 > **Field customization after RegisterFields:** The webhook registers ALL columns as visible and editable.
-> To hide fields or make them read-only, update `ad_field` via SQL:
+> Use the following SQL patterns to customize individual fields. No webhook exists for these operations.
+>
 > ```sql
+> -- Lookup a field ID by tab and field name:
+> SELECT ad_field_id, name, isdisplayed, isreadonly, seqno
+> FROM ad_field WHERE ad_tab_id = '{tab_id}' ORDER BY seqno;
+>
 > -- Hide a field:
 > UPDATE ad_field SET isdisplayed = 'N' WHERE ad_tab_id = '{tab_id}' AND name = '{FieldName}';
+>
+> -- Show a hidden field:
+> UPDATE ad_field SET isdisplayed = 'Y' WHERE ad_tab_id = '{tab_id}' AND name = '{FieldName}';
+>
 > -- Make a field read-only:
 > UPDATE ad_field SET isreadonly = 'Y' WHERE ad_tab_id = '{tab_id}' AND name = '{FieldName}';
+>
 > -- Change field sequence (display order):
 > UPDATE ad_field SET seqno = {N} WHERE ad_tab_id = '{tab_id}' AND name = '{FieldName}';
+>
+> -- Set display logic (show field conditionally — e.g., only when IsActive='Y'):
+> UPDATE ad_field SET displaylogic = '@IsActive@=''Y''' WHERE ad_field_id = '{field_id}';
+>
+> -- Set read-only logic (make field read-only conditionally):
+> UPDATE ad_field SET readonlylogic = '@DocStatus@=''CO''' WHERE ad_field_id = '{field_id}';
+>
+> -- Set default value for a field:
+> UPDATE ad_field SET defaultvalue = 'Y' WHERE ad_field_id = '{field_id}';
+>
+> -- Assign a field to a Field Group (create field group in AD first if needed):
+> UPDATE ad_field SET ad_fieldgroup_id = '{fieldgroup_id}' WHERE ad_field_id = '{field_id}';
+>
+> -- Look up existing field groups:
+> SELECT ad_fieldgroup_id, name FROM ad_fieldgroup WHERE isactive = 'Y' ORDER BY name;
+>
+> -- Rename a window / tab / menu entry:
+> UPDATE ad_window SET name = '{NewName}' WHERE ad_window_id = '{window_id}';
+> UPDATE ad_tab    SET name = '{NewName}' WHERE ad_tab_id = '{tab_id}';
+> UPDATE ad_menu   SET name = '{NewName}' WHERE ad_menu_id = (
+>   SELECT ad_menu_id FROM ad_menu WHERE ad_window_id = '{window_id}' LIMIT 1
+> );
 > ```
+>
+> After any SQL field changes, run `export.database` to persist them to XML.
 
 ## Step 7: Handle elements (descriptions and help)
 

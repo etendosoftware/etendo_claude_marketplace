@@ -39,6 +39,7 @@ curl -s -H "Authorization: Bearer ${ETENDO_TOKEN}" \
 Based on `$ARGUMENTS`:
 - `create` or blank -> create a new module
 - `info` or `{javapackage}` -> show info about an existing module
+- `version-bump` or `bump` -> update the version of the active module
 - Natural language description -> infer intent
 
 For **info**: search by name, javapackage, or DB prefix.
@@ -277,6 +278,81 @@ Write to `.etendo/context.json` (see `_context` skill for field definitions):
 If the module should be listed in `build.gradle` dependencies (for JAR mode modules):
 Show: "Add this to build.gradle dependencies? `implementation('{group}:{name}:[version]')`"
 Only relevant for modules sourced from a repository. For in-development local modules, the `modules/` directory is already scanned automatically.
+
+## Version bump
+
+When the user requests a version bump (e.g., "bump version to 1.1.0", "update version"), follow this sequence:
+
+### Step V1: Determine new version
+
+If no version is specified, ask: "What should the new version be? (current: {current_version})"
+
+Follow semantic versioning: `MAJOR.MINOR.PATCH`
+- PATCH bump: bug fixes, no new functionality (e.g., 1.0.0 → 1.0.1)
+- MINOR bump: new features, backward compatible (e.g., 1.0.0 → 1.1.0)
+- MAJOR bump: breaking changes (e.g., 1.0.0 → 2.0.0)
+
+### Step V2: Update the files
+
+There are two places where the version must be updated:
+
+**1. `AD_MODULE.xml`** — the source of truth for the AD:
+```bash
+# Find the current version line and update it:
+# Path: modules/{javapackage}/src-db/database/sourcedata/AD_MODULE.xml
+# Change: <VERSION><![CDATA[{old_version}]]></VERSION>
+# To:     <VERSION><![CDATA[{new_version}]]></VERSION>
+```
+
+**2. `build.gradle`** — the Gradle build descriptor:
+```bash
+# Find and update version in modules/{javapackage}/build.gradle
+# Common patterns:
+#   version = '{old_version}'
+#   moduleVersion = '{old_version}'
+```
+
+Use the Read and Edit tools to make these changes. After editing:
+
+```bash
+# Verify both files have the same version:
+grep -r "version" modules/{javapackage}/build.gradle
+grep "VERSION" modules/{javapackage}/src-db/database/sourcedata/AD_MODULE.xml
+```
+
+### Step V3: Apply to DB (optional but recommended)
+
+If Tomcat is running, update the version in the DB:
+```bash
+docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -t -c \
+  "UPDATE ad_module SET version = '{new_version}' WHERE javapackage = '{javapackage}';"
+```
+
+Or via SQL file if Docker:
+```bash
+cat > /tmp/bump_version.sql << 'EOF'
+UPDATE ad_module SET version = '{new_version}' WHERE javapackage = '{javapackage}';
+EOF
+docker cp /tmp/bump_version.sql etendo-db-1:/tmp/bump_version.sql
+docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -f /tmp/bump_version.sql
+```
+
+### Step V4: Confirm
+
+```
++ Version bumped: {javapackage}
+  Old version: {old_version}
+  New version: {new_version}
+
+  Files updated:
+    modules/{javapackage}/build.gradle
+    modules/{javapackage}/src-db/database/sourcedata/AD_MODULE.xml
+
+  Next steps:
+    /etendo:smartbuild -> recompile and deploy with new version
+```
+
+---
 
 ## Step 7: Confirm
 

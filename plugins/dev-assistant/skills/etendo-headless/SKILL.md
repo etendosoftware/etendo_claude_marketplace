@@ -124,25 +124,82 @@ RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/RegisterHeadlessEndpoint" \
 echo $RESP
 ```
 
-If Tomcat is not running, fall back to SQL:
-```sql
+If Tomcat is not running, fall back to SQL. The full registration requires 5 tables:
+
+> **Schema gotchas (do NOT violate these):**
+> - `ETAPI_OPENAPI_REQ.type` is NOT NULL — always pass `'ETRX_Tab'` for tab-backed endpoints.
+> - `ETRX_OPENAPI_TAB` and `ETRX_ENTITY_FIELD` do NOT have a `name` column.
+> - `ETAPI_OPENAPI_FLOWPOINT` columns are `get`/`post`/`put`/`getbyid` (NOT `isget`/`ispost` etc.).
+> - Use `createdby/updatedby = '0'` (System user), not `'100'`.
+
+```bash
+cat > /tmp/register_headless.sql << 'EOF'
 DO $$
 DECLARE
   v_req_id        TEXT := get_uuid();
   v_oapi_tab_id   TEXT := get_uuid();
+  v_flow_id       TEXT := get_uuid();
+  v_flowpoint_id  TEXT := get_uuid();
   v_module_id     TEXT := '{AD_MODULE_ID}';
   v_tab_id        TEXT := '{AD_TAB_ID}';
 BEGIN
+  -- 1. Create the endpoint (request)
   INSERT INTO ETAPI_OPENAPI_REQ (
     ETAPI_OPENAPI_REQ_ID, AD_CLIENT_ID, AD_ORG_ID, ISACTIVE, CREATED, CREATEDBY, UPDATED, UPDATEDBY,
-    NAME, AD_MODULE_ID
-  ) VALUES (v_req_id, '0', '0', 'Y', now(), '0', now(), '0', '{EndpointName}', v_module_id);
+    NAME, DESCRIPTION, AD_MODULE_ID, TYPE
+  ) VALUES (
+    v_req_id, '0', '0', 'Y', now(), '0', now(), '0',
+    '{EndpointName}', '{description}', v_module_id, 'ETRX_Tab'
+  );
 
+  -- 2. Link the endpoint to the AD tab (no 'name' column in this table!)
   INSERT INTO ETRX_OPENAPI_TAB (
     ETRX_OPENAPI_TAB_ID, AD_CLIENT_ID, AD_ORG_ID, ISACTIVE, CREATED, CREATEDBY, UPDATED, UPDATEDBY,
     ETAPI_OPENAPI_REQ_ID, AD_TAB_ID, AD_MODULE_ID
-  ) VALUES (v_oapi_tab_id, '0', '0', 'Y', now(), '0', now(), '0', v_req_id, v_tab_id, v_module_id);
+  ) VALUES (
+    v_oapi_tab_id, '0', '0', 'Y', now(), '0', now(), '0',
+    v_req_id, v_tab_id, v_module_id
+  );
+
+  -- 3. Expose fields (one INSERT per field; no 'name' column — linked via ad_field_id)
+  -- Get field IDs first:
+  --   SELECT f.ad_field_id, f.name, c.columnname
+  --   FROM ad_field f JOIN ad_column c ON c.ad_column_id = f.ad_column_id
+  --   WHERE f.ad_tab_id = '{AD_TAB_ID}' ORDER BY f.seqno;
+  INSERT INTO ETRX_ENTITY_FIELD (
+    ETRX_ENTITY_FIELD_ID, AD_CLIENT_ID, AD_ORG_ID, ISACTIVE, CREATED, CREATEDBY, UPDATED, UPDATEDBY,
+    ETRX_OPENAPI_TAB_ID, AD_FIELD_ID, AD_MODULE_ID
+  ) VALUES (
+    get_uuid(), '0', '0', 'Y', now(), '0', now(), '0',
+    v_oapi_tab_id, '{AD_FIELD_ID_1}', v_module_id
+  );
+  -- Repeat for each additional field...
+
+  -- 4. Create a flow to group the endpoint
+  INSERT INTO ETAPI_OPENAPI_FLOW (
+    ETAPI_OPENAPI_FLOW_ID, AD_CLIENT_ID, AD_ORG_ID, ISACTIVE, CREATED, CREATEDBY, UPDATED, UPDATEDBY,
+    NAME, AD_MODULE_ID
+  ) VALUES (
+    v_flow_id, '0', '0', 'Y', now(), '0', now(), '0',
+    '{EndpointName} Flow', v_module_id
+  );
+
+  -- 5. Create a flowpoint to enable HTTP methods (columns: get, post, put, getbyid — boolean Y/N)
+  INSERT INTO ETAPI_OPENAPI_FLOWPOINT (
+    ETAPI_OPENAPI_FLOWPOINT_ID, AD_CLIENT_ID, AD_ORG_ID, ISACTIVE, CREATED, CREATEDBY, UPDATED, UPDATEDBY,
+    ETAPI_OPENAPI_FLOW_ID, ETAPI_OPENAPI_REQ_ID,
+    GET, POST, PUT, GETBYID
+  ) VALUES (
+    v_flowpoint_id, '0', '0', 'Y', now(), '0', now(), '0',
+    v_flow_id, v_req_id,
+    'Y', 'Y', 'Y', 'Y'   -- enable GET list, POST create, PUT update, GET by ID
+  );
+
+  RAISE NOTICE 'Endpoint registered: % (req_id=%)', '{EndpointName}', v_req_id;
 END $$;
+EOF
+docker cp /tmp/register_headless.sql etendo-db-1:/tmp/register_headless.sql
+docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -f /tmp/register_headless.sql
 ```
 
 ## Step 5: Execute and verify

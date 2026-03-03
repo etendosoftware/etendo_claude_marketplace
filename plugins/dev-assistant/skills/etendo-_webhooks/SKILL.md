@@ -37,6 +37,11 @@ When you encounter new bugs or improvement opportunities, document them in `.ete
 | Add physical FK in PostgreSQL | SQL: `ALTER TABLE ... ADD CONSTRAINT ... FOREIGN KEY ...` |
 | Add field to existing Field Group | Direct SQL (no webhook available) |
 | Rename window/tab/menu | SQL: `UPDATE ad_window/ad_tab/ad_menu SET name=...` |
+| Create AD message (validation/info) | Webhook `CreateMessage` |
+| Find module by name (get javapackage) | Webhook `JavaPackageRetriever` |
+| Synchronize AD terminology | Webhook `SyncTerms` |
+| Validate and fix table columns in AD | Webhook `CheckTablesColumnHook` |
+| Read/write element descriptions | Webhook `ElementsHandler` |
 
 ---
 
@@ -505,6 +510,119 @@ curl -s -X POST "${ETENDO_URL}/webhooks/RegisterNewWebHook" \
 >   "SELECT smfwhe_definedwebhook_id FROM smfwhe_definedwebhook WHERE name='MyWebhook';" | tr -d ' ')
 > docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -c \
 >   "INSERT INTO smfwhe_definedwebhook_acc (smfwhe_definedwebhook_acc_id,ad_client_id,ad_org_id,isactive,created,createdby,updated,updatedby,smfwhe_definedwebhook_id,smfwhe_definedwebhook_token_id) VALUES (get_uuid(),'0','0','Y',now(),'0',now(),'0','${NEW_WH_ID}','${TOKEN_ID}');"
+> ```
+
+---
+
+### `SyncTerms`
+Runs the AD process "Synchronize Terms" to update AD_ELEMENT names. Also cleans up raw DB column names (replaces underscores with spaces).
+
+```bash
+# Standard sync (after any AD changes):
+curl -s -X POST "${ETENDO_URL}/webhooks/SyncTerms" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+
+# Clean sync (also overwrites existing names from column names — use when names look like raw DB columns):
+curl -s -X POST "${ETENDO_URL}/webhooks/SyncTerms" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{"CleanTerms": "true"}'
+```
+
+**Parameters:** None required.
+**Optional:** `CleanTerms` ("true") — forces overwrite of element names using the cleaned DB column name.
+
+---
+
+### `CheckTablesColumnHook`
+Re-runs Register Columns for a table, then validates all columns: checks name length, TableDir references, and DB type consistency. Auto-fixes type mismatches via `ALTER TABLE ... ALTER COLUMN ... TYPE`.
+
+```bash
+curl -s -X POST "${ETENDO_URL}/webhooks/CheckTablesColumnHook" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "TableID": "'${TABLE_ID}'",
+    "ModuleID": "'${MODULE_ID}'"
+  }'
+```
+
+**Required parameters:** `TableID`
+**Optional:** `ModuleID` — when provided, only validates columns belonging to that module (recommended to avoid false positives on core columns).
+
+Response: JSON array of validation errors. Empty array = all columns are valid.
+
+---
+
+### `ElementsHandler`
+Dual-mode webhook for reading and writing AD_ELEMENT descriptions.
+
+```bash
+# READ mode — list columns missing description or help comment:
+curl -s -X POST "${ETENDO_URL}/webhooks/ElementsHandler" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{"TableID": "'${TABLE_ID}'", "Mode": "READ_ELEMENTS"}'
+
+# WRITE mode — fill description and help comment for a specific column:
+curl -s -X POST "${ETENDO_URL}/webhooks/ElementsHandler" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "Mode": "WRITE_ELEMENTS",
+    "ColumnID": "'${COLUMN_ID}'",
+    "Name": "Human Readable Name",
+    "Description": "What this field stores",
+    "HelpComment": "When and how this field is used"
+  }'
+```
+
+**READ mode required:** `TableID`, `Mode="READ_ELEMENTS"`
+**WRITE mode required:** `ColumnID`, `Mode="WRITE_ELEMENTS"` — `Name`, `Description`, `HelpComment` are optional but at least one should be provided.
+
+---
+
+### `CreateMessage`
+Creates an AD_MESSAGE record usable in Java via `OBMessageUtils.messageBD("SearchKey")`.
+
+```bash
+curl -s -X POST "${ETENDO_URL}/webhooks/CreateMessage" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "SearchKey": "PREFIX_DescriptiveName",
+    "MessageText": "Message text. Use %s for parameters.",
+    "MessageType": "E",
+    "ModuleID": "'${MODULE_ID}'"
+  }'
+```
+
+**Required parameters:** `SearchKey`, `MessageText`, `MessageType` (`I`=info, `E`=error), `ModuleID`
+
+> SearchKey format: `{PREFIX}_CamelCase`. Max 32 characters. No spaces.
+
+---
+
+### `JavaPackageRetriever`
+Searches modules by name and returns their Java packages. Useful for resolving `ModuleID` when only the module name is known.
+
+```bash
+curl -s -X POST "${ETENDO_URL}/webhooks/JavaPackageRetriever" \
+  -H "Authorization: Bearer ${ETENDO_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{"KeyWord": "tutorial"}'
+```
+
+**Required parameters:** `KeyWord` — partial match on module name (case-insensitive contains).
+
+Response: `{"info": "com.smf.tutorial, com.smf.tutorial.template"}` — comma-separated list.
+
+> After getting the javapackage, resolve MODULE_ID via SQL:
+> ```bash
+> MODULE_ID=$(docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -t -c \
+>   "SELECT ad_module_id FROM ad_module WHERE javapackage = 'com.smf.tutorial';" | tr -d ' ')
 > ```
 
 ---
