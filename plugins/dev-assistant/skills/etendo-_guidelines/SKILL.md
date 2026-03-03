@@ -28,7 +28,7 @@ Then obtain a Bearer token (required for both webhooks and headless endpoints):
 ETENDO_TOKEN=$(curl -s -X POST "${ETENDO_URL}/sws/login" \
   -H "Content-Type: application/json" \
   -d '{"username":"admin","password":"admin","role":"0"}' \
-  | python3 -c "import sys,json; print(json.load(sys.stdin).get('token',''))")
+  | python3 -c "import sys,json; data=json.loads(sys.stdin.buffer.read().decode('utf-8','replace')); print(data.get('token',''))")
 ```
 
 **MODULE_ID is NOT stored in context.json** — resolve it at runtime:
@@ -219,18 +219,18 @@ After creating or modifying tables, columns, or views, run this mandatory sequen
 
 ```bash
 # 1. TableChecker — detect column changes
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CheckTablesColumnHook" \
+curl -s -X POST "${ETENDO_URL}/webhooks/CheckTablesColumnHook" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{\"TableID\": \"${TABLE_ID}\"}"
 
 # 2. SyncTerms — synchronize terms
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=SyncTerms" \
+curl -s -X POST "${ETENDO_URL}/webhooks/SyncTerms" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" -d '{}'
 
 # 3. ElementsHandler — auto-correct elements
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=ElementsHandler" \
+curl -s -X POST "${ETENDO_URL}/webhooks/ElementsHandler" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{\"TableID\": \"${TABLE_ID}\", \"Mode\": \"READ_ELEMENTS\"}"
@@ -246,7 +246,7 @@ If the `com.etendoerp.copilot.devassistant` module is not installed, these webho
 
 ## 13. Webhooks vs headless endpoints
 
-Both webhooks and headless endpoints are provided by the `com.etendoerp.copilot.devassistant` module. Both use the `/sws/` path and **Bearer token** authentication. The difference is conceptual:
+Both webhooks and headless endpoints use **Bearer token** authentication (same token from `/sws/login`). The difference is the URL path and the concept:
 
 ### Headless endpoints — automatic CRUD
 
@@ -263,7 +263,7 @@ Use them to: query data, check if records exist, create/update individual record
 Webhooks are **custom Java classes** written by a developer. They can do simple or complex things in a single call (e.g., `CreateAndRegisterTable` creates the physical table + registers in AD_TABLE + adds base columns, all at once).
 
 ```
-{ETENDO_URL}/sws/webhooks/?name={WebhookName}
+{ETENDO_URL}/webhooks/{WebhookName}
 ```
 
 Use them for: complex operations that involve multiple steps, validations, or side effects.
@@ -276,7 +276,7 @@ Use them for: complex operations that involve multiple steps, validations, or si
 ETENDO_TOKEN=$(curl -s -X POST "${ETENDO_URL}/sws/login" \
   -H "Content-Type: application/json" \
   -d '{"username":"admin","password":"admin","role":"0"}' \
-  | python3 -c "import sys,json; print(json.load(sys.stdin).get('token',''))")
+  | python3 -c "import sys,json; data=json.loads(sys.stdin.buffer.read().decode('utf-8','replace')); print(data.get('token',''))")
 ```
 
 Use `Authorization: Bearer ${ETENDO_TOKEN}` for every call. Do NOT use `?apikey=...`.
@@ -334,7 +334,7 @@ Skills must be resilient. The `com.etendoerp.copilot.devassistant` module may no
 
 | Priority | Method | When to use |
 |---|---|---|
-| **1. Webhooks** | `POST /sws/webhooks/?name=...` | Preferred — handles validations, triggers, and multi-step logic in one call |
+| **1. Webhooks** | `POST /webhooks/{Name}` | Preferred — handles validations, triggers, and multi-step logic in one call |
 | **2. Headless CRUD** | `GET/POST/PUT /sws/com.etendoerp.etendorx.datasource/...` | When no webhook exists for the operation, or for queries/checks |
 | **3. SQL manual** | Direct `INSERT/UPDATE` in PostgreSQL | When devassistant module is not installed or Tomcat is down |
 | **4. Ask the user** | Request manual action in the Etendo UI | For operations that can't be replicated via SQL (e.g., Synchronize Terminology, run triggers) |
@@ -400,40 +400,40 @@ The script auto-resolves filenames — pass just the filename and it searches `s
 
 ---
 
-## 17. Webhook feedback collection
+## 17. Feedback collection (MANDATORY)
 
-When you encounter a **bug**, **limitation**, or **improvement opportunity** in the webhooks from `com.etendoerp.copilot.devassistant`, document it in `.etendo/webhook-issues.md` in the user's project directory. This file helps the user report issues upstream.
+**ALWAYS** document issues encountered during a session in `.etendo/skill-feedback.md` in the user's project directory. This applies to **any problem** — not just webhooks. The file serves as a report the user can submit as an issue to improve the plugin skills.
 
-**When to write:**
-- A webhook returns an unexpected error or silently fails
-- A workaround is needed (e.g., SQL after webhook because a parameter is not supported)
-- A webhook is missing for a common operation (you had to use SQL instead)
-- A webhook could be improved (e.g., accept an extra parameter, return a better response)
+**When to write — after ANY of these events:**
+- A skill instruction was wrong or incomplete (e.g., wrong table name, missing parameter, incorrect URL)
+- A webhook, headless endpoint, or Gradle task failed unexpectedly
+- A workaround was needed (e.g., SQL instead of webhook, manual fix after a skill step)
+- A compilation or runtime error was caused by code generated from a skill template
+- A trigger, constraint, or validation blocked an operation that the skill didn't anticipate
+- An operation succeeded but required extra steps not documented in the skill
+- Time was lost due to rollbacks, retries, or trial-and-error caused by missing documentation
+
+**Write the entry as soon as the workaround is confirmed working** — do not wait until the end of the session.
 
 **Format:**
 
 ```markdown
-# Webhook Issues & Suggestions for com.etendoerp.copilot.devassistant
+# Etendo Dev Assistant — Skill Feedback
 
-## Bugs
+## Issues
 
-### B1: {WebhookName} — {short description}
-- **Symptom:** {what happened}
-- **Expected:** {what should have happened}
-- **Workaround:** {how we worked around it}
-- **Date:** {YYYY-MM-DD}
-
-## Improvements
-
-### I1: {WebhookName or "New webhook"} — {short description}
-- **Current behavior:** {what happens now}
-- **Suggestion:** {what would be better}
-- **Use case:** {why this matters}
+### F1: [{skill name}] — {short description}
+- **What happened:** {describe the failure or unexpected behavior}
+- **What was expected:** {what should have happened according to the skill}
+- **How it was resolved:** {exact workaround — SQL, command, code change, etc.}
+- **Affected skill:** {e.g., etendo-module, etendo-alter-db, _guidelines}
+- **Suggestion:** {how the skill should be improved to prevent this}
 - **Date:** {YYYY-MM-DD}
 ```
 
 **Rules:**
-- Use sequential numbering (B1, B2... / I1, I2...)
+- Use sequential numbering (F1, F2, F3...)
 - Check if the issue is already documented before adding a duplicate
 - Create the file on first occurrence — don't create it empty
-- Inform the user when you add an entry: "I documented a webhook issue in `.etendo/webhook-issues.md` — you can report it at the `com.etendoerp.copilot.devassistant` repo."
+- Be specific: include the exact error message, the exact SQL/curl that failed, and the exact fix
+- Inform the user when you add an entry: "I documented a skill issue in `.etendo/skill-feedback.md`"

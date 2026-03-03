@@ -169,7 +169,7 @@ Use the `CreateModule` webhook (requires Tomcat running + API key):
 ```bash
 ETENDO_URL=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('etendoUrl','http://localhost:8080/etendo'))")
 
-RESP=$(curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CreateModule" \
+RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/CreateModule" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{
@@ -213,7 +213,7 @@ Every module needs at least a dependency on core (`DependsOnModuleID="0"`). Use 
 
 ```bash
 # Dependency on Etendo core (almost always required):
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=AddModuleDependency" \
+curl -s -X POST "${ETENDO_URL}/webhooks/AddModuleDependency" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{
@@ -224,7 +224,7 @@ curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=AddModuleDependency" \
   }"
 
 # Dependency on another module (e.g., com.etendoerp.etendorx):
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=AddModuleDependency" \
+curl -s -X POST "${ETENDO_URL}/webhooks/AddModuleDependency" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{
@@ -253,9 +253,9 @@ curl -s -X POST "${ETENDO_URL}/sws/com.etendoerp.etendorx.datasource/moduleDataP
 
 If Tomcat is not running, fall back to SQL:
 ```sql
-INSERT INTO AD_MODULE_DATAPACKAGE (AD_MODULE_DATAPACKAGE_ID, AD_CLIENT_ID, AD_ORG_ID, ISACTIVE,
-                                    CREATED, CREATEDBY, UPDATED, UPDATEDBY,
-                                    AD_MODULE_ID, JAVAPACKAGE, NAME)
+INSERT INTO AD_PACKAGE (AD_PACKAGE_ID, AD_CLIENT_ID, AD_ORG_ID, ISACTIVE,
+                        CREATED, CREATEDBY, UPDATED, UPDATEDBY,
+                        AD_MODULE_ID, JAVAPACKAGE, NAME)
 VALUES (get_uuid(), '0', '0', 'Y', now(), '0', now(), '0',
         '{MODULE_ID}', '{javapackage}.data', '{name} Data Package');
 ```

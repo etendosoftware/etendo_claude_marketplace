@@ -40,16 +40,16 @@ After creating or modifying any table, column, or view, you **must** run this se
 
 ```bash
 # Run after every table/column/view creation:
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CheckTablesColumnHook" \
+curl -s -X POST "${ETENDO_URL}/webhooks/CheckTablesColumnHook" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{\"TableID\": \"${TABLE_ID}\"}"
 
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=SyncTerms" \
+curl -s -X POST "${ETENDO_URL}/webhooks/SyncTerms" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" -d '{}'
 
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=ElementsHandler" \
+curl -s -X POST "${ETENDO_URL}/webhooks/ElementsHandler" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{\"TableID\": \"${TABLE_ID}\"}"
@@ -86,7 +86,7 @@ For **inspect**: use the `GetWindowTabOrTableInfo` webhook or headless `Table`/`
 **Inspect existing structures:**
 ```bash
 # Via webhook (returns detailed AD info):
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=GetWindowTabOrTableInfo" \
+curl -s -X POST "${ETENDO_URL}/webhooks/GetWindowTabOrTableInfo" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{\"TableName\": \"{PREFIX_TableName}\"}"
@@ -110,7 +110,7 @@ Use the `CreateAndRegisterTable` webhook. This creates the physical table in Pos
 ETENDO_URL="http://localhost:8080/etendo"  # or the port from context.json
 MODULE_ID="{ad_module_id}"
 
-RESP=$(curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CreateAndRegisterTable" \
+RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/CreateAndRegisterTable" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -135,7 +135,7 @@ echo "Table ID: $TABLE_ID"
 For each column, use `CreateColumn`:
 
 ```bash
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CreateColumn" \
+curl -s -X POST "${ETENDO_URL}/webhooks/CreateColumn" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -180,7 +180,7 @@ When your module adds a column to a table owned by **another module** (not just 
 Use the `CreateView` webhook for database views:
 
 ```bash
-RESP=$(curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CreateView" \
+RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/CreateView" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -287,18 +287,18 @@ After creating tables, columns, or views, run the mandatory post-creation hooks:
 
 ```bash
 # 1. TableChecker — detect and register column changes
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CheckTablesColumnHook" \
+curl -s -X POST "${ETENDO_URL}/webhooks/CheckTablesColumnHook" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{\"TableID\": \"${TABLE_ID}\"}"
 
 # 2. SyncTerms — synchronize terms/translations
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=SyncTerms" \
+curl -s -X POST "${ETENDO_URL}/webhooks/SyncTerms" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" -d '{}'
 
 # 3. ElementsHandler — auto-correct elements for this table
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=ElementsHandler" \
+curl -s -X POST "${ETENDO_URL}/webhooks/ElementsHandler" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{\"TableID\": \"${TABLE_ID}\", \"Mode\": \"READ_ELEMENTS\"}"

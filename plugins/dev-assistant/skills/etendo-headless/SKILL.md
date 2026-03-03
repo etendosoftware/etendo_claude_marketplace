@@ -101,7 +101,7 @@ MODULE_ID=$(docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -t -c \
   "SELECT ad_module_id FROM ad_module WHERE javapackage = '${MODULE_JP}';" | tr -d ' ')
 
 # Register by table name (auto-resolves to first header tab):
-RESP=$(curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterHeadlessEndpoint" \
+RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/RegisterHeadlessEndpoint" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{
@@ -113,7 +113,7 @@ RESP=$(curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterHeadlessEndpoin
 echo $RESP
 
 # Or register by explicit TabID:
-RESP=$(curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterHeadlessEndpoint" \
+RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/RegisterHeadlessEndpoint" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{
@@ -154,7 +154,7 @@ Execute the SQL. Then test the endpoint immediately:
 ETENDO_TOKEN=$(curl -s -X POST "${ETENDO_URL}/sws/login" \
   -H "Content-Type: application/json" \
   -d '{"username":"admin","password":"admin","role":"0"}' \
-  | python3 -c "import sys,json; print(json.load(sys.stdin).get('token',''))")
+  | python3 -c "import sys,json; data=json.loads(sys.stdin.buffer.read().decode('utf-8','replace')); print(data.get('token',''))")
 
 # Test GET
 curl -s -H "Authorization: Bearer ${ETENDO_TOKEN}" \

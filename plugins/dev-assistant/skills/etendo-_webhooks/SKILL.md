@@ -48,7 +48,7 @@ Both webhooks and headless endpoints use the same JWT Bearer token for authentic
 ETENDO_TOKEN=$(curl -s -X POST "${ETENDO_URL}/sws/login" \
   -H "Content-Type: application/json" \
   -d '{"username":"admin","password":"admin","role":"0"}' \
-  | python3 -c "import sys,json; print(json.load(sys.stdin).get('token',''))")
+  | python3 -c "import sys,json; data=json.loads(sys.stdin.buffer.read().decode('utf-8','replace')); print(data.get('token',''))")
 ```
 
 Use `Authorization: Bearer ${ETENDO_TOKEN}` for **all** calls — both webhooks and headless endpoints. Do NOT use `?apikey=...`.
@@ -59,7 +59,7 @@ Requires Tomcat to be running. If Tomcat is down, fall back to SQL (see guidelin
 
 ## Invocation pattern
 
-**ALWAYS use POST with JSON body.** The webhook uses `?name=` for routing, and all parameters go in the JSON body.
+**ALWAYS use POST with JSON body.** The webhook name goes in the URL path, and all parameters go in the JSON body.
 
 > **Parameter casing matters.** Most webhooks use PascalCase (`ModuleID`, `Name`, `DBPrefix`).
 > The exception is `CreateColumn`, which uses camelCase (`tableID`, `columnNameDB`, `moduleID`, `canBeNull`).
@@ -68,7 +68,7 @@ Requires Tomcat to be running. If Tomcat is down, fall back to SQL (see guidelin
 ```bash
 ETENDO_URL="http://localhost:8080/etendo"
 
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name={WebhookName}" \
+curl -s -X POST "${ETENDO_URL}/webhooks/{WebhookName}" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"Param1":"Value1","Param2":"Value2"}'
@@ -93,7 +93,7 @@ Creates AD_MODULE + AD_MODULE_DBPREFIX + AD_PACKAGE in a single call.
 > Use direct SQL for templates (see section below).
 
 ```bash
-RESP=$(curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CreateModule" \
+RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/CreateModule" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -154,7 +154,7 @@ docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -f /tmp/create_templat
 Adds a dependency between two modules.
 
 ```bash
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=AddModuleDependency" \
+curl -s -X POST "${ETENDO_URL}/webhooks/AddModuleDependency" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -175,7 +175,7 @@ curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=AddModuleDependency" \
 Creates the physical table in PostgreSQL AND registers it in AD_TABLE with base columns (id, client, org, active, created, updated).
 
 ```bash
-RESP=$(curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CreateAndRegisterTable" \
+RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/CreateAndRegisterTable" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -209,7 +209,7 @@ Adds a column to an existing table (physical in PostgreSQL + registration in AD_
 >   `ad_reference_value_id` via SQL afterwards.
 
 ```bash
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CreateColumn" \
+curl -s -X POST "${ETENDO_URL}/webhooks/CreateColumn" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -273,7 +273,7 @@ docker exec etendo-db-1 psql -U {bbdd.user} -d {bbdd.sid} -f /tmp/add_fks.sql
 Creates a List type reference (dropdown) with its items.
 
 ```bash
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CreateReference" \
+curl -s -X POST "${ETENDO_URL}/webhooks/CreateReference" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -297,7 +297,7 @@ curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CreateReference" \
 Creates AD_WINDOW + AD_MENU entry.
 
 ```bash
-RESP=$(curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterWindow" \
+RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/RegisterWindow" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -322,7 +322,7 @@ Creates an AD_TAB inside a window.
 > The ID in the response comes wrapped in single quotes: `ID: 'XXXX'`.
 
 ```bash
-RESP=$(curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterTab" \
+RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/RegisterTab" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -348,7 +348,7 @@ echo "Tab ID: $TAB_ID"
 Sets a SQL/HQL filter on an existing tab.
 
 ```bash
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=SetTabFilter" \
+curl -s -X POST "${ETENDO_URL}/webhooks/SetTabFilter" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -370,7 +370,7 @@ Auto-creates AD_FIELD for all columns of a tab.
 > `Description` and `HelpComment` are mandatory.
 
 ```bash
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterFields" \
+curl -s -X POST "${ETENDO_URL}/webhooks/RegisterFields" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -387,7 +387,7 @@ curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterFields" \
 Registers a Background Process in AD_PROCESS.
 
 ```bash
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterBGProcessWebHook" \
+curl -s -X POST "${ETENDO_URL}/webhooks/RegisterBGProcessWebHook" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -405,7 +405,7 @@ curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterBGProcessWebHook" \
 Registers an Action Process (launchable from menu or button) in AD_PROCESS.
 
 ```bash
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=ProcessDefinitionButton" \
+curl -s -X POST "${ETENDO_URL}/webhooks/ProcessDefinitionButton" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -427,7 +427,7 @@ curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=ProcessDefinitionButton" \
 Registers a Jasper report in AD_PROCESS.
 
 ```bash
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=ProcessDefinitionJasper" \
+curl -s -X POST "${ETENDO_URL}/webhooks/ProcessDefinitionJasper" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -447,7 +447,7 @@ curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=ProcessDefinitionJasper" \
 Creates a computed (virtual/transient) column in AD_COLUMN with a SQL expression.
 
 ```bash
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CreateComputedColumn" \
+curl -s -X POST "${ETENDO_URL}/webhooks/CreateComputedColumn" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -468,7 +468,7 @@ curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CreateComputedColumn" \
 Registers an EtendoRX headless endpoint to expose a Tab via REST.
 
 ```bash
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterHeadlessEndpoint" \
+curl -s -X POST "${ETENDO_URL}/webhooks/RegisterHeadlessEndpoint" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -488,7 +488,7 @@ curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterHeadlessEndpoint" \
 Registers a new webhook (Java class) in the DB. Use after creating the `.java` file.
 
 ```bash
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterNewWebHook" \
+curl -s -X POST "${ETENDO_URL}/webhooks/RegisterNewWebHook" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -513,7 +513,7 @@ curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterNewWebHook" \
 Syncs physical columns of a table with AD_COLUMN (equivalent to the "Create Columns from DB" button in the AD).
 
 ```bash
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterColumns" \
+curl -s -X POST "${ETENDO_URL}/webhooks/RegisterColumns" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"TableID": "'${TABLE_ID}'"}'
@@ -525,7 +525,7 @@ curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterColumns" \
 Queries IDs of existing windows, tabs, or tables without SQL.
 
 ```bash
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=GetWindowTabOrTableInfo" \
+curl -s -X POST "${ETENDO_URL}/webhooks/GetWindowTabOrTableInfo" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"TableName": "SMFT_Subject"}'

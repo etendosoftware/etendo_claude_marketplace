@@ -53,7 +53,7 @@ Resolve:
 **Look up existing elements with `GetWindowTabOrTableInfo`:**
 ```bash
 # Search by keyword (WINDOW, TAB, TABLE, or COLUMN) + name:
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=GetWindowTabOrTableInfo" \
+curl -s -X POST "${ETENDO_URL}/webhooks/GetWindowTabOrTableInfo" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{\"Keyword\": \"WINDOW\", \"Name\": \"{WindowName}\"}"
@@ -93,7 +93,7 @@ Run SyncTerms before creating the window to ensure all existing terms are up to 
 ETENDO_URL=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('etendoUrl','http://localhost:8080/etendo'))")
 DB_PREFIX=$(cat .etendo/context.json | python3 -c "import sys,json; print(json.load(sys.stdin).get('dbPrefix',''))")
 
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=SyncTerms" \
+curl -s -X POST "${ETENDO_URL}/webhooks/SyncTerms" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"CleanTerms": "true"}'
@@ -103,7 +103,7 @@ curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=SyncTerms" \
 
 ```bash
 # 1. Create window + menu
-RESP=$(curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterWindow" \
+RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/RegisterWindow" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -130,7 +130,7 @@ You can have multiple tabs at level 0 — each one becomes an independent header
 
 ```bash
 # Create tab
-RESP=$(curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterTab" \
+RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/RegisterTab" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -148,7 +148,7 @@ TAB_ID=$(echo $RESP | python3 -c "import sys,json,re; r=json.load(sys.stdin); m=
 echo "Tab ID: $TAB_ID"
 
 # Auto-register all fields for the tab
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterFields" \
+curl -s -X POST "${ETENDO_URL}/webhooks/RegisterFields" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -181,7 +181,7 @@ After registering all fields, check and fill missing element descriptions. This 
 # TABLE_ID is the AD_TABLE_ID of the table behind the tab.
 
 # 1. Read elements to find which are missing descriptions:
-RESP=$(curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=ElementsHandler" \
+RESP=$(curl -s -X POST "${ETENDO_URL}/webhooks/ElementsHandler" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{\"TableID\": \"${TABLE_ID}\", \"Mode\": \"READ_ELEMENTS\"}")
@@ -190,7 +190,7 @@ echo $RESP
 # Columns where Description or HelpComment is empty/null need to be filled.
 
 # 2. For each element missing descriptions, write them:
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=ElementsHandler" \
+curl -s -X POST "${ETENDO_URL}/webhooks/ElementsHandler" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "{
@@ -201,7 +201,7 @@ curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=ElementsHandler" \
   }"
 
 # 3. Final SyncTerms to apply element changes:
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=SyncTerms" \
+curl -s -X POST "${ETENDO_URL}/webhooks/SyncTerms" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"CleanTerms": "true"}'
@@ -215,7 +215,7 @@ curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=SyncTerms" \
 If a tab needs a filter (e.g., only show products that are courses), use the `SetTabFilter` webhook:
 
 ```bash
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=SetTabFilter" \
+curl -s -X POST "${ETENDO_URL}/webhooks/SetTabFilter" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{

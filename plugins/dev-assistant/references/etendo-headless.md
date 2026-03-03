@@ -59,7 +59,7 @@ Obtain a token:
 ETENDO_TOKEN=$(curl -s -X POST "${ETENDO_URL}/sws/login" \
   -H "Content-Type: application/json" \
   -d '{"username":"admin","password":"admin","role":"0"}' \
-  | python3 -c "import sys,json; print(json.load(sys.stdin).get('token',''))")
+  | python3 -c "import sys,json; data=json.loads(sys.stdin.buffer.read().decode('utf-8','replace')); print(data.get('token',''))")
 ```
 
 JWT claims: `user`, `role`, `organization`, `warehouse`, `client`, `jti`

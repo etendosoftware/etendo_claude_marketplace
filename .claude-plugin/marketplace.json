@@ -10,15 +10,6 @@
   },
   "plugins": [
     {
-      "name": "plugin1",
-      "source": "./plugins/plugin1",
-      "description": "Dummy plugin 1 — placeholder for marketplace testing",
-      "version": "0.1.0",
-      "author": { "name": "Etendo" },
-      "category": "testing",
-      "tags": ["dummy", "test"]
-    },
-    {
       "name": "dev-assistant",
       "source": "./plugins/dev-assistant",
       "description": "A comprehensive set of skills for Etendo ERP development — module creation, database changes, window configuration, Java scaffolding, builds, and more",

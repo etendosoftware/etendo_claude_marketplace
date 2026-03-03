@@ -59,11 +59,12 @@ Verify available properties and getters:
 grep "PROPERTY_\|public.*get" build/etendo/src-gen/.../SMFT_Enrollment.java | grep -v "@see\|return\|/\*"
 ```
 
-**If the entities don't exist yet** (newly created table), run first:
+**IMPORTANT: If the tables/columns were recently created** (via `/etendo:alter-db` or webhooks), the generated entity classes won't exist yet. You **must** run `generate.entities` before writing any Java code that references them:
 ```bash
-./gradlew resources.up && sleep 15
-JAVA_HOME=... ./gradlew generate.entities
+JAVA_HOME=... ./gradlew generate.entities smartbuild > /tmp/etendo-generate.log 2>&1
+tail -5 /tmp/etendo-generate.log
 ```
+This creates the typed entity classes (e.g., `SMFTEnrollment.java`) in `build/etendo/src-gen/`. Without this step, imports will fail and there are no PROPERTY_ constants to reference. Always use the generated typed class — never use `BaseOBObject` with string-based property access.
 
 ## File path conventions
 
@@ -168,7 +169,7 @@ public class {Name}Process extends DalBaseProcess {
 
 **Register in AD** via webhook (Tomcat must be UP). The webhook sets: Background check = Y, Data access level = All, UI Pattern = Manual:
 ```bash
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterBGProcessWebHook" \
+curl -s -X POST "${ETENDO_URL}/webhooks/RegisterBGProcessWebHook" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -229,7 +230,7 @@ public class {Name}Process extends BaseProcessActionHandler {
 
 **Register in AD** via webhook (Tomcat must be UP):
 ```bash
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=ProcessDefinitionButton" \
+curl -s -X POST "${ETENDO_URL}/webhooks/ProcessDefinitionButton" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -312,7 +313,7 @@ public class {Name} extends BaseWebhookService {
 **After creating the file**, register in DB via webhook (Tomcat must be UP):
 
 ```bash
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=RegisterNewWebHook" \
+curl -s -X POST "${ETENDO_URL}/webhooks/RegisterNewWebHook" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
@@ -336,7 +337,7 @@ Create Application Dictionary messages for use in Java code (validation errors, 
 
 **Register via webhook:**
 ```bash
-curl -s -X POST "${ETENDO_URL}/sws/webhooks/?name=CreateMessage" \
+curl -s -X POST "${ETENDO_URL}/webhooks/CreateMessage" \
   -H "Authorization: Bearer ${ETENDO_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
