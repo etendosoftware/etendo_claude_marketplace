@@ -177,7 +177,7 @@ Analyze $ARGUMENTS and/or the conversation context to determine:
 - **Summary** clear and in imperative form (e.g., "Fix login error when session expires").
 - **Description** following the corresponding template.
 - **Priority** if mentioned (Highest, High, Medium, Low, Lowest). Default: Medium.
-- **Assignee** if mentioned.
+- **Assignee**: Always auto-assign to the current user. Use the `atlassianUserInfo` tool to get the current user's `accountId`, then pass it as `assignee_account_id` when creating the Jira issue. If the user explicitly names a different assignee, use `lookupJiraAccountId` to find that person instead.
 - **Labels** if mentioned.
 
 ### 2. Determine Epic
@@ -195,7 +195,7 @@ Type:        Bug
 Epic:        Etendo Maintenance Y26Q1
 Summary:     Fix login error when session expires
 Priority:    Medium
-Assignee:    [if applicable]
+Assignee:    [current user name — auto-assigned]
 GH Bundle:   etendosoftware/com.etendoerp.copilot.extensions (bugs only)
 ```
 
