@@ -59,6 +59,19 @@ Verify available properties and getters:
 grep "PROPERTY_\|public.*get" build/etendo/src-gen/.../SMFT_Enrollment.java | grep -v "@see\|return\|/\*"
 ```
 
+**CRITICAL — Extension column property names (EM_ columns):** The DAL property name for extension columns does **not** follow a simple mapping from the DB column name. The code generator transforms the name in ways that may be unexpected. For example:
+- DB column `EM_SMFT_Duration` → property `sMFTDurationMonths` (NOT `sMFTDuration`)
+- DB column `EM_SMFT_Is_Course` → property might be `sMFTIsCourse` or something else
+
+**Never guess property names.** Always find the generated entity class and grep for the actual `PROPERTY_` constant and getter/setter names. Using the wrong name causes `Property {name} does not exist for entity {Entity}` at runtime.
+
+```bash
+# For extension columns on core entities (e.g., Product), search src-gen:
+grep -r "PROPERTY_SMFT" build/etendo/src-gen/org/openbravo/model/ 2>/dev/null
+# Or for module entities:
+grep "PROPERTY_" build/etendo/src-gen/{generatedPackagePath}/{Entity}.java
+```
+
 **IMPORTANT: If the tables/columns were recently created** (via `/etendo:alter-db` or webhooks), the generated entity classes won't exist yet. You **must** run `generate.entities` before writing any Java code that references them:
 ```bash
 JAVA_HOME=... ./gradlew generate.entities smartbuild > /tmp/etendo-generate.log 2>&1

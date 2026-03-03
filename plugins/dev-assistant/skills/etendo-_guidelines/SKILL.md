@@ -409,7 +409,23 @@ The script auto-resolves filenames — pass just the filename and it searches `s
 
 ---
 
-## 17. Feedback collection (MANDATORY)
+## 17. AD validation checklist (after creating windows/tabs/fields)
+
+After any AD creation (via webhooks or SQL fallback), validate these common pitfalls before testing in the UI:
+
+| Check | Query | Symptom if broken |
+|---|---|---|
+| `ad_column.fieldlength > 0` | `SELECT columnname FROM ad_column WHERE ad_table_id='{TID}' AND fieldlength=0` | Fields are uneditable (zero-width input) |
+| `ad_field.displaylength` not NULL/0 | `SELECT name FROM ad_field WHERE ad_tab_id='{TID}' AND (displaylength IS NULL OR displaylength=0)` | `NullPointerException` on `getDisplayedLength()` |
+| `ad_table.ad_window_id` linked | `SELECT tablename FROM ad_table t JOIN ad_tab tb ON t.ad_table_id=tb.ad_table_id WHERE tb.ad_window_id='{WID}' AND t.ad_window_id IS NULL` | FreeMarker `tabView` error |
+| `ad_tab.processing = 'N'` | `SELECT name FROM ad_tab WHERE ad_tab_id='{TID}' AND processing IS NULL` | Window rendering failures |
+| `ad_tab.importfields = 'N'` | `SELECT name FROM ad_tab WHERE ad_tab_id='{TID}' AND importfields IS NULL` | Window rendering failures |
+
+See `references/known-bugs-webhooks.md` (B6–B9) for details on each issue and their fixes.
+
+---
+
+## 18. Feedback collection (MANDATORY)
 
 **ALWAYS** document issues encountered during a session in `.etendo/skill-feedback.md` in the user's project directory. This applies to **any problem** — not just webhooks. The file serves as a report the user can submit as an issue to improve the plugin skills.
 

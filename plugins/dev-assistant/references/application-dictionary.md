@@ -296,8 +296,37 @@ BEGIN
   VALUES (v_menu_id, '0', '0', 'Y', now(), '0', now(), '0',
           'My Window', 'N', 'W', v_window_id, v_module_id);
 
+  -- 4. Link table to window (prevents FreeMarker tabView error)
+  UPDATE AD_TABLE SET ad_window_id = v_window_id WHERE ad_table_id = v_table_id AND ad_window_id IS NULL;
+
 END $$;
 ```
+
+### Important: AD_FIELD.DISPLAYLENGTH
+
+After creating fields (via `RegisterFields` webhook or SQL INSERT), `displaylength` **must not be NULL or 0**. A NULL value causes `NullPointerException` when opening the window. A zero value makes the field uneditable (zero-width input). Always set it to the column's `fieldlength`:
+
+```sql
+UPDATE ad_field f SET displaylength = c.fieldlength
+FROM ad_column c
+WHERE f.ad_column_id = c.ad_column_id
+  AND f.ad_tab_id = '{tab_id}'
+  AND (f.displaylength IS NULL OR f.displaylength = 0);
+```
+
+### Important: AD_COLUMN.FIELDLENGTH
+
+`fieldlength` controls the maximum input length in the UI. A value of `0` makes the field uneditable. Recommended values by reference type:
+
+| Reference | fieldlength |
+|---|---|
+| String (10) | `60`–`200` |
+| Text (14) | `2000`+ |
+| Integer (11) / Number (22) | `10` |
+| Date (15) / DateTime (16) | `19` |
+| Yes/No (20) | `1` |
+| List (17) | `60` |
+| TableDir (19) / Search (30) | `32` |
 
 ---
 
