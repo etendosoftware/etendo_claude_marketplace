@@ -483,3 +483,38 @@ See `references/known-bugs-webhooks.md` (B6–B9) for details on each issue and 
 - Create the file on first occurrence — don't create it empty
 - Be specific: include the exact error message, the exact SQL/curl that failed, and the exact fix
 - Inform the user when you add an entry: "I documented a skill issue in `.etendo/skill-feedback.md`"
+
+---
+
+## 19. Information sources — wiki and existing code
+
+### Etendo documentation wiki
+
+The official Etendo documentation at **https://docs.etendo.software** contains code snippets, configuration examples, API references, and how-to guides for all Etendo modules. Consult it before falling back to generic assumptions.
+
+**When to search:**
+- Before writing Java code (EventHandlers, Background Processes, Callouts, Reports): search for official examples and base classes.
+- When a webhook or Gradle task parameter is unclear.
+- When implementing EtendoRX flows, headless endpoints, or Copilot tools.
+- When you need correct import paths, class names, or annotations for Etendo/Openbravo APIs.
+
+**How to search** — use `WebSearch` with site filter, then `WebFetch` to read the page:
+```
+site:docs.etendo.software {topic}
+```
+
+### Existing code in the project
+
+**Always look for existing code in the project before writing new code from scratch.** The project already contains working examples of the same patterns you need.
+
+- Before writing an EventHandler: `find` existing `*EventHandler.java` files in `modules/` and use them as reference.
+- Before writing a Background Process: look for classes extending `BaseProcessActionHandler` or `DalBaseProcess`.
+- Before writing a Callout: find existing callout classes in the project.
+- Before configuring a flow or headless endpoint: check `modules/*/src-db/database/sourcedata/` for existing ETRX/ETAPI records.
+
+Existing code reflects the exact versions, import paths, and patterns already proven to work in this specific project. It is the most reliable reference available.
+
+**Priority order for code examples:**
+1. Existing code in the project (`modules/` directory)
+2. Etendo wiki (`docs.etendo.software`)
+3. Local `references/` files (webhook details, known bugs)
