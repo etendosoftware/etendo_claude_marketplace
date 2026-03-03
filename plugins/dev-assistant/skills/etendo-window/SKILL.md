@@ -161,6 +161,32 @@ curl -s -X POST "${ETENDO_URL}/webhooks/RegisterFields" \
 
 Repeat for each tab in the tree.
 
+### Post-registration validation (mandatory)
+
+After `RegisterFields`, run these checks to prevent runtime errors:
+
+```sql
+-- 1. Fix fields with NULL or zero displaylength (causes NullPointerException when opening window)
+UPDATE ad_field f SET displaylength = c.fieldlength
+FROM ad_column c
+WHERE f.ad_column_id = c.ad_column_id
+  AND f.ad_tab_id = '${TAB_ID}'
+  AND (f.displaylength IS NULL OR f.displaylength = 0);
+
+-- 2. Verify ad_table.ad_window_id is set (causes FreeMarker tabView error if NULL)
+UPDATE ad_table SET ad_window_id = '${WINDOW_ID}'
+WHERE ad_table_id = (SELECT ad_table_id FROM ad_tab WHERE ad_tab_id = '${TAB_ID}')
+  AND ad_window_id IS NULL;
+
+-- 3. Verify tab boolean columns are not NULL (causes rendering failures)
+UPDATE ad_tab SET
+  processing = COALESCE(processing, 'N'),
+  importfields = COALESCE(importfields, 'N')
+WHERE ad_tab_id = '${TAB_ID}';
+```
+
+These validations catch common issues with fields created via webhook or SQL fallback. Run them for **every tab** after `RegisterFields`.
+
 > **Field customization after RegisterFields:** The webhook registers ALL columns as visible and editable.
 > Use the following SQL patterns to customize individual fields. No webhook exists for these operations.
 >

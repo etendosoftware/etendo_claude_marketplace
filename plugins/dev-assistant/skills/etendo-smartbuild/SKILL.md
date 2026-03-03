@@ -106,6 +106,18 @@ If Docker Tomcat → tell the user: "Tomcat will auto-reload in a moment. Check 
 
 If local Tomcat → tell the user: "You need to restart Tomcat manually for the changes to take effect."
 
+### Docker Tomcat: WAR extraction failure
+
+On large projects (~170MB+ WAR), Docker Tomcat's auto-extraction may fail intermittently (incomplete extraction leads to `ClassNotFoundException` or `NoClassDefFoundError` at startup). If this happens:
+
+```bash
+# Manual WAR extraction inside the container
+docker exec etendo-tomcat-1 bash -c "cd /usr/local/tomcat/webapps && rm -rf etendo && mkdir etendo && cd etendo && jar -xf ../etendo.war"
+docker restart etendo-tomcat-1
+```
+
+Signs of incomplete extraction: Tomcat starts but immediately throws `ClassNotFoundException` for core Etendo classes, or returns HTTP 404/500 on all pages.
+
 ## Step 5: Confirm success
 
 ```

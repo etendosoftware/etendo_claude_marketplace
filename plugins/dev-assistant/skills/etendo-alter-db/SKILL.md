@@ -162,6 +162,24 @@ curl -s -X POST "${ETENDO_URL}/webhooks/CreateColumn" \
 | `19` | TableDir | FK to another table — **only works if your module owns the table** |
 | `30` | Search | FK to any table (required for extension columns on other modules' tables) |
 
+### Required fieldlength by reference type
+
+`AD_COLUMN.FIELDLENGTH` controls the maximum input length in the UI. A value of `0` makes the field **uneditable** (zero-length input box). Always set an appropriate value:
+
+| Reference | Recommended fieldlength |
+|---|---|
+| String (10) | `60`–`200` (match your VARCHAR size) |
+| Text (14) | `2000` or more |
+| Integer (11) | `10` |
+| Amount/Number (22) | `10` |
+| Date (15) | `19` |
+| DateTime (16) | `19` |
+| Yes/No (20) | `1` |
+| List (17) | `60` |
+| TableDir (19) / Search (30) | `32` |
+
+The `CreateColumn` webhook should set this automatically. **If creating columns via SQL**, you must set `fieldlength` explicitly — the default of `0` will break the UI.
+
 ### Extension columns (EM_ prefix)
 
 When your module adds a column to a table owned by **another module** (not just core — any other module), the webhook detects this automatically (`moduleID ≠ table's owner module`) and adds the `EM_{PREFIX}_` prefix. This keeps extensions logically separate in the schema.
@@ -305,6 +323,20 @@ curl -s -X POST "${ETENDO_URL}/webhooks/ElementsHandler" \
 ```
 
 This sequence is **mandatory** — skipping it leads to inconsistencies in the Application Dictionary (missing element translations, unregistered columns, etc.).
+
+### Post-creation validation
+
+After creating columns (via webhook or SQL), verify that `fieldlength` is set correctly:
+
+```sql
+-- Find columns with fieldlength = 0 (will be uneditable in the UI)
+SELECT c.columnname, c.fieldlength, r.name as reference
+FROM ad_column c
+JOIN ad_reference r ON c.ad_reference_id = r.ad_reference_id
+WHERE c.ad_table_id = '${TABLE_ID}' AND c.fieldlength = 0;
+```
+
+If any are found, fix them using the recommended values from the fieldlength table in Step 5.
 
 **Important — columns created via SQL vs webhook:**
 
