@@ -396,6 +396,8 @@ XML editing requires `update.database` afterwards (XML → DB direction), which 
 
 **Before editing XML:** Always ask the user: "The webhooks and DB are not available. I can edit the XML files directly, but this is risky if there are unexported DB changes. Should I proceed?"
 
+**After editing XML:** Always sort the file with `scripts/sort_xml.py` (see section 16b) to keep entries in UUID order.
+
 ---
 
 ## 16. Reading sourcedata XML files
@@ -427,6 +429,32 @@ python3 scripts/xml2json.py AD_COLUMN.xml --count
 ```
 
 The script auto-resolves filenames — pass just the filename and it searches `src-db/database/sourcedata/` directories. Use this instead of grepping raw XML.
+
+---
+
+## 16b. Sorting sourcedata XML files after edits
+
+Etendo sourcedata XML files must have their entries sorted in **ascending lexicographic order by UUID**. When you add new entries to any XML file (e.g., new `AD_MESSAGE`, `AD_COLUMN`, or `AD_REF_LIST` records), sort the file immediately using the bundled `scripts/sort_xml.py`:
+
+```bash
+# Sort a single file after adding entries
+python3 scripts/sort_xml.py src-db/database/sourcedata/AD_MESSAGE.xml
+
+# Sort multiple files at once
+python3 scripts/sort_xml.py src-db/database/sourcedata/AD_MESSAGE.xml src-db/database/sourcedata/AD_REF_LIST.xml
+
+# Sort all sourcedata files in a module
+python3 scripts/sort_xml.py path/to/module/src-db/database/sourcedata/*.xml
+```
+
+Output indicators:
+- `[✓]` — file was out of order and has been sorted
+- `[=]` — file was already correctly sorted, no changes made
+- `[✗]` — error (file not found or unrecognized format)
+
+**When to run:** After adding any new `<AD_MESSAGE>`, `<AD_ELEMENT>`, `<AD_COLUMN>`, or other sourcedata entry manually. The script detects the entity tag automatically and works for any Etendo XML format.
+
+**Do NOT** skip this step — unsorted XML can cause issues when Etendo's `update.database` task processes the files sequentially.
 
 ---
 

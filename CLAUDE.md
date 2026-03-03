@@ -66,7 +66,7 @@ Or register as a local marketplace:
 - DB naming: `lowercase_underscore`. AD names: `Title Case With Spaces`. Java: `PascalCase`.
 - Extension columns (adding to another module's table) get `EM_{PREFIX}_` automatically — pass the name without prefix.
 - The `scripts/xml2json.py` utility inspects Etendo sourcedata XML — prefer it over raw XML grep.
--
+- The `scripts/sort_xml.py` utility sorts Etendo sourcedata XML files by UUID — run it after adding new entries to any `src-db/database/sourcedata/*.xml` file to keep them in order.
 
 ## Files to ignore
 
