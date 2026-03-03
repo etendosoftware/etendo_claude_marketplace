@@ -105,7 +105,8 @@ public class CalculateGuestRate implements org.openbravo.scheduling.Process {
 
 ```bash
 ./gradlew compile.complete.deploy
-# Then restart Tomcat
+# Docker Tomcat: auto-reloads after ~30-60s, no action needed
+# Local Tomcat: must restart Tomcat manually for changes to take effect
 ```
 
 ---
@@ -177,7 +178,7 @@ throw new IllegalStateException("Cannot check in: guest already has an active st
 
 ### Recompile
 
-Only needs an Eclipse refresh + Tomcat restart (no full recompile needed — it's manual code, not generated).
+Only needs an Eclipse refresh + Tomcat reload (no full recompile needed — it's manual code, not generated). Docker Tomcat auto-reloads; local Tomcat requires a manual restart.
 
 ### Known limitation
 
@@ -241,7 +242,7 @@ Date weekStart = calendar.getTime();
 
 ### Recompile
 
-Eclipse refresh + Tomcat restart only.
+Eclipse refresh + Tomcat reload only. Docker Tomcat auto-reloads; local Tomcat requires a manual restart.
 
 ---
 
@@ -294,7 +295,8 @@ public class StayFinalSumCalculation extends SimpleCallout {
 
 ```bash
 ./gradlew smartbuild
-# Restart Tomcat
+# Docker Tomcat: auto-reloads after ~30-60s
+# Local Tomcat: must restart Tomcat manually
 ```
 
 ---

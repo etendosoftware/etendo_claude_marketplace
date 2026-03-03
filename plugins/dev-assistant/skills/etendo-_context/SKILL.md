@@ -171,6 +171,8 @@ resources.down -> export.database -> resources.up -> (wait 15s) -> generate.enti
 
 **export.database requires Tomcat DOWN.** generate.entities and smartbuild require Tomcat UP (DB up).
 
+**Post-deploy behavior:** After smartbuild deploys the WAR, Docker Tomcat auto-reloads (~30-60s), but local Tomcat requires a manual restart.
+
 ---
 
 ## 7. Always Confirm Before Running Destructive Operations

@@ -191,6 +191,15 @@ Not all Etendo installations use Docker. When running commands that depend on Do
 4. If Docker Tomcat: `docker exec etendo-tomcat-1 sh -c 'tail -n 100 /usr/local/tomcat/logs/openbravo.log'`
 5. If local Tomcat: `tail -n 100 $CATALINA_HOME/logs/openbravo.log`
 
+### Post-deploy Tomcat behavior
+
+After `smartbuild` or `compile.complete` deploys the WAR, Tomcat behavior differs:
+
+- **Docker Tomcat** (`docker_com.etendoerp.tomcat=true`): Tomcat detects the updated WAR and **auto-reloads** after a short delay (~30-60s). No manual action needed — just wait.
+- **Local Tomcat** (flag absent or `false`): Tomcat does **NOT auto-reload**. The user **must restart Tomcat manually** for changes to take effect.
+
+Always inform the user which case applies after a successful build.
+
 ---
 
 ## 11. SQL execution in Docker

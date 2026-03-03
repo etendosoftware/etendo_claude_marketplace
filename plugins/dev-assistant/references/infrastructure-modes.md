@@ -169,6 +169,17 @@ bbdd.systemUser / bbdd.systemPassword → superuser (for initial setup)
 
 ---
 
+## Post-Deploy Tomcat Behavior
+
+After `smartbuild` or `compile.complete` deploys the WAR:
+
+| Tomcat mode | Behavior | Action required |
+|---|---|---|
+| **Docker** (`docker_com.etendoerp.tomcat=true`) | Tomcat detects the updated WAR and **auto-reloads** after ~30-60s | Wait for reload to complete |
+| **Local** (flag absent or `false`) | WAR is deployed but Tomcat does **NOT auto-reload** | User **must restart Tomcat manually** |
+
+---
+
 ## Reading Tomcat Logs
 
 ### Docker Tomcat

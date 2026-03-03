@@ -86,11 +86,41 @@ Parse the log for:
 - `Could not resolve` -> check GitHub token is valid, run `./gradlew dependencies`
 - XML parse error in sourcedata -> show which XML file is malformed
 
-## Step 4: Confirm success
+## Step 4: Post-deploy — Tomcat behavior
+
+After `smartbuild` (or `compile.complete`) finishes and deploys the WAR, the behavior depends on the Tomcat mode:
+
+| Tomcat mode | What happens after deploy | Action required |
+|---|---|---|
+| **Docker** (`docker_com.etendoerp.tomcat=true`) | Tomcat detects the new WAR and **auto-reloads** after a short delay (~30-60s). | Wait for reload to complete. Optionally check logs: `docker exec etendo-tomcat-1 sh -c 'tail -n 50 /usr/local/tomcat/logs/openbravo.log'` |
+| **Local** (no docker tomcat flag) | The WAR is deployed but Tomcat does **NOT auto-reload**. | The user **must restart Tomcat manually** for changes to take effect. |
+
+Inform the user accordingly:
+
+```bash
+# Check Tomcat mode
+DOCKER_TOMCAT=$(grep -c 'docker_com.etendoerp.tomcat=true' gradle.properties 2>/dev/null || echo "0")
+```
+
+If Docker Tomcat → tell the user: "Tomcat will auto-reload in a moment. Check the UI after ~30-60 seconds."
+
+If local Tomcat → tell the user: "You need to restart Tomcat manually for the changes to take effect."
+
+## Step 5: Confirm success
 
 ```
 + smartbuild completed in {duration}
   Etendo is running at {etendoUrl from context.json, default: http://localhost:8080/etendo}
+```
+
+If Docker Tomcat:
+```
+  Tomcat (Docker) will auto-reload shortly. Wait ~30-60s before testing.
+```
+
+If local Tomcat:
+```
+  Tomcat (local) requires a manual restart to pick up changes.
 ```
 
 If the active module is set (from context), also remind:

@@ -116,7 +116,8 @@ export.database
 # After: Adding columns to a table
 ./gradlew generate.entities
 ./gradlew smartbuild
-# then restart Tomcat
+# Docker Tomcat: auto-reloads after ~30-60s, no action needed
+# Local Tomcat: must restart Tomcat manually for changes to take effect
 ```
 
 ---
@@ -125,6 +126,6 @@ export.database
 
 When `docker_com.etendoerp.docker_db=true`, the Gradle plugin manages DB container lifecycle automatically for DB-dependent tasks.
 
-When `docker_com.etendoerp.tomcat=true`, the WAR is deployed to the Docker volume.
+When `docker_com.etendoerp.tomcat=true`, the WAR is deployed to the Docker volume. Docker Tomcat detects the updated WAR and **auto-reloads** after ~30-60s — no manual restart needed.
 
-If a resource is NOT dockerized (flag absent or false), Gradle assumes that resource is already running locally.
+If Tomcat is NOT dockerized (flag absent or false), the WAR is deployed locally but Tomcat does **NOT auto-reload** — the user **must restart Tomcat manually** for changes to take effect.
