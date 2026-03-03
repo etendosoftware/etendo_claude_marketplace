@@ -21,11 +21,11 @@
     {
       "name": "etendo-workflow-manager",
       "source": "./plugins/etendo-workflow-manager",
-      "description": "Manages the full Etendo development workflow — creating Jira issues, GitHub issues, branches, and commits following Etendo conventions",
-      "version": "1.0.0",
+      "description": "Manages the full Etendo development workflow — creating Jira issues, GitHub issues, branches, commits, and wiki documentation following Etendo conventions",
+      "version": "1.1.0",
       "author": { "name": "Etendo" },
       "category": "development",
-      "tags": ["etendo", "jira", "github", "workflow", "git"]
+      "tags": ["etendo", "jira", "github", "workflow", "git", "wiki", "documentation"]
     }
   ]
 }
