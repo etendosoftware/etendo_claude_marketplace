@@ -60,7 +60,23 @@ JAVA_HOME=${JAVA_HOME} ./gradlew {task}
 
 ---
 
-## 3. Gradle output convention
+## 3. Gradle commands — always use subagents
+
+**ALL long-running `./gradlew` calls MUST be delegated to a `general-purpose` subagent.** Never run Gradle directly in the main agent. Long Gradle tasks (smartbuild, compile.complete, install, export.database, generate.entities) can take minutes and will consume the main context window.
+
+Pattern:
+```
+Agent(
+  subagent_type="general-purpose",
+  prompt="Run the following command in {working_dir}: JAVA_HOME=... ./gradlew {task} > /tmp/etendo-{task}.log 2>&1; EXIT=$?; tail -20 /tmp/etendo-{task}.log; exit $EXIT"
+)
+```
+
+The subagent runs the command, returns the last lines of output, and exits with the Gradle exit code. Inspect the result and diagnose errors in the main agent.
+
+---
+
+## 3b. Gradle output convention
 
 All `./gradlew` calls redirect output to `/tmp/etendo-{task}.log`. Read the log only on failure — this keeps the console clean and makes error diagnosis easier.
 

@@ -28,6 +28,7 @@ Resolve the active module and detect the type of component to create.
 | **Message** | Create a reusable AD message for validation errors or info | "error message", "validation message", "AD message" |
 | **Computed Column** | Virtual column calculated from a SQL expression | "calculated field", "derived column", "computed" |
 | **Callout** | Logic triggered when a specific field changes in the UI | "when field changes", "on change", "callout" |
+| **Servlet (SWS Endpoint)** | Expose a custom `/sws/{name}/*` HTTP endpoint inside an Etendo module | "SWS endpoint", "custom servlet", "JWT servlet", "REST API inside module" |
 
 If the description matches multiple types, ask the user to clarify.
 
@@ -89,6 +90,7 @@ Each Java component type has a specific subdirectory:
 | Background Process | `modules/{javapackage}/src/{java/package/path}/background/{Name}.java` |
 | Action Process | `modules/{javapackage}/src/{java/package/path}/process/{Name}.java` |
 | Webhook | `modules/{javapackage}/src/{java/package/path}/webhooks/{Name}.java` |
+| Servlet (SWS) | `modules/{javapackage}/src/{java/package/path}/rest/{Name}JwtServlet.java` |
 
 Where `{java/package/path}` is the javapackage with dots replaced by slashes (e.g., `com/etendoerp/mymodule`).
 
@@ -429,6 +431,132 @@ String msg = OBMessageUtils.messageBD("PREFIX_DescriptiveName");
 // Parameterized message:
 String msg = String.format(OBMessageUtils.messageBD("PREFIX_DescriptiveName"), param1, param2);
 ```
+
+### Servlet (Custom SWS Endpoint)
+
+A servlet exposes a custom `/sws/{name}/*` HTTP endpoint directly inside an Etendo module (i.e., in `modules/`). Use it when you need a JWT-authenticated REST API or mobile API without a separate microservice.
+
+> **Servlet vs Webhook — when to use each:**
+> - **Webhook** (type `BaseWebhookService`): simpler, faster to set up. Best for **one-off actions** — a single endpoint that does one thing (e.g., create a record, trigger a process, return a status). Registration is a single webhook call.
+> - **Servlet** (`AD_MODEL_OBJECT`): better when the module needs **multiple related endpoints** under a single URL prefix (e.g., `/sws/myapp/users`, `/sws/myapp/orders`, `/sws/myapp/config`). The servlet delegates to a `RestService` singleton that routes by subpath. More setup (AD registration + export), but scales better for a full REST API.
+>
+> **Rule of thumb:** if you only need 1-2 endpoints, use a **Webhook**. If you're building a REST API with many routes, use a **Servlet**.
+
+#### AD_MODEL_OBJECT vs provider-config.xml
+
+| Situation | Mechanism |
+|---|---|
+| Module in `modules/` (inside Etendo Core) | `AD_MODEL_OBJECT` + `AD_MODEL_OBJECT_MAPPING` |
+| Independent microservice (separate process, outside `modules/`) | `config/{module}-provider-config.xml` |
+
+**Never mix:** if the module is in `modules/`, it does **NOT** need `provider-config.xml`.
+
+#### JwtServlet variants
+
+| Variant | Extends | URL | Auth | When to use |
+|---|---|---|---|---|
+| **JwtServlet** | `HttpBaseServlet` | `/sws/{name}/*` | Bearer JWT via `SecureWebServicesUtils` | APIs, mobile, programmatic clients |
+| SecureServlet | `HttpSecureAppServlet` | `/{name}/*` | Openbravo browser session | Browser clients with session |
+
+For APIs (mobile, Copilot, external), always use **JwtServlet**.
+
+#### File: `modules/{javapackage}/src/{path}/rest/{Name}JwtServlet.java`
+
+```java
+package {javapackage}.rest;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.openbravo.base.secureApp.HttpBaseServlet;
+import org.openbravo.base.secureApp.SecureWebServicesUtils;
+
+public class {Name}JwtServlet extends HttpBaseServlet {
+
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) {
+    try {
+      // 1. Decode JWT and create OBContext
+      var sessionInfo = SecureWebServicesUtils.decodeToken(
+          request.getHeader("Authorization").replace("Bearer ", ""));
+      SecureWebServicesUtils.createContext(
+          sessionInfo.getString("ad_user_id"),
+          sessionInfo.getString("ad_role_id"),
+          sessionInfo.getString("ad_org_id"),
+          sessionInfo.getString("m_warehouse_id"),
+          sessionInfo.getString("ad_client_id"));
+
+      // 2. Delegate to singleton service for routing by subpath
+      {Name}RestService.getInstance().doGet(request, response);
+
+    } catch (Exception e) {
+      try {
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+      } catch (Exception ignore) {}
+    }
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) {
+    // same pattern as doGet
+  }
+}
+```
+
+> Reference pattern: `CopilotJwtServlet` in the `com.etendoerp.copilot` module.
+
+#### Registration workflow (AD_MODEL_OBJECT)
+
+> **NEVER** insert in DB via raw SQL and then write XMLs by hand — this desyncs the DB from sourcedata.
+
+**Correct flow:**
+1. Register from the UI: `General Setup > Application > Model Objects` → create `AD_MODEL_OBJECT` with:
+   - **Classname:** FQN of the servlet (e.g., `{javapackage}.rest.{Name}JwtServlet`)
+   - **Object type:** `S` (Servlet)
+2. In `Model Object Mappings` → create `AD_MODEL_OBJECT_MAPPING` with:
+   - **Mapping name:** `/sws/{name}/*`
+3. Run `./gradlew export.database -Dmodule={javapackage}` → Etendo generates `AD_MODEL_OBJECT.xml` and `AD_MODEL_OBJECT_MAPPING.xml` automatically.
+
+If Tomcat is not available, use SQL as fallback:
+```sql
+DO $$
+DECLARE
+  v_obj_id TEXT := get_uuid();
+  v_map_id TEXT := get_uuid();
+BEGIN
+  INSERT INTO AD_MODEL_OBJECT (AD_MODEL_OBJECT_ID, AD_CLIENT_ID, AD_ORG_ID, ISACTIVE,
+    CREATED, CREATEDBY, UPDATED, UPDATEDBY,
+    NAME, CLASSNAME, OBJECT_TYPE, ACTION, ISDEFAULT, AD_MODULE_ID)
+  VALUES (v_obj_id, '0', '0', 'Y', now(), '0', now(), '0',
+    '{Descriptive Name}', '{javapackage}.rest.{Name}JwtServlet',
+    'S', 'P', 'N', '{MODULE_ID}');
+
+  INSERT INTO AD_MODEL_OBJECT_MAPPING (AD_MODEL_OBJECT_MAPPING_ID, AD_CLIENT_ID, AD_ORG_ID,
+    ISACTIVE, CREATED, CREATEDBY, UPDATED, UPDATEDBY,
+    AD_MODEL_OBJECT_ID, MAPPINGNAME, ISDEFAULT)
+  VALUES (v_map_id, '0', '0', 'Y', now(), '0', now(), '0',
+    v_obj_id, '/sws/{name}/*', 'N');
+
+  RAISE NOTICE 'MODEL_OBJECT_ID: %', v_obj_id;
+END $$;
+```
+Then run `export.database` to generate the XMLs from the DB.
+
+#### beans.xml — required for CDI
+
+Every module that contains a servlet (or any CDI-injectable class) must have:
+
+**`etendo-resources/META-INF/beans.xml`:**
+```xml
+<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/beans_2_0.xsd"
+       bean-discovery-mode="all" version="2.0">
+</beans>
+```
+
+If missing, Weld will not detect injectable classes and errors are hard to trace. See `/etendo:module` for creation checklist.
+
+---
 
 ## Step 5: Code quality check
 
