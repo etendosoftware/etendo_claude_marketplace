@@ -344,3 +344,94 @@ gh run list --repo etendosoftware/REPO_NAME --branch BRANCH_NAME --limit 5
 # Re-run it
 gh run rerun RUN_ID --repo etendosoftware/REPO_NAME
 ```
+
+---
+
+## Workflow: PR Jenkins Test Failure Review
+
+When tests fail on a PR's Jenkins build, follow this workflow to identify and fix the root cause.
+
+### Prerequisites — Jenkins MCP
+
+This workflow requires the Jenkins MCP server. If not installed, run:
+
+```bash
+claude mcp add --transport stdio --scope user jenkins -- uvx mcp-jenkins \
+  --jenkins-url=<JENKINS_URL> \
+  --jenkins-username=<USERNAME> \
+  --jenkins-password=<PASSWORD>
+```
+
+If the command doesn't work, configure it manually by editing `~/.claude.json` and adding the following entry inside `mcpServers`:
+
+```json
+"jenkins": {
+  "type": "stdio",
+  "command": "uvx",
+  "args": [
+    "mcp-jenkins",
+    "--jenkins-url=<JENKINS_URL>",
+    "--jenkins-username=<USERNAME>",
+    "--jenkins-password=<PASSWORD>"
+  ]
+}
+```
+
+Then restart Claude Code for the MCP to load.
+
+### Step 1 — Find the failing Jenkins build
+
+```bash
+gh pr checks <PR_NUMBER> --repo etendosoftware/<REPO_NAME>
+```
+
+Identify the `Module Tests` check that shows `fail`. Note the Jenkins build URL (e.g., `https://jenkins2.etendo.cloud/job/copilot-module-tests/4726/`). Extract the job name and build number.
+
+### Step 2 — Get the failing test names
+
+Use the Jenkins MCP to fetch the build console output:
+
+```
+get_build_console_output(fullname="<job-name>", number=<build-number>)
+```
+
+The output can be very large. Search for key patterns to find test failures:
+- `FAILED` — individual test failures
+- `BUILD FAILURE` — overall build failure
+- `Tests run.*Failures` — test summary lines
+
+### Step 3 — Analyze via subagent (recommended)
+
+Delegate the analysis to a `general-purpose` subagent to keep the main context clean. Pass it:
+- The list of failing test names and their full stack traces extracted from the console output
+- The working directory of the project
+- This instruction:
+
+> Read the failing test methods and any shared setup/teardown (`@Before`, `@After`, `setUp()`, `tearDown()`). Identify the root cause of each failure. Return a diagnosis with: (1) the root cause, (2) why only these tests are affected, and (3) the exact fix to apply.
+
+The subagent must return a **structured diagnosis** before any fix is applied:
+
+```
+## Diagnosis
+
+### Failing tests
+- `TestClass > methodName`
+
+### Root cause
+[What exactly triggers the exception and why]
+
+### Why only these tests
+[What distinguishes them from passing tests]
+
+### Proposed fix
+[Exact code change with file path and line numbers]
+```
+
+Review the diagnosis before applying the fix. If it looks correct, instruct the subagent (or apply yourself) the change.
+
+### Step 4 — Fix and inform
+
+Apply the fix to the relevant source file. Report to the user:
+- **Root cause**: what exactly triggered the exception and why
+- **Why only these tests**: what distinguishes them from passing tests
+- **Fix applied**: the exact code change and why it resolves the issue
