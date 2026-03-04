@@ -268,3 +268,79 @@ When a bug is resolved, look for a way to add a test that covers that case. A bu
 - When making commits, always validate the format against Git Police rules before executing.
 - **Do not add `Co-Authored-By`** in commit messages. Git Police may reject them and it's not part of Etendo conventions.
 - **Jira rate limit:** If a Jira call fails due to rate limit (HTTP 429 or similar), do not retry in a loop. Instead, open the Jira URL in the user's browser (`open <url>`) so they can make the change manually, and inform them what action needs to be completed (e.g., "Couldn't create the issue due to rate limit. I've opened Jira in your browser — create it with this data: ...").
+
+---
+
+## Workflow: PR Review — Auto Reviewer (etendobot)
+
+After pushing commits, the **Auto Reviewer** GitHub Actions workflow runs automatically and the bot (`etendobot`) posts review comments on the PR. There are two types:
+
+- **Suggestions**: non-blocking feedback. Body starts with `**Suggestion**`.
+- **Blocking issues**: must be addressed or marked as false positives. Body contains `⚠️ Blocking Issue`.
+
+### Step 1 — Fetch all review threads
+
+```bash
+gh api graphql -f query='
+{
+  repository(owner: "etendosoftware", name: "REPO_NAME") {
+    pullRequest(number: PR_NUMBER) {
+      reviewThreads(first: 100) {
+        nodes {
+          id
+          isResolved
+          comments(first: 1) {
+            nodes { body path line databaseId }
+          }
+        }
+      }
+    }
+  }
+}'
+```
+
+Parse the result to separate blocking threads (`⚠️ Blocking Issue` in body) from suggestions.
+
+### Step 2 — Resolve non-blocking threads (Suggestions)
+
+For each non-blocking thread ID (`PRRT_xxx`):
+
+```bash
+gh api graphql -f query="mutation {
+  resolveReviewThread(input: {threadId: \"PRRT_xxx\"}) {
+    thread { id isResolved }
+  }
+}"
+```
+
+### Step 3 — Evaluate blocking issues
+
+**The bot has limited context.** It reviews the diff without understanding the full flow of the code. For each blocking issue:
+
+1. **Read the actual code** around the flagged line (not just the diff).
+2. Understand the full execution context: where does the data come from? Who calls this? What guarantees exist upstream?
+3. Decide: is the concern valid given the real code, or is it based on a misread of the diff?
+
+If the concern doesn't hold up against the actual code → mark as false positive.
+If it's a real issue → fix it before re-running the reviewer.
+
+### Step 4 — Mark false positives
+
+Reply `/false-positive` to the original comment of the thread. Use the `databaseId` from Step 1:
+
+```bash
+gh api repos/etendosoftware/REPO_NAME/pulls/PR_NUMBER/comments/COMMENT_DATABASE_ID/replies \
+  -X POST -f body="/false-positive"
+```
+
+### Step 5 — Re-run the Auto Reviewer
+
+After fixing real blocking issues or marking false positives, re-trigger the bot:
+
+```bash
+# Find the last Auto Reviewer run ID
+gh run list --repo etendosoftware/REPO_NAME --branch BRANCH_NAME --limit 5
+
+# Re-run it
+gh run rerun RUN_ID --repo etendosoftware/REPO_NAME
+```
