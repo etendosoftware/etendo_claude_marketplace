@@ -1,5 +1,16 @@
 ---
-description: Manages the full Etendo development workflow — creating Jira issues, GitHub issues, branches, and commits following Etendo conventions. Use this skill whenever the user mentions creating a ticket/bug/story/task, committing code, creating branches, or anything related to the Etendo dev workflow (Jira, GitHub issues, branch naming, commit messages, hotfixes, features). Also trigger when a bug is detected during code analysis or when the user needs help with git branch/commit naming.
+description: >
+  Manages Etendo development workflow conventions. ALWAYS use this skill when working in any
+  Etendo repository — repos under the etendosoftware GitHub org, modules with com.etendo* or
+  com.smf* Java packages, projects whose gradle.properties references etendo dependencies, or
+  any directory inside an Etendo workspace (modules/, modules_core/, etc.). Covers git commits,
+  branch naming, PR titles, Jira and GitHub issue creation, and bug tracking. Trigger on ANY
+  git operation (commit, branch, push, PR) performed in Etendo context, when creating or
+  discussing tickets/bugs/stories/tasks, when a bug is detected during code analysis, when the
+  user asks to commit or push changes, or when reviewing PR feedback. If you are unsure whether
+  the current project is Etendo-related, check for gradle.properties with bbdd.* keys, an
+  etendo-core dependency, or a modules/ directory — if any are present, use this skill for all
+  git operations.
 ---
 
 ## Etendo Workflow Manager

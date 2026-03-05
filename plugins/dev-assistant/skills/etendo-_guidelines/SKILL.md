@@ -530,7 +530,25 @@ See `references/known-bugs-webhooks.md` (B6–B9) for details on each issue and 
 
 ---
 
-## 19. Information sources — wiki and existing code
+## 19. Git conventions — always use the workflow manager
+
+**ALL git operations in Etendo projects MUST follow the Etendo workflow conventions.** Before any commit, branch creation, or PR, use the `etendo-workflow-manager` skill to validate naming and format against Git Police rules.
+
+Quick reference (see workflow manager skill for full details):
+
+| Operation | Convention |
+|-----------|-----------|
+| Feature branch | `feature/{JIRA-KEY}` |
+| Hotfix branch | `hotfix/#{GH}-{JIRA-KEY}` |
+| Feature commit | `Feature {JIRA-KEY}: description` (max 80 chars) |
+| Hotfix commit | `Issue #{GH}: description` + `-m "{JIRA-KEY}"` |
+| Co-Authored-By | **Never** — Git Police rejects it |
+
+If a bug is detected during any `/etendo:*` operation, suggest creating a Jira issue using the workflow manager.
+
+---
+
+## 20. Information sources — wiki and existing code
 
 ### Etendo documentation wiki
 
