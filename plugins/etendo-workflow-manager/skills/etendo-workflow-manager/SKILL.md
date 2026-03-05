@@ -358,6 +358,19 @@ gh run rerun RUN_ID --repo etendosoftware/REPO_NAME
 
 ---
 
+## Workflow: PR SonarQube Failure
+
+When the SonarQube quality gate fails on a PR, use the `/etendo:sonar` skill to:
+
+1. Run `sonar-scanner` locally in PR mode to reproduce the same analysis as CI
+2. Query the API for issues, **focusing on new/modified files only** — pre-existing issues in untouched files are not the developer's responsibility
+3. Fix the issues in the changed files
+4. Re-run the scanner to verify the quality gate passes
+
+See the `etendo-sonar` skill for full details on running the scanner, querying results, and auto-fixing common issues. Always run Sonar analysis before pushing to catch issues early.
+
+---
+
 ## Workflow: PR Jenkins Test Failure Review
 
 When tests fail on a PR's Jenkins build, follow this workflow to identify and fix the root cause.

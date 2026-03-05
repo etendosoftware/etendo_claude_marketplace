@@ -548,7 +548,13 @@ If a bug is detected during any `/etendo:*` operation, suggest creating a Jira i
 
 ---
 
-## 20. Information sources — wiki and existing code
+## 20. SonarQube — code quality before pushing
+
+Before pushing code to a PR, run SonarQube analysis locally using `/etendo:sonar` to catch issues before CI. **Focus on issues in new or modified files only** — pre-existing issues in untouched files are not the developer's responsibility. If a SonarQube quality gate fails on a PR, use `/etendo:sonar fix` to identify and resolve the issues in changed files.
+
+---
+
+## 21. Information sources — wiki and existing code
 
 ### Etendo documentation wiki
 
