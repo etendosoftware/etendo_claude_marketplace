@@ -534,6 +534,8 @@ See `references/known-bugs-webhooks.md` (B6–B9) for details on each issue and 
 
 **ALL git operations in Etendo projects MUST follow the Etendo workflow conventions.** Before any commit, branch creation, or PR, use the `etendo-workflow-manager` skill to validate naming and format against Git Police rules.
 
+**Never merge branches or PRs with squash.** Squash merges destroy the commit history and make it impossible to trace individual changes. Always use regular merge commits to preserve the full history.
+
 Quick reference (see workflow manager skill for full details):
 
 | Operation | Convention |
@@ -543,6 +545,7 @@ Quick reference (see workflow manager skill for full details):
 | Feature commit | `Feature {JIRA-KEY}: description` (max 80 chars) |
 | Hotfix commit | `Issue #{GH}: description` + `-m "{JIRA-KEY}"` |
 | Co-Authored-By | **Never** — Git Police rejects it |
+| Squash merge | **Never** — destroys commit history |
 
 If a bug is detected during any `/etendo:*` operation, suggest creating a Jira issue using the workflow manager.
 
