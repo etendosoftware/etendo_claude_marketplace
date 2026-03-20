@@ -68,10 +68,6 @@ Or register as a local marketplace:
 - The `scripts/xml2json.py` utility inspects Etendo sourcedata XML — prefer it over raw XML grep.
 - The `scripts/sort_xml.py` utility sorts Etendo sourcedata XML files by UUID — run it after adding new entries to any `src-db/database/sourcedata/*.xml` file to keep them in order.
 
-## Git practices
-
-- **Never merge branches or PRs with squash.** Squash merges destroy the commit history and make it harder to trace changes. Always use regular merge commits.
-
 ## Files to ignore
 
 - `legacy/` — old files, do not read or modify unless explicitly asked.
