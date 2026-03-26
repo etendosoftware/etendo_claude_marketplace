@@ -1,0 +1,9 @@
+{
+  "name": "video-producer",
+  "description": "Produce Hollywood-quality corporate videos using AI. Full pipeline: script → voiceover (ElevenLabs) → keyframe images (Seedream V4) → video animation (Kling V2.1 Pro) → assembly (ffmpeg)",
+  "author": {
+    "name": "Etendo",
+    "email": "dev@etendo.software"
+  },
+  "license": "MIT"
+}

@@ -44,6 +44,15 @@
       "author": { "name": "Etendo" },
       "category": "development",
       "tags": ["fyso", "agents", "create", "team", "claude", "etendo"]
+    },
+    {
+      "name": "video-producer",
+      "source": "./plugins/video-producer",
+      "description": "Produce Hollywood-quality corporate videos using AI — full pipeline: script, voiceover (ElevenLabs), keyframe images (Seedream V4), video animation (Kling V2.1 Pro), assembly (ffmpeg)",
+      "version": "1.0.0",
+      "author": { "name": "Etendo" },
+      "category": "communications",
+      "tags": ["video", "production", "ai", "elevenlabs", "higgsfield", "kling", "seedream", "communications"]
     }
   ]
 }
