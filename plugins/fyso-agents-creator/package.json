@@ -1,0 +1,9 @@
+{
+  "name": "fyso-agents-creator",
+  "version": "1.0.0",
+  "description": "Create Fyso agent teams from natural language requirements",
+  "claude_plugin": {
+    "version": 2,
+    "skills": ["skills/create-team/SKILL.md"]
+  }
+}
