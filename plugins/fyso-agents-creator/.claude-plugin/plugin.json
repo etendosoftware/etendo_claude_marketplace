@@ -1,0 +1,9 @@
+{
+  "name": "fyso-agents-creator",
+  "description": "Create Fyso agent teams from natural language requirements",
+  "author": {
+    "name": "Etendo",
+    "email": "dev@etendo.software"
+  },
+  "license": "MIT"
+}

@@ -35,6 +35,15 @@
       "author": { "name": "Etendo" },
       "category": "development",
       "tags": ["fyso", "agents", "sync", "claude", "etendo"]
+    },
+    {
+      "name": "fyso-agents-creator",
+      "source": "./plugins/fyso-agents-creator",
+      "description": "Create Fyso agent teams from natural language requirements",
+      "version": "1.0.0",
+      "author": { "name": "Etendo" },
+      "category": "development",
+      "tags": ["fyso", "agents", "create", "team", "claude", "etendo"]
     }
   ]
 }
