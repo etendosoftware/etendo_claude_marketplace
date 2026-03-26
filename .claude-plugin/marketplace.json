@@ -26,6 +26,15 @@
       "author": { "name": "Etendo" },
       "category": "development",
       "tags": ["etendo", "jira", "github", "workflow", "git", "wiki", "documentation"]
+    },
+    {
+      "name": "fyso-team-sync",
+      "source": "./plugins/fyso-team-sync",
+      "description": "Sync a Fyso agent team to the local .claude/agents/ directory and verify the Etendo dev environment is ready",
+      "version": "1.0.0",
+      "author": { "name": "Etendo" },
+      "category": "development",
+      "tags": ["fyso", "agents", "sync", "claude", "etendo"]
     }
   ]
 }
